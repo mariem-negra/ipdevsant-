@@ -4,7 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    # Add this line to define the upload directory for profile images
+    
+    profile_images_directory: '%kernel.project_dir%/public/uploads/profile_images'
+    diplomas_directory: '%kernel.project_dir%/public/uploads/diplomas'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -19,6 +22,8 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

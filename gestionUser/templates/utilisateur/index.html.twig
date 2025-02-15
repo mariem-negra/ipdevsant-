@@ -3,47 +3,65 @@
 {% block title %}Utilisateur index{% endblock %}
 
 {% block body %}
-    <h1>Utilisateur index</h1>
+<section class="section dashboard">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Liste des Utilisateurs</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-bordered">
+                <thead >
+                    <tr>
+                        <th>Id</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Email</th>
+                        <th>Mot de passe</th>
+                        <th>Rôle</th>
+                        <th>Date de naissance</th>
+                        <th>Spécialité</th>
+                        <th>Téléphone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for utilisateur in utilisateurs %}
+                    <tr>
+                        <td>{{ utilisateur.id }}</td>
+                        <td>{{ utilisateur.nom }}</td>
+                        <td>{{ utilisateur.prenom }}</td>
+                        <td>{{ utilisateur.email }}</td>
+                        <td>************</td>
+                        <td>{{ utilisateur.role.value }}</td>
+                        <td>{{ utilisateur.dateNaissance ? utilisateur.dateNaissance|date('Y-m-d') : '' }}</td>
+                        <td>{{ utilisateur.specialite ?? 'NULL' }}</td>
+                        <td>{{ utilisateur.telephone }}</td>
+                        <td>
+                            <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}" class="btn btn-info btn-sm">
+                                <i class="bi bi-eye"></i> 
+                            </a>
+                            <br>
+                            <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil"></i> 
+                            </a>
+                            {{ include('utilisateur/_delete_form.html.twig') }}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>Prenom</th>
-                <th>Email</th>
-                <th>MotDePasse</th>
-                <th>Role</th>
-                <th>DateNaissance</th>
-                <th>Specialite</th>
-                <th>Telephone</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for utilisateur in utilisateurs %}
-            <tr>
-                <td>{{ utilisateur.id }}</td>
-                <td>{{ utilisateur.nom }}</td>
-                <td>{{ utilisateur.prenom }}</td>
-                <td>{{ utilisateur.email }}</td>
-                <td>{{ utilisateur.motDePasse }}</td>
-                <td>{{ utilisateur.role.value }}</td>
-                <td>{{ utilisateur.dateNaissance ? utilisateur.dateNaissance|date('Y-m-d') : '' }}</td>
-                <td>{{ utilisateur.specialite }}</td>
-                <td>{{ utilisateur.telephone }}</td>
-                <td>
-                    <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}">show</a>
-                    <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_utilisateur_new') }}">Create new</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="10" class="text-center">Aucun utilisateur trouvé</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="d-flex justify-content-end">
+                <a href="{{ path('app_utilisateur_new') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Créer un nouvel utilisateur
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

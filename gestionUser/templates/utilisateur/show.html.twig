@@ -1,52 +1,73 @@
-{% block title %}Utilisateur{% endblock %}
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Détails de l'utilisateur{% endblock %}
 
 {% block body %}
-    <h1>Utilisateur</h1>
+<section class="section dashboard">
+    <div class="card shadow-lg p-4">
+        <h5 class="card-title text-primary">Détails de l'utilisateur</h5>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ utilisateur.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ utilisateur.nom }}</td>
-            </tr>
-            <tr>
-                <th>Prenom</th>
-                <td>{{ utilisateur.prenom }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ utilisateur.email }}</td>
-            </tr>
-            <tr>
-                <th>MotDePasse</th>
-                <td>{{ utilisateur.motDePasse }}</td>
-            </tr>
-            <tr>
-                <th>Role</th>
-                <td>{{ utilisateur.role }}</td>
-            </tr>
-            <tr>
-                <th>DateNaissance</th>
-                <td>{{ utilisateur.dateNaissance ? utilisateur.dateNaissance|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Specialite</th>
-                <td>{{ utilisateur.specialite }}</td>
-            </tr>
-            <tr>
-                <th>Telephone</th>
-                <td>{{ utilisateur.telephone }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <table class="table table-hover table-bordered">
+            <tbody>
+                <tr>
+                    <th class="bg-light text-dark">ID</th>
+                    <td>{{ utilisateur.id }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Nom</th>
+                    <td>{{ utilisateur.nom }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Prénom</th>
+                    <td>{{ utilisateur.prenom }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Email</th>
+                    <td>{{ utilisateur.email }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Mot de Passe</th>
+                    <td>
+                        <span class="text-muted">********</span> {# Hidden for security #}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Rôle</th>
+                    <td>
+                        <span class="badge 
+                            {% if utilisateur.role.value == 'ROLE_ADMIN' %} bg-danger
+                            {% elseif utilisateur.role.value == 'ROLE_MEDECIN' %} bg-success
+                            {% else %} bg-primary {% endif %}">
+                            {{ utilisateur.role.value }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Date de Naissance</th>
+                    <td>{{ utilisateur.dateNaissance ? utilisateur.dateNaissance|date('Y-m-d') : '-' }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Spécialité</th>
+                    <td>{{ utilisateur.specialite ?? 'Non spécifié' }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Téléphone</th>
+                    <td>{{ utilisateur.telephone }}</td>
+                </tr>
+            </tbody>
+        </table>
 
-    <a href="{{ path('app_utilisateur_index') }}">back to list</a>
+        <div class="mt-4 d-flex gap-2">
+            <a href="{{ path('app_utilisateur_index') }}" class="btn btn-dark">
+                <i class="bi bi-arrow-left"></i> Retour à la liste
+            </a>
+            
+            <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}" class="btn btn-success">
+                <i class="bi bi-pencil"></i> Modifier
+            </a>
 
-    <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}">edit</a>
-
-    {{ include('utilisateur/_delete_form.html.twig') }}
+            {{ include('utilisateur/_delete_form.html.twig') }}
+        </div>
+    </div>
+</section>
 {% endblock %}

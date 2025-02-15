@@ -15,12 +15,13 @@ final class UserController extends AbstractController
             'controller_name' => 'UserController',
         ]);
     }
-    #[Route('/login', name: 'app_login')]
-    public function login(): Response
+    #[Route('/back', name: 'app_back')]
+    public function indexB(): Response
     {
-        return $this->render('user/login.html.twig', [
-            'controller_name' => 'UserController',
+        return $this->render('back/index.html.twig', [
+            'controller_name' => 'BackController',
         ]);
     }
+
     
 }
