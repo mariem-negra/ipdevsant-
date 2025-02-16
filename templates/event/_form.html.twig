@@ -1,0 +1,216 @@
+<style>
+    /* Conteneur du formulaire */
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f0f8ff; /* Blanc bleuâtre */
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        text-align: center;
+    }
+
+    /* Effet néon pour le titre */
+    .form-title {
+        font-size: 28px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #007bff;
+        text-shadow: 0 0 5px #007bff, 0 0 10px #0047ab;
+        margin-bottom: 20px;
+        animation: glow 1.5s infinite alternate;
+    }
+
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 5px #007bff, 0 0 10px #0047ab;
+        }
+        to {
+            text-shadow: 0 0 10px #007bff, 0 0 20px #0047ab;
+        }
+    }
+
+    /* Groupe de champs */
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+        position: relative;
+    }
+
+    /* Labels */
+    .form-label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #0056b3;
+    }
+
+    /* Champs de formulaire */
+    .form-input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #007bff;
+        border-radius: 8px;
+        font-size: 16px;
+        background-color: white;
+        transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+        border-color: #0047ab;
+        box-shadow: 0 0 8px rgba(0, 71, 171, 0.6);
+        outline: none;
+    }
+
+    /* Icônes de validation */
+    .validation-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18px;
+        display: none;
+    }
+
+    .form-input.error {
+        border-color: #dc3545;
+    }
+
+    .form-input.success {
+        border-color: #28a745;
+    }
+
+    /* Bouton futuriste */
+    .btn-submit {
+        display: inline-block;
+        width: 100%;
+        padding: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        background: linear-gradient(90deg, #007bff, #0047ab);
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
+        overflow: hidden;
+    }
+
+    .btn-submit::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300%;
+        height: 300%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
+        transition: all 0.5s ease-in-out;
+        transform: translate(-50%, -50%) scale(0);
+        border-radius: 50%;
+    }
+
+    .btn-submit:hover::before {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    .btn-submit:hover {
+        background: linear-gradient(90deg, #0047ab, #002f6c);
+        box-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+    }
+
+    /* Messages d'erreur */
+    .form-error {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">Créer un Événement</h2>
+    
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        {# Titre #}
+        <div class="form-group">
+            {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.titre, {'attr': {'class': 'form-input'}}) }}
+            <span class="validation-icon">❌</span>
+            <div class="form-error">{{ form_errors(form.titre) }}</div>
+        </div>
+
+        {# Date #}
+        <div class="form-group">
+            {{ form_label(form.dateevent, 'Date de l\'événement', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.dateevent, {'attr': {'class': 'form-input', 'type': 'datetime-local'}}) }}
+            <span class="validation-icon">❌</span>
+            <div class="form-error">{{ form_errors(form.dateevent) }}</div>
+        </div>
+
+        {# Lieu #}
+        <div class="form-group">
+            {{ form_label(form.lieu, 'Lieu', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.lieu, {'attr': {'class': 'form-input'}}) }}
+            <span class="validation-icon">❌</span>
+            <div class="form-error">{{ form_errors(form.lieu) }}</div>
+        </div>
+
+        {# Description #}
+        <div class="form-group">
+            {{ form_label(form.discription, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.discription, {'attr': {'class': 'form-input'}}) }}
+            <span class="validation-icon">❌</span>
+            <div class="form-error">{{ form_errors(form.discription) }}</div>
+        </div>
+
+        {# Nombre de places #}
+        <div class="form-group">
+            {{ form_label(form.nbplace, 'Nombre de places', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.nbplace, {'attr': {'class': 'form-input', 'type': 'number', 'min': '1'}}) }}
+            <span class="validation-icon">❌</span>
+            <div class="form-error">{{ form_errors(form.nbplace) }}</div>
+        </div>
+
+        <button class="btn btn-submit">Créer Event</button>
+
+    {{ form_end(form) }}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Bloque la sélection d'une date passée
+        let dateInput = document.querySelector("input[name='event[dateevent]']");
+        let now = new Date();
+        let formattedDate = now.toISOString().slice(0, 16);
+        dateInput.setAttribute("min", formattedDate);
+
+        // Validation en temps réel
+        const inputs = document.querySelectorAll(".form-input");
+        inputs.forEach(input => {
+            input.addEventListener("input", function () {
+                validateField(this);
+            });
+        });
+
+        function validateField(field) {
+            const parent = field.parentElement;
+            const icon = parent.querySelector(".validation-icon");
+            const errorMessage = parent.querySelector(".form-error");
+
+            if (field.value.trim().length < 4) {
+                field.classList.remove("success");
+                field.classList.add("error");
+                icon.innerHTML = "❌";
+                icon.style.display = "inline-block";
+            } else {
+                field.classList.remove("error");
+                field.classList.add("success");
+                icon.innerHTML = "✅";
+                icon.style.display = "inline-block";
+            }
+        }
+    });
+</script>

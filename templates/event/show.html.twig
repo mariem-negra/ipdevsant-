@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event{% endblock %}
+
+{% block section %}
+    <h1>Event</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ event.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ event.titre }}</td>
+            </tr>
+            <tr>
+                <th>Dateevent</th>
+                <td>{{ event.dateevent ? event.dateevent|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Lieu</th>
+                <td>{{ event.lieu }}</td>
+            </tr>
+            <tr>
+                <th>Discription</th>
+                <td>{{ event.discription }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_event_index') }}">back to list</a>
+
+{% endblock %}

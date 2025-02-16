@@ -1,0 +1,65 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Gestion des événements{% endblock %}
+
+{% block main %}
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Gestion des événements</h1>
+
+        <div class="card shadow-lg border-primary">
+            <div class="card-body">
+                <table class="table table-hover text-center align-middle">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>Id</th>
+                            <th>Titre</th>
+                            <th>Date</th>
+                            <th>Lieu</th>
+                            <th>Description</th>
+                            <th>Nombre de places</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for event in events %}
+                        <tr>
+                            <td><strong>{{ event.id }}</strong></td>
+                            <td>{{ event.titre }}</td>
+                            <td>{{ event.dateevent ? event.dateevent|date('Y-m-d') : 'Non définie' }}</td>
+                            <td>{{ event.lieu }}</td>
+                            <td>{{ event.discription }}</td>
+                            <td>{{ event.nbplace }}</td>
+                            <td>
+                                <a href="{{ path('app_event_showback', {'id': event.id}) }}" class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-eye"></i> 
+                                </a>
+                                <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil"></i> 
+                                </a>
+                                <form action="{{ path('app_event_delete', {'id': event.id}) }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-muted">Aucun événement trouvé.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                
+                <!-- Bouton Ajouter dans la colonne Actions -->
+                <div class="text-center mt-3">
+                    <a href="{{ path('app_event_new') }}" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-plus-circle"></i> Ajouter un événement
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

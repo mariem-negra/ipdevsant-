@@ -1,0 +1,93 @@
+<style>
+    /* Conteneur du formulaire */
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Groupe de champs */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    /* Labels */
+    .form-label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    /* Champs de formulaire */
+    .form-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-input:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+    /* Bouton de soumission */
+    .btn-submit {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background-color: #0056b3;
+    }
+
+    /* Messages d'erreur */
+    .form-error {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="form-container">
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        {# Nom de réservation #}
+        <div class="form-group">
+    {{ form_label(form.nomreserv, 'Nom de la réservation') }}
+    {{ form_widget(form.nomreserv, {'attr': {'class': 'form-input'}}) }}
+    <div class="form-error">{{ form_errors(form.nomreserv) }}</div>
+</div>
+
+
+        {# Email #}
+        <div class="form-group">
+            {{ form_label(form.mail, 'Email') }}
+            {{ form_widget(form.mail, {'attr': {'class': 'form-input', 'type': 'email'}}) }}
+            <div class="form-error">{{ form_errors(form.mail) }}</div>
+        </div>
+
+        {# Nombre de personnes #}
+        <div class="form-group">
+            {{ form_label(form.nbrpersonne, 'Nombre de personnes') }}
+            {{ form_widget(form.nbrpersonne, {'attr': {'class': 'form-input', 'type': 'number', 'min': '1'}}) }}
+            <div class="form-error">{{ form_errors(form.nbrpersonne) }}</div>
+        </div>
+
+        <button class="btn btn-submit">{{ button_label|default('Réserver') }}</button>
+
+    {{ form_end(form) }}
+</div>

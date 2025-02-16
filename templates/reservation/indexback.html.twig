@@ -1,0 +1,61 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Gestion des réservations{% endblock %}
+
+{% block main %}
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Gestion des réservations</h1>
+
+        <div class="card shadow-lg border-primary">
+            <div class="card-body">
+                <table class="table table-hover text-center align-middle">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>Id</th>
+                            <th>Nom de la réservation</th>
+                            <th>Email</th>
+                            <th>Nombre de personnes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for reservation in reservations %}
+                        <tr>
+                            <td><strong>{{ reservation.id }}</strong></td>
+                            <td>{{ reservation.nomreserv }}</td>
+                            <td>{{ reservation.mail }}</td>
+                            <td>{{ reservation.nbrpersonne }}</td>
+                            <td>
+                                <a href="{{ path('app_reservation_showback', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-eye"></i> 
+                                </a>
+                                <a href="{{ path('app_reservation_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil"></i> 
+                                </a>
+                                <form action="{{ path('app_reservation_delete', {'id': reservation.id}) }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-muted">Aucune réservation trouvée.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                
+                <!-- Bouton Ajouter dans la colonne Actions -->
+                <div class="text-center mt-3">
+                    <a href="{{ path('app_reservation_new') }}" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-plus-circle"></i> Ajouter une réservation
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
