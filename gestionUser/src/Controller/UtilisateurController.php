@@ -18,11 +18,16 @@ use App\Enum\UserRole;
 #[Route('/utilisateur')]
 final class UtilisateurController extends AbstractController
 {
+
     #[Route(name: 'app_utilisateur_index', methods: ['GET'])]
     public function index(UtilisateurRepository $utilisateurRepository): Response
     {
+        $user = $this->getUser();
+
         return $this->render('utilisateur/index.html.twig', [
             'utilisateurs' => $utilisateurRepository->findAll(),
+                'user' => $user,
+            
         ]);
     }
 
@@ -79,8 +84,12 @@ final class UtilisateurController extends AbstractController
     #[Route('/{id}', name: 'app_utilisateur_show', methods: ['GET'])]
     public function show(Utilisateur $utilisateur): Response
     {
+        $user = $this->getUser();
+
         return $this->render('utilisateur/show.html.twig', [
             'utilisateur' => $utilisateur,
+            'user' => $user,
+
         ]);
     }
 
@@ -89,9 +98,25 @@ final class UtilisateurController extends AbstractController
     {
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
         $form->handleRequest($request);
+        $user = $this->getUser();
 
         if ($form->isSubmitted() && $form->isValid()) {
+        $diplomaFile = $form->get('diploma')->getData();
+
+        if ($diplomaFile) {
+            // Handle file upload (e.g., move the file to a directory)
+            $newFilename = uniqid().'.'.$diplomaFile->guessExtension();
+            $diplomaFile->move(
+                $this->getParameter('diplomas'),
+                $newFilename
+            );
+            $utilisateur->setDiploma($newFilename);
+        }
+
+        // Save the user
+        $entityManager->persist($utilisateur);        
             $entityManager->flush();
+            $this->addFlash('success', 'Historique de traitement créé avec succès.');
 
             return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -99,6 +124,8 @@ final class UtilisateurController extends AbstractController
         return $this->render('utilisateur/edit.html.twig', [
             'utilisateur' => $utilisateur,
             'form' => $form,
+            'user' => $user,
+
         ]);
     }
 

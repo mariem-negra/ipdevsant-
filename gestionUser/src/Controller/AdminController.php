@@ -15,13 +15,17 @@ class AdminController extends AbstractController
     #[Route('/pending-doctors', name: 'admin_pending_doctors', methods: ['GET'])]
     public function pendingDoctors(EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
+
         $doctors = $em->getRepository(Utilisateur::class)->findBy([
             'role' => UserRole::MEDECIN,
             'isVerified' => false
         ]);
 
         return $this->render('admin/pending_doctors.html.twig', [
-            'doctors' => $doctors
+            'doctors' => $doctors,
+            'user' => $user,
+           
         ]);
     }
     #[Route('/check-verification', name: 'admin_check_verification', methods: ['GET'])]

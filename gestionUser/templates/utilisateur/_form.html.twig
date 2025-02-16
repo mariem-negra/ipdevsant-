@@ -4,7 +4,7 @@
         <div class="card-body text-center">
             <h2 class="text-gradient mb-4">Modifier l'utilisateur</h2>
 
-            {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+            {{ form_start(form, {'attr': {'class': 'form-horizontal','enctype': 'multipart/form-data'}}) }}
 
                 <div class="form-group">
                     <div class="input-group mb-3">
@@ -54,16 +54,25 @@
                         {{ form_widget(form.telephone, {'attr': {'class': 'form-control', 'placeholder': 'Téléphone'}}) }}
                     </div>
                 </div>
-
+                {# Render specialite and diploma fields above the buttons #}
                 {% if form.specialite is defined %}
                     <div class="form-group">
                         <div class="input-group mb-3">
-                            <span class="input-group-text"><i class="bi bi-award"></i></span>
-                            {{ form_widget(form.specialite, {'attr': {'class': 'form-control'}}) }}
+                            <span class="input-group-text"><i class="bi bi-file-earmark-text"></i></span>
+                            {{ form_widget(form.specialite, {'attr': {'class': 'form-control', 'placeholder': 'Spécialité'}}) }}
                         </div>
                     </div>
                 {% endif %}
-
+                {% if form.diploma is defined %}
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-file-earmark-arrow-up"></i></span>
+                            <div class="form-control">
+                                {{ form_widget(form.diploma) }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
                 <div class="d-flex justify-content-between mt-3">
                     <button type="submit" class="btn btn-primary btn-glow">
                         <i class="bi bi-save"></i> Enregistrer

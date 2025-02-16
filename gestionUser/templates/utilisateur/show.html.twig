@@ -46,9 +46,31 @@
                     <th class="bg-light text-dark">Date de Naissance</th>
                     <td>{{ utilisateur.dateNaissance ? utilisateur.dateNaissance|date('Y-m-d') : '-' }}</td>
                 </tr>
+                                    
+                    {% if utilisateur.role.value == 'Médecin' %}
+                    <tr>
+                        <th class="bg-light text-dark">Spécialité :</th>
+
+                    <td>  
+                      <div class="row mb-4 align-items-center">
+                        <div class="col-md-8 fw-medium">{{ utilisateur.specialite }}</div>
+                      </div>
+                      {% endif %}</td>
+                </tr>
+                        <!-- Diploma Field (Visible only for Médecin) -->
+                {% if utilisateur.role.value == 'Médecin' and utilisateur.diploma %}
                 <tr>
-                    <th class="bg-light text-dark">Spécialité</th>
-                    <td>{{ utilisateur.specialite ?? 'Non spécifié' }}</td>
+                    <th class="bg-light text-dark">Diplome</th>
+                    <td>  
+                        <div class="row mb-4 align-items-center">
+                          <div class="col-md-8 fw-medium">
+                            <img src="{{ asset('uploads/diplomas/' ~ utilisateur.diploma) }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+                            <br>
+                            <a href="{{ asset('uploads/diplomas/' ~ utilisateur.diploma) }}" target="_blank">Télécharger le diplôme</a>
+                          </div>
+                        </div>
+                      {% endif %}
+                    </td>
                 </tr>
                 <tr>
                     <th class="bg-light text-dark">Téléphone</th>

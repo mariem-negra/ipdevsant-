@@ -30,4 +30,11 @@ final class HomeController extends AbstractController
             'user' => $user, // Pass user data to Twig
         ]);
     }
+    #[Route('/chronoSerena', name: 'app_chronoSerena', methods: ['GET'])]
+    public function bienvenu(): Response
+    {
+        // Render the Twig template directly
+        return $this->render('home/ChronoSerena.html.twig');
+    }
+
 }

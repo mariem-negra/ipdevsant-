@@ -1,67 +1,91 @@
 {% extends 'baseBack.html.twig' %}
 
-{% block title %}Utilisateur index{% endblock %}
-
 {% block body %}
-<section class="section dashboard">
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Liste des Utilisateurs</h5>
+    <div >
+        <div class=" text-dark d-flex align-items-center justify-content-between" style="padding: 15px; border-bottom: 2px solid #f0f0f0;">
+            <h3 class="card-title m-0 d-flex align-items-center gap-2">
+                <i class="bi bi-people-fill text-warning fs-3"></i> 
+                <span class="fw-bold fs-3">Liste des Utilisateurs :</span>
+            </h3>
         </div>
         <div class="card-body">
-            <table class="table table-striped table-bordered">
-                <thead >
+            <table class="table table-hover table-striped table-bordered">
+                <thead class="thead-dark">
                     <tr>
-                        <th>Id</th>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Email</th>
-                        <th>Mot de passe</th>
-                        <th>Rôle</th>
-                        <th>Date de naissance</th>
-                        <th>Spécialité</th>
-                        <th>Téléphone</th>
-                        <th>Actions</th>
+                        <th scope="col" class="text-primary"><span class="d-flex align-items-center gap-1"><i class="bi bi-hash"></i> Id</span></th>
+                        <th scope="col" class="text-info"><span class="d-flex align-items-center gap-1"><i class="bi bi-person-badge"></i> Nom</span></th> <!-- Green -->
+                        <th scope="col" style="color:rgb(49, 243, 247);"><span class="d-flex align-items-center gap-1"><i class="bi bi-person"></i> Prénom</span></th> <!-- Cyan -->
+                        <th scope="col" style="color:rgb(227, 72, 121);"><span class="d-flex align-items-center gap-1"><i class="bi bi-envelope"></i> Email</span></th> <!-- Red -->
+                        <th scope="col" style="color:rgb(133, 192, 243);"><span class="d-flex align-items-center gap-1"><i class="bi bi-lock"></i> Mot de passe</span></th> <!-- Gray -->
+                        <th scope="col" style="color: #ffc107;"><span class="d-flex align-items-center gap-1"><i class="bi bi-person-rolodex"></i> Rôle</span></th> <!-- Yellow -->
+                        <th scope="col" style="color: #007bff;"><span class="d-flex align-items-center gap-1"><i class="bi bi-calendar"></i> Date de naissance</span></th> <!-- Blue -->
+                        <th scope="col" style="color: #20c997;"><span class="d-flex align-items-center gap-1"><i class="bi bi-briefcase"></i> Spécialité</span></th> <!-- Teal -->
+                        <th scope="col" style="color: #6610f2;"><span class="d-flex align-items-center gap-1"><i class="bi bi-telephone"></i> Téléphone</span></th> <!-- Purple -->
+                        <th scope="col" style="color:rgb(49, 243, 247);"><span class="d-flex align-items-center gap-1"><i class="bi bi-person"></i> Diplome</span></th> <!-- Cyan -->
+                        <th scope="col" style="color: #ffc107;"><span class="d-flex align-items-center gap-1"><i class="bi bi-person-rolodex"></i> Profile</span></th> <!-- Yellow -->
+
+                        <th scope="col" style="color: #e83e8c;"><span class="d-flex align-items-center gap-1"><i class="bi bi-gear"></i> Actions</span></th> <!-- Pink -->
                     </tr>
                 </thead>
                 <tbody>
                 {% for utilisateur in utilisateurs %}
-                    <tr>
+                    <tr class="align-middle">
                         <td>{{ utilisateur.id }}</td>
                         <td>{{ utilisateur.nom }}</td>
                         <td>{{ utilisateur.prenom }}</td>
                         <td>{{ utilisateur.email }}</td>
-                        <td>************</td>
-                        <td>{{ utilisateur.role.value }}</td>
-                        <td>{{ utilisateur.dateNaissance ? utilisateur.dateNaissance|date('Y-m-d') : '' }}</td>
+                        <td> ************</td>
+                        <td>
+                            <span class="badge bg-{{ utilisateur.role.value == 'ADMIN' ? 'danger' : 'success' }}">
+                                {{ utilisateur.role.value }}
+                            </span>
+                        </td>
+                        <td> {{ utilisateur.dateNaissance ? utilisateur.dateNaissance|date('Y-m-d') : '' }}</td>
                         <td>{{ utilisateur.specialite ?? 'NULL' }}</td>
                         <td>{{ utilisateur.telephone }}</td>
                         <td>
+                            {% if utilisateur.diploma %}
+                                <img src="{{ asset('uploads/diplomas/' ~ utilisateur.diploma) }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+                            {% else %}
+                            NULL
+                            {% endif %}
+                        </td>
+                        <td> 
+                            {% if utilisateur.image %}
+                                <img src="{{ asset('uploads/profile_images/' ~ utilisateur.image) }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+                            {% else %}
+                                <img src="{{ asset('imgBack/images.jpg') }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center">
                             <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}" class="btn btn-info btn-sm">
                                 <i class="bi bi-eye"></i> 
                             </a>
-                            <br>
                             <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}" class="btn btn-warning btn-sm">
                                 <i class="bi bi-pencil"></i> 
                             </a>
                             {{ include('utilisateur/_delete_form.html.twig') }}
-
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="10" class="text-center">Aucun utilisateur trouvé</td>
+                        <td colspan="10" class="text-center text-muted">
+                            <i class="bi bi-exclamation-circle text-secondary"></i> Aucun utilisateur trouvé
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
             
             <div class="d-flex justify-content-end">
-                <a href="{{ path('app_utilisateur_new') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Créer un nouvel utilisateur
+                <a href="{{ path('app_utilisateur_new') }}" class="btn px-4 py-2 shadow-lg rounded-pill d-flex align-items-center gap-2" 
+                    style="background: linear-gradient(135deg, #ff7eb3, #ff4d4d); border: none; color: white;">
+                    <i class="bi bi-plus-circle fs-5"></i> 
+                    <span class="fw-bold">Créer un nouvel utilisateur</span>
                 </a>
             </div>
+
         </div>
     </div>
-</section>
 {% endblock %}

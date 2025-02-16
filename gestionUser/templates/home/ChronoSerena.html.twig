@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>ChronoSerna</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="{{ asset('img/logo2.png') }}" rel="icon">
+  <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  {% block css %}
+  <!-- Fichiers CSS Vendor -->
+  <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ asset('vendor/aos/aos.css') }}" rel="stylesheet">
+  <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+  <!-- Fichier CSS Principal -->
+  <link href="{{ asset('css/main.css') }}" rel="stylesheet">
+  {% endblock %}
+</head>
+
+<body class="index-page">
+  
+  <header id="header" class="header sticky-top">
+    {% block header %}
+    <div class="topbar d-flex align-items-center">
+      <div class="container d-flex justify-content-center justify-content-md-between">
+        <div class="d-none d-md-flex align-items-center">
+          <i class="bi bi-clock me-1"></i> Lundi - Samedi, 8h à 22h
+        </div>
+        <div class="d-flex align-items-center">
+          <i class="bi bi-phone me-1"></i> Appelez-nous : +1 5589 55488 55
+        </div>
+      </div>
+    </div><!-- Fin de la Top Bar -->
+    {% endblock %}
+    <div class="branding d-flex align-items-center">
+      <div class="container position-relative d-flex align-items-center justify-content-end">
+        <a href='#' class="logo d-flex align-items-center me-auto" style="max-width: 200px;"> <!-- Ajustez la largeur si nécessaire -->
+          <img src="{{ asset('img/logo.png') }}" alt="Logo" class="img-fluid" style="width: 200%; height: auto;">
+        </a>
+        <nav id="navmenu" class="navmenu">
+          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+        <a class="cta-btn" href="{{ path('app_login') }}">Connexion</a>
+        <a class="cta-btn" href="{{ path('app_utilisateur_new') }}">Inscription</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Section Hero -->
+    <section id="hero" class="hero section">
+      <div id="hero-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-item active">
+        <img src="img/hero-carousel/hero-carousel-1.jpg" alt="">
+        <div class="container">
+            <h2>Bienvenue sur ChronoSerna</h2>
+            <p>ChronoSerna est votre partenaire pour mieux vivre avec une maladie chronique. Accédez à des outils de suivi personnalisés, rejoignez une communauté bienveillante et bénéficiez de ressources éducatives pour prendre le contrôle de votre santé.</p>
+            <a href="#about" class="btn-get-started">En savoir plus</a>
+        </div>
+        </div>
+        <div class="carousel-item">
+        <img src="img/hero-carousel/hero-carousel-2.jpg" alt="">
+        <div class="container">
+            <h2>Suivi personnalisé</h2>
+            <p>Notre plateforme vous permet de suivre vos symptômes, vos traitements et vos progrès grâce à des outils adaptés à vos besoins. Visualisez vos données et partagez-les avec votre médecin pour un suivi optimal.</p>
+            <a href="#about" class="btn-get-started">En savoir plus</a>
+        </div>
+        </div>
+        <div class="carousel-item">
+        <img src="img/hero-carousel/hero-carousel-3.jpg" alt="">
+        <div class="container">
+            <h2>Communauté et soutien</h2>
+            <p>Rejoignez une communauté de patients et de professionnels de santé pour échanger des conseils, partager des expériences et trouver du soutien. Vous n'êtes plus seul face à votre maladie.</p>
+            <a href="#about" class="btn-get-started">En savoir plus</a>
+        </div>
+        </div>
+        <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
+        </a>
+
+        <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
+          <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
+        </a>
+
+        <ol class="carousel-indicators"></ol>
+
+      </div>
+    </section><!-- /Section Hero -->
+  </main>
+
+  <footer id="footer" class="footer light-background">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-4 col-md-6 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">ChronoSerna</span>
+          </a>
+          <div class="footer-contact pt-3">
+            <p>A108 Adam Street</p>
+            <p>New York, NY 535022</p>
+            <p class="mt-3"><strong>Téléphone :</strong> <span>+1 5589 55488 55</span></p>
+            <p><strong>Email :</strong> <span>info@example.com</span></p>
+          </div>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Liens utiles</h4>
+          <ul>
+            <li><a href="#">Accueil</a></li>
+            <li><a href="#">À propos</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Conditions d'utilisation</a></li>
+            <li><a href="#">Politique de confidentialité</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-3 footer-links">
+        <h4>Nos services</h4>
+        <ul>
+            <li><a href="#">Suivi des symptômes</a></li>
+            <li><a href="#">Ressources éducatives</a></li>
+            <li><a href="#">Communauté de soutien</a></li>
+            <li><a href="#">Conseils personnalisés</a></li>
+            <li><a href="#">Témoignages de patients</a></li>
+        </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Hic solutasetp</h4>
+          <ul>
+            <li><a href="#">Molestiae accusamus iure</a></li>
+            <li><a href="#">Excepturi dignissimos</a></li>
+            <li><a href="#">Suscipit distinctio</a></li>
+            <li><a href="#">Dilecta</a></li>
+            <li><a href="#">Sit quas consectetur</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Nobis illum</h4>
+          <ul>
+            <li><a href="#">Ipsam</a></li>
+            <li><a href="#">Laudantium dolorum</a></li>
+            <li><a href="#">Dinera</a></li>
+            <li><a href="#">Trodelas</a></li>
+            <li><a href="#">Flexo</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">ChronoSerna</strong> <span>Tous droits réservés</span></p>
+      <div class="credits">
+        Conçu par <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <div id="preloader"></div>
+
+  {% block script %}
+  <!-- Fichiers JS Vendor -->
+  <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ asset('vendor/php-email-form/validate.js') }}"></script>
+  <script src="{{ asset('vendor/aos/aos.js') }}"></script>
+  <script src="{{ asset('vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ asset('vendor/purecounter/purecounter_vanilla.js') }}"></script>
+  <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <!-- Fichier JS Principal -->
+  <script src="{{ asset('js/main.js') }}"></script>
+  {% endblock %}
+</body>
+</html>

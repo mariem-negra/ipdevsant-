@@ -1,92 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'baseBack.html.twig' %}
+{% block body %}
 
-<head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title> ChronoSerena</title>
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-
-  <!-- Favicons -->
-  <link href="{{ asset('img/logo2.png') }}" rel="icon">
-  <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
-
-  <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
- 
-  <!-- Vendor CSS Files -->
-  <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
-  <link href="{{ asset('vendor/aos/aos.css') }}" rel="stylesheet">
-  <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
-  <link href="{{ asset('vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
-  <link href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
-
-  <!-- Main CSS File -->
-  <link href="{{ asset('css/main.css') }}" rel="stylesheet">
-</head>
-
-<body>
-  <header id="header" class="header sticky-top">
-    <div class="topbar d-flex align-items-center">
-      <div class="container d-flex justify-content-center justify-content-md-between">
-        <div class="d-none d-md-flex align-items-center">
-        </div>
-        <div class="d-flex align-items-center">
-        </div>
-      </div>
-    </div><!-- End Top Bar -->
-    <div class="branding d-flex align-items-center">
-
-      <div class="container position-relative d-flex align-items-center justify-content-end">
-        <a href='#' class="logo d-flex align-items-center me-auto" style="max-width: 200px;"> <!-- Adjust max-width as needed -->
-          <img src="{{ asset('img/logo.png') }}" alt="Logo" class="img-fluid" style="width: 200%; height: auto;">
-        </a>
-        <nav id="navmenu" class="navmenu">
-            <ul>
-                <li><a href="{{ path('app_home') }}" class="active">Acceuil</a></li>
-                <li><a href="{{ path('app_user') }}">Consernant</a></li>
-                <li><a href="{{ path('app_user') }}">Services</a></li>
-                <li><a href="{{ path('app_user') }}">Departments</a></li>
-                <li><a href="{{ path('app_user') }}">Médecin</a></li>
-                <li><a href="{{ path('app_user') }}">Contact</a></li>
-            </ul>
-            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-        </nav>
-        <a class="cta-btn" href="{{ path('app_profile') }}">Mon Profile</a>
-
-      </div>
-
-    </div>
-
-  </header>
-  <main id="main" class="main">
-    <section id="appointment" class="appointment section light-background">
-
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Mon Profile</h2>
-<a href="{{ path('app_logout') }}" class="logout-link">Déconnexion</a>
+<div class="d-flex justify-content-end mt-3">
+    <a href="{{ path('app_logout') }}" class="logout-button">
+        <i class="bi bi-box-arrow-right logout-icon"></i>
+        <span>Déconnexion</span>
+    </a>
+</div>
 
 <style>
-    .logout-link {
-        color: #dc3545; /* Red color for logout */
-        text-decoration: none; /* Remove underline */
-        font-size: 16px; /* Font size */
-        font-weight: 500; /* Medium font weight */
-        padding: 5px 10px; /* Add some padding */
-        border: 2px solid #dc3545; /* Red border */
-        border-radius: 5px; /* Rounded corners */
-        transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover effect */
-    }
+  .logout-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px; /* Space between icon and text */
+      padding: 10px 20px;
+      background-color: #ffffff; /* White background */
+      color: #2c3e50; /* Dark blue-gray text */
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'Roboto', sans-serif; /* Modern sans-serif font */
+      border: 1px solid #dee2e6; /* Light gray border */
+      border-radius: 6px; /* Slightly rounded corners */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+      transition: all 0.3s ease;
+  }
+  /* Icon styling */
+  .logout-icon {
+      color: #2c3e50; /* Dark blue-gray icon */
+      font-size: 16px;
+      transition: color 0.3s ease;
+  }
+    /* Profile Card */
+  .card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
 
-    .logout-link:hover {
-        background-color: #dc3545; /* Red background on hover */
-        color: white; /* White text on hover */
-    }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Gradient Background */
+  .bg-gradient {
+    z-index: 1;
+  }
+
+  /* Profile Image */
+  .profile-image {
+    border: 4px solid #fff; /* White border around the image */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .profile-image:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  }
+
+  /* User Name */
+  h2.text-dark {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #2c3e50; /* Dark blue-gray for better contrast */
+  }
+
+  /* Role Badge */
+  .role-badge {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 20px; /* Rounded badge */
+    background-color: #3fbbc0; /* Teal background */
+    color: #fff; /* White text */
+    text-transform: uppercase; /* Uppercase text */
+    transition: background-color 0.3s ease;
+  }
+
+  .role-badge:hover {
+    background-color: #2a9d9f; /* Darker teal on hover */
+  }
+
 </style>    
       </div>
           {# Add this flash messages display section #}
@@ -109,14 +107,19 @@
                 <div class="card-body text-center p-4 position-relative">
                   <!-- Gradient Background -->
                   <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient" style="background: linear-gradient(135deg, #3fbbc0, #2a9d9f); opacity: 0.1;"></div>
+                  
+                  <!-- Profile Image -->
                   {% if user.image %}
-                    <img src="{{ asset('uploads/profile_images/' ~ user.image) }}" class="rounded-circle mb-3" width="120" height="120">
+                    <img src="{{ asset('uploads/profile_images/' ~ user.image) }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
                   {% else %}
-                    <img src="{{ asset('imgBack/images.jpg') }}" class="rounded-circle mb-3" width="120" height="120">
-                  {% endif %}                 
-                  <h2 class="text-dark">{{ user.prenom }} {{ user.nom }}</h2>
-                  <span class="badge bg-primary">{{ user.role.value }}</span>
-                             
+                    <img src="{{ asset('imgBack/images.jpg') }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+                  {% endif %}
+                  
+                  <!-- User Name -->
+                  <h2 class="text-dark mb-3">{{ user.prenom }} {{ user.nom }}</h2>
+                  
+                  <!-- Role Badge -->
+                  <span class="badge bg-primary role-badge">{{ user.role.value }}</span>
                 </div>
               </div>
             </div>
@@ -129,31 +132,102 @@
                   <ul class="nav nav-tabs nav-justified mb-0" role="tablist">
                     <li class="nav-item">
                       <a class="nav-link active" data-bs-toggle="tab" href="#profile-overview">
-                        <i class="bi bi-person-circle me-2"></i>Overview
+                        <i class="bi bi-eye-fill me-2 tab-icon tab-icon-overview"></i>Détail
                       </a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" data-bs-toggle="tab" href="#profile-edit">
-                        <i class="bi bi-pencil-square me-2"></i>Modifier
+                        <i class="bi bi-pencil-fill me-2 tab-icon tab-icon-edit"></i>Modifier
                       </a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" data-bs-toggle="tab" href="#profile-change-password">
-                        <i class="bi bi-shield-lock me-2"></i>Changer Mot De Passe
+                        <i class="bi bi-shield-lock-fill me-2 tab-icon tab-icon-password"></i>Changer Mot De Passe
                       </a>
                     </li>
                   </ul>
+                 <style>
+                  /* Tab Icons */
+                  .tab-icon {
+                    font-size: 18px; /* Icon size */
+                    transition: color 0.3s ease;
+                  }
+
+                  /* Active Tab Icon Colors */
+                  .nav-link.active .tab-icon-overview {
+                    color: #3fbbc0; /* Teal for Détail */
+                  }
+
+                  .nav-link.active .tab-icon-edit {
+                    color: #f39c12; /* Orange for Modifier */
+                  }
+
+                  .nav-link.active .tab-icon-password {
+                    color: #e74c3c; /* Red for Changer Mot De Passe */
+                  }
+
+                  /* Inactive Tab Icon Colors */
+                  .nav-link:not(.active) .tab-icon-overview {
+                    color: #6c757d; /* Gray for Détail (inactive) */
+                  }
+
+                  .nav-link:not(.active) .tab-icon-edit {
+                    color: #6c757d; /* Gray for Modifier (inactive) */
+                  }
+
+                  .nav-link:not(.active) .tab-icon-password {
+                    color: #6c757d; /* Gray for Changer Mot De Passe (inactive) */
+                  }
+
+                  /* Tab Hover Effects */
+                  .nav-link:hover .tab-icon-overview {
+                    color: #3fbbc0; /* Teal on hover */
+                  }
+
+                  .nav-link:hover .tab-icon-edit {
+                    color: #f39c12; /* Orange on hover */
+                  }
+
+                  .nav-link:hover .tab-icon-password {
+                    color: #e74c3c; /* Red on hover */
+                  }
+
+                  /* Tab Styling */
+                  .nav-tabs {
+                    border-bottom: 2px solid #e9ecef;
+                    background-color: #f8f9fa;
+                    border-radius: 15px 15px 0 0;
+                  }
+
+                  .nav-tabs .nav-link {
+                    border: none;
+                    color: #6c757d;
+                    font-weight: 500;
+                    padding: 12px 20px;
+                    transition: all 0.3s ease;
+                    border-radius: 0;
+                  }
+
+                  .nav-tabs .nav-link.active {
+                    color: #3fbbc0; /* Active tab text color */
+                    border-bottom: 2px solid #3fbbc0; /* Active tab underline */
+                    background-color: transparent;
+                  }
+
+                  .nav-tabs .nav-link:hover {
+                    color: #3fbbc0; /* Hover text color */
+                    background-color: rgba(63, 187, 192, 0.1); /* Hover background */
+                  }
+                </style>
 
                   <!-- Tab Content -->
                   <div class="tab-content p-4">
                     <!-- Profile Overview -->
                     <div class="tab-pane fade show active" id="profile-overview">
-                      <h5 class="fw-bold mb-4 text-primary">Détail du profil</h5>
-                      
                       <!-- Nom -->
                       <div class="row mb-4 align-items-center">
                         <div class="col-md-4 text-muted d-flex align-items-center">
-                          <i class="bi bi-person-circle me-2"></i>Nom :
+                          <i class="bi bi-card-heading me-2 icon-nom"> Nom :</i>
                         </div>
                         <div class="col-md-8 fw-medium">{{ user.nom }}</div>
                       </div>
@@ -161,7 +235,7 @@
                       <!-- Prénom -->
                       <div class="row mb-4 align-items-center">
                         <div class="col-md-4 text-muted d-flex align-items-center">
-                          <i class="bi bi-person-circle me-2"></i>Prénom :
+                          <i class="bi bi-person-vcard me-2 icon-prenom"> Prénom :</i>
                         </div>
                         <div class="col-md-8 fw-medium">{{ user.prenom }}</div>
                       </div>
@@ -169,7 +243,7 @@
                       <!-- Email -->
                       <div class="row mb-4 align-items-center">
                         <div class="col-md-4 text-muted d-flex align-items-center">
-                          <i class="bi bi-envelope-fill me-2"></i>Email :
+                          <i class="bi bi-envelope-fill me-2 icon-email"> Email :</i>
                         </div>
                         <div class="col-md-8 fw-medium">{{ user.email }}</div>
                       </div>
@@ -177,7 +251,7 @@
                       <!-- Téléphone -->
                       <div class="row mb-4 align-items-center">
                         <div class="col-md-4 text-muted d-flex align-items-center">
-                          <i class="bi bi-telephone-fill me-2"></i>Téléphone :
+                          <i class="bi bi-telephone-fill me-2 icon-telephone"> Téléphone :</i> 
                         </div>
                         <div class="col-md-8 fw-medium">{{ user.telephone }}</div>
                       </div>
@@ -185,35 +259,33 @@
                       <!-- Date de naissance -->
                       <div class="row mb-4 align-items-center">
                         <div class="col-md-4 text-muted d-flex align-items-center">
-                          <i class="bi bi-calendar-fill me-2"></i>Date de naissance :
+                          <i class="bi bi-calendar-fill me-2 icon-date">  Date de naissance :</i> 
                         </div>
                         <div class="col-md-8 fw-medium">{{ user.dateNaissance|date('d/m/Y') }}</div>
                       </div>
-
-                      <!-- Spécialité (for MEDECIN) -->
-                      {% if user.role.value == 'MEDECIN' %}
-                      <div class="row mb-4 align-items-center">
-                        <div class="col-md-4 text-muted d-flex align-items-center">
-                          <i class="bi bi-briefcase-fill me-2"></i>Spécialité :
-                        </div>
-                        <div class="col-md-8 fw-medium">{{ user.specialite }}</div>
-                      </div>
-                      {% endif %}
-                        <!-- Diploma Field (Visible only for Médecin) -->
-                      {% if user.role.value == 'Médecin' and user.diploma %}
-                        <div class="row mb-4 align-items-center">
-                          <div class="col-md-4 text-muted d-flex align-items-center">
-                            <i class="bi bi-file-earmark-pdf-fill me-2"></i>Diplôme :
-                          </div>
-                          <div class="col-md-8 fw-medium">
-                            <a href="{{ asset('uploads/diplomas/' ~ user.diploma) }}" target="_blank">Télécharger le diplôme</a>
-                          </div>
-                        </div>
-                      {% endif %}
                     </div>
-
                     <!-- Custom Styles -->
                     <style>
+                     /* Custom Icon Colors */
+                      .icon-nom {
+                        color: #3fbbc0; /* Teal for Nom */
+                      }
+
+                      .icon-prenom {
+                        color: #e74c3c; /* Red for Prénom */
+                      }
+
+                      .icon-email {
+                        color: #f39c12; /* Orange for Email */
+                      }
+
+                      .icon-telephone {
+                        color: #8e44ad; /* Purple for Téléphone */
+                      }
+
+                      .icon-date {
+                        color: #2ecc71; /* Green for Date de naissance */
+                      }
                       .text-primary {
                         color: #3fbbc0 !important;
                       }
@@ -224,11 +296,6 @@
 
                       .fw-medium {
                         font-weight: 500;
-                      }
-
-                      .bi {
-                        font-size: 18px;
-                        color: #3fbbc0;
                       }
 
                       .row {
@@ -253,7 +320,7 @@
 
                     <!-- Profile Edit -->
                     <div class="tab-pane fade" id="profile-edit">
-                      <form id="profileEditForm" action="{{ path('app_profile') }}" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
+                      <form id="profileEditForm" action="{{ path('app_admin_profile') }}" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
                         <!-- Nom and Prénom Fields -->
                         <div class="row mb-4">
                           <div class="col-md-6">
@@ -263,9 +330,7 @@
                                 <i class="bi bi-person-fill text-muted"></i>
                               </span>
                               <input name="nom" type="text" class="form-control border-start-0" id="nom" value="{{ user.nom }}" required>
-                              {% if errors.nom is defined %}
-                                  <div class="text-danger mt-2">{{ errors.nom }}</div>
-                              {% endif %}
+                              
                             </div>
                           </div>
                           <div class="col-md-6">
@@ -275,9 +340,7 @@
                                 <i class="bi bi-person-fill text-muted"></i>
                               </span>
                               <input name="prenom" type="text" class="form-control border-start-0" id="prenom" value="{{ user.prenom }}" required>
-                              {% if errors.prenom is defined %}
-                                  <div class="text-danger mt-2">{{ errors.prenom }}</div>
-                              {% endif %}
+                              
                             </div>
                           </div>
                         </div>
@@ -290,9 +353,7 @@
                               <i class="bi bi-envelope-fill text-muted"></i>
                             </span>
                             <input name="email" type="email" class="form-control border-start-0" id="email" value="{{ user.email }}" required>
-                            {% if errors.email is defined %}
-                                <div class="text-danger mt-2">{{ errors.email }}</div>
-                            {% endif %}
+
                           </div>
                         </div>
 
@@ -305,9 +366,7 @@
                                 <i class="bi bi-telephone-fill text-muted"></i>
                               </span>
                               <input name="telephone" type="text" class="form-control border-start-0" id="telephone" value="{{ user.telephone }}" required>
-                              {% if errors.telephone is defined %}
-                                  <div class="text-danger mt-2">{{ errors.telephone }}</div>
-                              {% endif %}
+                              
                             </div>
                           </div>
                           <div class="col-md-6">
@@ -317,36 +376,21 @@
                                 <i class="bi bi-calendar-fill text-muted"></i>
                               </span>
                               <input name="dateNaissance" type="date" class="form-control border-start-0" id="dateNaissance" value="{{ user.dateNaissance|date('Y-m-d') }}" required>
-                              {% if errors.dateNaissance is defined %}
-                                  <div class="text-danger mt-2">{{ errors.dateNaissance }}</div>
-                              {% endif %}
+                              
                             </div>
                           </div>
-                            {% if user.role.value == 'Médecin' %}
-                              <div class="mb-4">
-                                <label for="specialite" class="form-label fw-bold text-primary">Spécialité</label>
-                                <input name="specialite" type="text" class="form-control" id="specialite" value="{{ user.specialite }}">
-                              </div>
-                              {% endif %}
+                            
                         </div>
                           <!-- Profile Image Upload -->
                           <div class="mb-4">
                             <label for="image" class="form-label fw-bold text-primary">Profile Image</label>
                             <input name="image" type="file" class="form-control" id="image">
-                            {% if user.diploma %}
+                            {% if user.image %}
                                   <small class="text-muted">Current file: <a href="{{ asset('uploads/profile_images/' ~ user.image) }}" target="_blank">{{ user.image }}</a></small>
                             {% endif %}
                           </div>
                           
-                          {% if user.role.value == 'Médecin' %}
-                              <div class="mb-4">
-                                <label for="diploma" class="form-label fw-bold text-primary">Diplôme</label>
-                                <input name="diploma" type="file" class="form-control" id="diploma">
-                                {% if user.diploma %}
-                                  <small class="text-muted">Current file: <a href="{{ asset('uploads/diplomas/' ~ user.diploma) }}" target="_blank">{{ user.diploma }}</a></small>
-                                {% endif %}
-                              </div>
-                          {% endif %}
+                          
                         <!-- Submit Button -->
                         <div class="d-grid">
                           <button type="submit" class="btn btn-primary btn-lg">
@@ -357,6 +401,15 @@
 
                       <!-- Custom Styles -->
                       <style>
+                        .text-danger {
+                              color: #dc3545; /* Red color for error messages */
+                              font-size: 0.875rem; /* Smaller font size for error messages */
+                              margin-top: 0.25rem; /* Space between the input field and the error message */
+                          }
+
+                          .is-invalid {
+                              border-color: #dc3545 !important; /* Red border for invalid inputs */
+                          }
                         .form-label {
                           color: #3fbbc0;
                           font-size: 14px;
@@ -409,7 +462,7 @@
 
                     <!-- Change Password -->
                     <div class="tab-pane fade" id="profile-change-password">
-                      <form action="{{ path('app_profile') }}" method="POST">
+                      <form action="{{ path('app_admin_profile') }}" method="POST">
                                 <input type="hidden" name="action" value="change_password">
                         <div class="mb-3">
                           <label class="form-label">Ancien mot de passe</label>
@@ -528,22 +581,6 @@
         </style>
 
       </div>
-
-    </section>
-  </main>
-  <footer id="footer" class="footer light-background">
-    <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">ChronoSerena</strong> <span>All Rights Reserved</span></p>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you've purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-        Designed by <a href="https://bootstrapmade.com/">eSanté Builders</a>
-      </div>
-    </div>
-
-  </footer>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const profileEditForm = document.getElementById('profileEditForm');
@@ -605,6 +642,7 @@
     }
   });
 </script>
+
 <script>
     document.getElementById('passwordChangeForm').addEventListener('submit', function(event) {
     const newPassword = document.getElementById('newPassword').value;
@@ -627,37 +665,7 @@
         event.preventDefault();
         return;
     }
-});
+    });
 </script>
-  <!-- Footer and scripts remain the same -->
-  <script src="{{ asset('vendorBack/apexcharts/apexcharts.min.js') }}"></script>
-<script src="{{ asset('vendorBack/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('vendorBack/chart.js/chart.umd.js') }}"></script>
-<script src="{{ asset('vendorBack/echarts/echarts.min.js') }}"></script>
-<script src="{{ asset('vendorBack/quill/quill.js') }}"></script>
-<script src="{{ asset('vendorBack/simple-datatables/simple-datatables.js') }}"></script>
-<script src="{{ asset('vendorBack/tinymce/tinymce.min.js') }}"></script>
-<script src="{{ asset('vendorBack/php-email-form/validate.js') }}"></script>
-
-<!-- Template Main JS File -->
-<script src="{{ asset('jsBack/main.js') }}"></script>
- <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <!-- Preloader -->
-  <div id="preloader"></div>
-
-  <!-- Vendor JS Files -->
-  <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <script src="{{ asset('vendor/php-email-form/validate.js') }}"></script>
-  <script src="{{ asset('vendor/aos/aos.js') }}"></script>
-  <script src="{{ asset('vendor/glightbox/js/glightbox.min.js') }}"></script>
-  <script src="{{ asset('vendor/purecounter/purecounter_vanilla.js') }}"></script>
-  <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
-
-  <!-- Main JS File -->
-  <script src="{{ asset('js/main.js') }}"></script>
-
-</body>
-
-</html>
+ 
+{% endblock %}

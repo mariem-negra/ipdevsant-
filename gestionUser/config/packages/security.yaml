@@ -41,6 +41,7 @@ security:
         - { path: ^/login, roles: PUBLIC_ACCESS } # Allow unauthenticated access to the login page
         - { path: ^/admin, roles: ROLE_ADMIN } # Require 'ROLE_ADMIN' for admin routes
 
+        - { path: ^/admin/profile, roles: ROLE_ADMIN }
         - { path: ^/utilisateur/new, roles: PUBLIC_ACCESS }  # Add this line
         - { path: ^/, roles: ROLE_USER } # Require authentication for all other routes
         

@@ -57,13 +57,13 @@ class UtilisateurType extends AbstractType
             $utilisateur = $event->getData();
             $form = $event->getForm();
 
-            if ($utilisateur && in_array($utilisateur->getRole(), [UserRole::MEDECIN, UserRole::ADMIN])) {
+            if ($utilisateur && in_array($utilisateur->getRole(), [UserRole::MEDECIN])) {
                 $form->add('specialite', TextType::class, [
                     'attr' => ['class' => 'form-control'],
                     'required' => true, // Make the field required for MEDECIN and ADMIN
                 ]);
             }
-            if ($utilisateur && in_array($utilisateur->getRole(), [UserRole::MEDECIN, UserRole::ADMIN])) {
+            if ($utilisateur && in_array($utilisateur->getRole(), [UserRole::MEDECIN])) {
                 $form->add('diploma', TextType::class, [
                     'attr' => ['class' => 'form-control'],
                     'required' => true, // Make the field required for MEDECIN and ADMIN
@@ -75,13 +75,13 @@ class UtilisateurType extends AbstractType
             $data = $event->getData();
             $form = $event->getForm();
 
-            if (isset($data['role']) && in_array($data['role'], [UserRole::MEDECIN->value, UserRole::ADMIN->value])) {
+            if (isset($data['role']) && in_array($data['role'], [UserRole::MEDECIN->value])) {
                 $form->add('specialite', TextType::class, [
                     'attr' => ['class' => 'form-control'],
                     'required' => true, // Make the field required for MEDECIN and ADMIN
                 ]);
             }
-            if (isset($data['role']) && in_array($data['role'], [UserRole::MEDECIN->value, UserRole::ADMIN->value])) {
+            if (isset($data['role']) && in_array($data['role'], [UserRole::MEDECIN->value])) {
                 $form->add('diploma', FileType::class, [
                     'attr' => ['class' => 'form-control'],
                     'required' => true,
