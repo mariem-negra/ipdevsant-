@@ -3,42 +3,49 @@
 {% block title %}Gestion des réservations{% endblock %}
 
 {% block section %}
-    <h1>Liste des réservations</h1>
+    <div class="container py-5">
+        <h1 class="text-center mb-4" style="font-family: 'Roboto', sans-serif; font-weight: bold; color: #333; text-transform: uppercase;">Liste des réservations</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nom de la réservation</th>
-                <th>Email</th>
-                <th>Nombre de personnes</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for reservation in reservations %}
-            <tr>
-                <td>{{ reservation.nomreserv }}</td>
-                <td>{{ reservation.mail }}</td>
-                <td>{{ reservation.nbrpersonne }}</td>
-                <td>
-                    <a href="{{ path('app_reservation_index', {'id': reservation.id}) }}">
-                        <button class="btn btn-info">Afficher</button>
-                    </a>
-                     <a href="{{ path('app_reservation_edit', {'id': reservation.id}) }}">
-                        <button class="btn btn-warning">Modifier</button>
-                    </a>
-                    <form action="{{ path('app_reservation_delete', {'id': reservation.id}) }}" method="post" style="display: inline;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">Aucune réservation trouvée.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
+        <div class="card shadow-lg" style="border-radius: 15px; background: #3fbbc0;">
+            <div class="card-body">
+                <table class="table table-hover text-center align-middle" style="border-radius: 12px; background-color: #f9f9f9; color: #333; overflow: hidden;">
+                    <thead class="bg-gradient-to-r from-pink-400 to-indigo-500 text-white">
+                        <tr>
+                            <th style="padding: 12px; font-weight: bold;">Nom de la réservation</th>
+                            <th style="padding: 12px; font-weight: bold;">Email</th>
+                            <th style="padding: 12px; font-weight: bold;">Nombre de personnes</th>
+                            <th style="padding: 12px; font-weight: bold;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for reservation in reservations %}
+                        <tr style="border-bottom: 2px solid rgba(0, 0, 0, 0.1);">
+                            <td style="padding: 15px; border-radius: 8px; background-color: #ffffff;">{{ reservation.nomreserv }}</td>
+                            <td style="padding: 15px; border-radius: 8px; background-color: #ffffff;">{{ reservation.mail }}</td>
+                            <td style="padding: 15px; border-radius: 8px; background-color: #ffffff;">{{ reservation.nbrpersonne }}</td>
+                            <td style="padding: 15px; display: flex; justify-content: center; gap: 10px;">
+                              
+                                <!-- Modifier -->
+                                <a href="{{ path('app_reservation_edit', {'id': reservation.id}) }}" class="btn btn-sm" style="border-radius: 20px; padding: 6px 12px; font-size: 14px; color: #333; border: 2px solid #333;">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </a>
+                                <!-- Supprimer -->
+                                <form action="{{ path('app_reservation_delete', {'id': reservation.id}) }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-danger" style="border-radius: 20px; padding: 6px 12px; font-size: 14px; color: #333; border: 2px solid #dc3545;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">
+                                        <i class="fas fa-trash-alt"></i> Supprimer
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-muted" style="padding: 20px; text-align: center;">Aucune réservation trouvée.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}

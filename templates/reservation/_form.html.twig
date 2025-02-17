@@ -1,93 +1,171 @@
 <style>
-    /* Conteneur du formulaire */
+    /* Conteneur du formulaire avec effet 3D */
     .form-container {
         max-width: 600px;
         margin: 0 auto;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+        border-radius: 15px;
+        box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        transform: perspective(1000px) rotateX(5deg);
     }
 
-    /* Groupe de champs */
-    .form-group {
+    /* Effet chic pour le titre */
+    .form-title {
+        font-size: 30px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #3fbbc0;
+        text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         margin-bottom: 20px;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Groupe de champs avec effet 3D */
+    .form-group {
+        margin-bottom: 25px;
+        text-align: left;
+        position: relative;
+        perspective: 1000px;
     }
 
     /* Labels */
     .form-label {
         display: block;
         font-weight: bold;
-        margin-bottom: 8px;
-        color: #333;
+        margin-bottom: 10px;
+        color: #3fbbc0;
+        font-family: 'Poppins', sans-serif;
     }
 
-    /* Champs de formulaire */
+    /* Champs de formulaire avec effet 3D */
     .form-input {
         width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+        padding: 12px;
+        border: 2px solid #3fbbc0;
+        border-radius: 10px;
         font-size: 16px;
-        transition: border-color 0.3s ease;
+        background-color: white;
+        transition: all 0.3s ease, transform 0.3s;
+        font-family: 'Poppins', sans-serif;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
     }
 
     .form-input:focus {
-        border-color: #007bff;
+        border-color: #1b5e20;
+        box-shadow: 0 0 15px rgba(27, 94, 32, 0.6);
         outline: none;
+        transform: scale(1.05);
     }
 
-    /* Bouton de soumission */
+    /* Icônes de validation */
+    .validation-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 20px;
+        display: none;
+    }
+
+    .form-input.error ~ .validation-icon {
+        display: inline;
+        color: #d32f2f;
+    }
+
+    .form-input.success ~ .validation-icon {
+        display: inline;
+        color: #4caf50;
+    }
+
+    /* Bouton Réserver avec effet 3D */
     .btn-submit {
         display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
+        width: 100%;
+        padding: 15px;
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
         border: none;
-        border-radius: 4px;
-        font-size: 16px;
+        border-radius: 10px;
+        color: white;
+        background: #3fbbc0;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        transition: all 0.3s ease-in-out, transform 0.2s;
+        box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.3);
+        font-family: 'Poppins', sans-serif;
     }
 
     .btn-submit:hover {
-        background-color: #0056b3;
-    }
-
-    /* Messages d'erreur */
-    .form-error {
-        color: #dc3545;
-        font-size: 14px;
-        margin-top: 5px;
+        background: #2a9ba6;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        transform: scale(1.05);
     }
 </style>
 
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Bloque la sélection d'une date passée
+        let dateInput = document.querySelector("input[name='event[dateevent]']");
+        if (dateInput) {
+            let now = new Date();
+            let formattedDate = now.toISOString().slice(0, 16);
+            dateInput.setAttribute("min", formattedDate);
+        }
+
+        // Validation en temps réel
+        const inputs = document.querySelectorAll(".form-input");
+        inputs.forEach(input => {
+            input.addEventListener("input", function () {
+                validateField(this);
+            });
+        });
+    });
+
+    function validateField(input) {
+        let icon = input.nextElementSibling;
+        if (input.value.trim().length < 4) {
+            input.classList.add("error");
+            input.classList.remove("success");
+            icon.innerHTML = "❌";
+            icon.style.display = "inline-block";
+        } else {
+            input.classList.add("success");
+            input.classList.remove("error");
+            icon.innerHTML = "✅";
+            icon.style.display = "inline-block";
+        }
+    }
+</script>
 <div class="form-container">
+    <h2 class="form-title">Réserver</h2>
+    
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
         {# Nom de réservation #}
         <div class="form-group">
-    {{ form_label(form.nomreserv, 'Nom de la réservation') }}
-    {{ form_widget(form.nomreserv, {'attr': {'class': 'form-input'}}) }}
-    <div class="form-error">{{ form_errors(form.nomreserv) }}</div>
-</div>
-
-
+            {{ form_label(form.nomreserv, 'Nom de la réservation', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.nomreserv, {'attr': {'class': 'form-input', 'oninput': 'validateField(this)'}}) }}
+            <span class="validation-icon">❌</span>
+            <div class="form-error">{{ form_errors(form.nomreserv) }}</div>
+        </div>
         {# Email #}
         <div class="form-group">
-            {{ form_label(form.mail, 'Email') }}
-            {{ form_widget(form.mail, {'attr': {'class': 'form-input', 'type': 'email'}}) }}
+            {{ form_label(form.mail, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.mail, {'attr': {'class': 'form-input', 'type': 'email', 'oninput': 'validateField(this)'}}) }}
+            <span class="validation-icon">❌</span>
             <div class="form-error">{{ form_errors(form.mail) }}</div>
         </div>
 
         {# Nombre de personnes #}
         <div class="form-group">
-            {{ form_label(form.nbrpersonne, 'Nombre de personnes') }}
-            {{ form_widget(form.nbrpersonne, {'attr': {'class': 'form-input', 'type': 'number', 'min': '1'}}) }}
+            {{ form_label(form.nbrpersonne, 'Nombre de personnes', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.nbrpersonne, {'attr': {'class': 'form-input', 'type': 'number', 'min': '1', 'oninput': 'validateField(this)'}}) }}
+            <span class="validation-icon">❌</span>
             <div class="form-error">{{ form_errors(form.nbrpersonne) }}</div>
         </div>
-
-        <button class="btn btn-submit">{{ button_label|default('Réserver') }}</button>
 
     {{ form_end(form) }}
 </div>

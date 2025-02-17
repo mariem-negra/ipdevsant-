@@ -12,10 +12,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
 #[Route('/reservation')]
 final class ReservationController extends AbstractController
 {
+    private $entityManager;
+    private $eventRepository;
+
+    // Injection des services Doctrine via le constructeur
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+        $this->eventRepository = $this->entityManager->getRepository(Event::class);
+    }
+
     #[Route('/', name: 'app_reservation_index', methods: ['GET'])]
     public function index(ReservationRepository $reservationRepository): Response
     {
@@ -27,20 +36,10 @@ final class ReservationController extends AbstractController
     #[Route('/indexback', name: 'app_reservation_indexback', methods: ['GET'])]
     public function indexback(ReservationRepository $reservationRepository): Response
     {
+        // Récupérer toutes les réservations pour l'affichage dans le back-office
         return $this->render('reservation/indexback.html.twig', [
             'reservations' => $reservationRepository->findAll(),
         ]);
-    }
-
-   
-    private $entityManager;
-    private $eventRepository;
-
-    // Injection des services Doctrine via le constructeur
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-        $this->eventRepository = $this->entityManager->getRepository(Event::class);
     }
 
     #[Route('/reservation/new/{id}', name: 'reservation_new')]
@@ -69,7 +68,7 @@ final class ReservationController extends AbstractController
 
             // Redirection après la réservation
             $this->addFlash('success', 'Réservation effectuée avec succès !');
-            return $this->redirectToRoute('app_event_show', ['id' => $event->getId()]);
+            return $this->redirectToRoute('app_reservation_index'); // Redirection vers la liste des réservations dans le back-office
         }
 
         return $this->render('reservation/new.html.twig', [
@@ -77,9 +76,9 @@ final class ReservationController extends AbstractController
             'event' => $event,
         ]);
     }
+
     #[Route('/reservation/{id}', name: 'reservation_show')]
     public function show(Reservation $reservation)
-  
     {
         return $this->render('reservation/show.html.twig', [
             'reservation' => $reservation,
@@ -103,7 +102,7 @@ final class ReservationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_reservation_show', ['id' => $reservation->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_reservation_index', ['id' => $reservation->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('reservation/edit.html.twig', [
@@ -115,11 +114,11 @@ final class ReservationController extends AbstractController
     #[Route('/{id}/delete', name: 'app_reservation_delete', methods: ['POST'])]
     public function delete(Request $request, Reservation $reservation, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$reservation->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $reservation->getId(), $request->request->get('_token'))) {
             $entityManager->remove($reservation);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_reservation_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_reservation_indexback', [], Response::HTTP_SEE_OTHER);
     }
 }

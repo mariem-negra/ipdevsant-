@@ -29,9 +29,7 @@
                                 <a href="{{ path('app_reservation_showback', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-info">
                                     <i class="bi bi-eye"></i> 
                                 </a>
-                                <a href="{{ path('app_reservation_edit', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-warning">
-                                    <i class="bi bi-pencil"></i> 
-                                </a>
+                              
                                 <form action="{{ path('app_reservation_delete', {'id': reservation.id}) }}" method="post" style="display: inline;">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
                                     <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">
@@ -48,12 +46,7 @@
                     </tbody>
                 </table>
                 
-                <!-- Bouton Ajouter dans la colonne Actions -->
-                <div class="text-center mt-3">
-                    <a href="{{ path('app_reservation_new') }}" class="btn btn-sm btn-outline-success">
-                        <i class="bi bi-plus-circle"></i> Ajouter une réservation
-                    </a>
-                </div>
+                
 
             </div>
         </div>
