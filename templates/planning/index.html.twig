@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Plannings{% endblock %}
+
+{% block section %}
+    <style>
+        /* Ajouter vos styles ici */
+    </style>
+
+    <h1>Planning du Médecin</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                
+                <th>Jour</th>
+                <th>Heure de début</th>
+                <th>Heure de fin</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for planning in plannings %}
+            <tr>
+                
+                <td>{{ planning.jour }}</td>
+                <td>{{ planning.heuredebut|date('H:i') }}</td>
+                <td>{{ planning.heurefin|date('H:i') }}</td>
+                <td>
+    <a href="{{ path('app_planning_edit', {'id': planning.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+
+    <form action="{{ path('app_planning_delete', {'id': planning.id}) }}" method="post" style="display:inline;">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ planning.id) }}">
+        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce planning ?')">Supprimer</button>
+    </form>
+</td>
+
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Pas de plannings trouvés</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_planning_new') }}" class="btn btn-primary">Ajouter un planning</a>
+{% endblock %}

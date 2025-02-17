@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit RendezVous{% endblock %}
+
+{% block section %}
+    <h1>Edit RendezVous</h1>
+
+    {{ include('rendez_vous/new.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_rendez_vous_index') }}">back to list</a>
+
+    {{ include('rendez_vous/_delete_form.html.twig') }}
+{% endblock %}

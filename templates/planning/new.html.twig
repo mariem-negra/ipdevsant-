@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block section %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-calendar-alt"></i> Créer un Nouveau Planning
+                    </h3>
+                </div>
+                <div class="card-body">
+
+                    {# Affichage des messages flash en cas d'erreur ou de succès #}
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    {{ form_start(form) }}
+
+                    <div class="form-group">
+                        {{ form_label(form.jour, 'Jour de la semaine', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.jour, {'attr': {'class': 'form-control', 'id': 'jour-select'}}) }}
+                        {{ form_errors(form.jour) }}
+                    </div>
+
+                    <div class="form-group mt-3">
+                        {{ form_label(form.heuredebut, 'Heure de début', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.heuredebut, {'attr': {'class': 'form-control', 'id': 'heuredebut-field'}}) }}
+                        {{ form_errors(form.heuredebut) }}
+                    </div>
+
+                    <div class="form-group mt-3">
+                        {{ form_label(form.heurefin, 'Heure de fin', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.heurefin, {'attr': {'class': 'form-control', 'id': 'heurefin-field'}}) }}
+                        {{ form_errors(form.heurefin) }}
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ path('app_planning_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Enregistrer le Planning
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Script to update the heuredebut and heurefin based on selected day #}
+<script>
+    document.getElementById('jour-select').addEventListener('change', function() {
+        var selectedDay = this.value;
+        var heureDebutField = document.getElementById('heuredebut-field');
+        var heureFinField = document.getElementById('heurefin-field');
+
+        // Set default times based on the selected day
+        var horaires = {
+            'Lundi': { debut: '08:00', fin: '12:00' },
+            'Mardi': { debut: '09:00', fin: '13:00' },
+            'Mercredi': { debut: '10:00', fin: '14:00' },
+            'Jeudi': { debut: '08:30', fin: '12:30' },
+            'Vendredi': { debut: '07:00', fin: '11:00' },
+            'Samedi': { debut: '09:00', fin: '13:00' },
+            'Dimanche': { debut: '10:00', fin: '14:00' }
+        };
+
+        if (horaires[selectedDay]) {
+            heureDebutField.value = horaires[selectedDay].debut;
+            heureFinField.value = horaires[selectedDay].fin;
+        } else {
+            heureDebutField.value = '';
+            heureFinField.value = '';
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rendez-vous index{% endblock %}
+
+{% block section %}
+    <h1>Liste des Rendez-vous</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date et Heure</th>
+                <th>Statut</th>
+                <th>Description</th>
+                <th>Planning du Médecin</th> {# Nouvelle colonne #}
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for rendez_vou in rendez_vouses %}
+            <tr>
+                <td>{{ rendez_vou.dateheure ? rendez_vou.dateheure|date('d/m/Y H:i') : '' }}</td>
+                <td>
+                    {% if rendez_vou.statut|lower == 'confirmé' %}
+                        <span class="badge bg-success text-white text-capitalize">{{ rendez_vou.statut|lower }}</span>
+                    {% elseif rendez_vou.statut|lower == 'annulé' %}
+                        <span class="badge bg-danger text-white text-capitalize">{{ rendez_vou.statut|lower }}</span>
+                    {% elseif rendez_vou.statut|lower == 'en attente' %}
+                        <span class="badge bg-warning text-dark text-capitalize">{{ rendez_vou.statut|lower }}</span>
+                    {% else %}
+                        <span class="badge bg-secondary text-white">{{ rendez_vou.statut }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ rendez_vou.description }}</td>
+
+                {# Affichage du jour et des horaires du planning associé #}
+                <td>
+                    {% if rendez_vou.planning %}
+                        <strong>{{ rendez_vou.planning.jour }}</strong> <br>
+                        {% if rendez_vou.planning.heuredebut %}
+                            {{ rendez_vou.planning.heuredebut|date('H:i') }} 
+                        {% else %}
+                            <span class="text-muted">Heure de début non définie</span>
+                        {% endif %}
+                        -
+                        {% if rendez_vou.planning.heurefin %}
+                            {{ rendez_vou.planning.heurefin|date('H:i') }}
+                        {% else %}
+                            <span class="text-muted">Heure de fin non définie</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="text-muted">Aucun planning</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a href="{{ path('app_rendez_vous_show', {'id': rendez_vou.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                    <a href="{{ path('app_rendez_vous_edit', {'id': rendez_vou.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+
+                    {# Ajout d'un bouton de suppression (en utilisant un formulaire) #}
+                    <form action="{{ path('app_rendez_vous_delete', {'id': rendez_vou.id}) }}" method="post" style="display:inline-block;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rendez_vou.id) }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5" class="text-center">Aucun rendez-vous trouvé.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_rendez_vous_new') }}" class="btn btn-primary">Créer un nouveau rendez-vous</a>
+{% endblock %}

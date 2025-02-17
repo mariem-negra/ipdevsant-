@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un planning{% endblock %}
+
+{% block section %}
+    <h1>Modifier un planning</h1>
+
+    <div class="form-container">
+        {{ include('planning/edit.html.twig', {'button_label': 'Modifier'}) }}
+
+        <div class="button-container">
+            {{ include('planning/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

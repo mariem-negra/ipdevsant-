@@ -1,0 +1,36 @@
+{% extends 'baseBack.html.twig' %} 
+
+{% block title %}Gestion des Plannings - Back-Office{% endblock %}
+
+{% block main %}
+    <h1>Gestion des Plannings</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Jour</th>
+                <th>Heure de début</th>
+                <th>Heure de fin</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for planning in plannings %}
+                <tr>
+                    <td>{{ planning.id }}</td>
+                    <td>{{ planning.jour }}</td>
+                    <td>{{ planning.heuredebut|date('H:i') }}</td>
+                    <td>{{ planning.heurefin|date('H:i') }}</td>
+                    
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucun planning trouvé</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    
+{% endblock %}
