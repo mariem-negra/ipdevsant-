@@ -210,7 +210,11 @@
         ]
     },
     "symfony/stimulus-bundle": {
+<<<<<<< HEAD
         "version": "2.22",
+=======
+        "version": "2.23",
+>>>>>>> ff5014e (third commit)
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -250,7 +254,11 @@
         ]
     },
     "symfony/ux-turbo": {
+<<<<<<< HEAD
         "version": "2.22",
+=======
+        "version": "2.23",
+>>>>>>> ff5014e (third commit)
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -284,6 +292,10 @@
         ]
     },
     "twig/extra-bundle": {
+<<<<<<< HEAD
         "version": "v3.19.0"
+=======
+        "version": "v3.20.0"
+>>>>>>> ff5014e (third commit)
     }
 }

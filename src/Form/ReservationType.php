@@ -11,6 +11,10 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> ff5014e (third commit)
 class ReservationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -37,4 +41,8 @@ class ReservationType extends AbstractType
             'data_class' => Reservation::class,
         ]);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ff5014e (third commit)

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
 * Template Name: Medicio
 * Template URL: https://bootstrapmade.com/medicio-free-bootstrap-theme/
@@ -11,13 +12,18 @@
 # Help: https://bootstrapmade.com/color-system/
 --------------------------------------------------------------*/
 /* Fonts */
+=======
+>>>>>>> ff5014e (third commit)
 :root {
   --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --heading-font: "Raleway",  sans-serif;
   --nav-font: "Poppins",  sans-serif;
 }
 
+<<<<<<< HEAD
 /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
+=======
+>>>>>>> ff5014e (third commit)
 :root { 
   --background-color: #ffffff; /* Background color for the entire website, including individual sections */
   --default-color: #444444; /* Default color used for the majority of the text content across the entire website */
@@ -250,12 +256,23 @@ h6 {
 }
 
 .header .logo {
+<<<<<<< HEAD
   line-height: 1;
 }
 
 .header .logo img {
   max-height: 36px;
   margin-right: 8px;
+=======
+  max-width: 200px; /* Adjust as needed */
+  margin-right: auto;
+}
+
+.header .logo img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease; 
+>>>>>>> ff5014e (third commit)
 }
 
 .header .logo h1 {

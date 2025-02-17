@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "1b66033e7a4cb0c9840d904af694af80",
+=======
+    "content-hash": "646cd9836327df1df7efd7eb4f5f1b5a",
+>>>>>>> ff5014e (third commit)
     "packages": [
         {
             "name": "composer/semver",
@@ -1062,6 +1066,7 @@
         },
         {
             "name": "doctrine/orm",
+<<<<<<< HEAD
             "version": "3.3.1",
             "source": {
                 "type": "git",
@@ -1072,6 +1077,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/doctrine/orm/zipball/b1f8253105aa5382c495e5f9f8ef34e297775428",
                 "reference": "b1f8253105aa5382c495e5f9f8ef34e297775428",
+=======
+            "version": "3.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/orm.git",
+                "reference": "c9557c588b3a70ed93caff069d0aa75737f25609"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/c9557c588b3a70ed93caff069d0aa75737f25609",
+                "reference": "c9557c588b3a70ed93caff069d0aa75737f25609",
+>>>>>>> ff5014e (third commit)
                 "shasum": ""
             },
             "require": {
@@ -1146,9 +1163,15 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/doctrine/orm/tree/3.3.1"
             },
             "time": "2024-12-19T07:08:14+00:00"
+=======
+                "source": "https://github.com/doctrine/orm/tree/3.3.2"
+            },
+            "time": "2025-02-04T19:43:15+00:00"
+>>>>>>> ff5014e (third commit)
         },
         {
             "name": "doctrine/persistence",
@@ -1648,6 +1671,7 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
+<<<<<<< HEAD
             "version": "2.0.0",
             "source": {
                 "type": "git",
@@ -1658,6 +1682,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/c00d78fb6b29658347f9d37ebe104bffadf36299",
                 "reference": "c00d78fb6b29658347f9d37ebe104bffadf36299",
+=======
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpdoc-parser.git",
+                "reference": "72e51f7c32c5aef7c8b462195b8c599b11199893"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/72e51f7c32c5aef7c8b462195b8c599b11199893",
+                "reference": "72e51f7c32c5aef7c8b462195b8c599b11199893",
+>>>>>>> ff5014e (third commit)
                 "shasum": ""
             },
             "require": {
@@ -1689,9 +1725,15 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/phpstan/phpdoc-parser/tree/2.0.0"
             },
             "time": "2024-10-13T11:29:49+00:00"
+=======
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.0.1"
+            },
+            "time": "2025-02-13T12:25:43+00:00"
+>>>>>>> ff5014e (third commit)
         },
         {
             "name": "psr/cache",
@@ -6182,6 +6224,7 @@
         },
         {
             "name": "symfony/stimulus-bundle",
+<<<<<<< HEAD
             "version": "v2.22.1",
             "source": {
                 "type": "git",
@@ -6192,6 +6235,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/stimulus-bundle/zipball/e13034d428354023c82a1db108d40fdf6cec2d36",
                 "reference": "e13034d428354023c82a1db108d40fdf6cec2d36",
+=======
+            "version": "v2.23.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/stimulus-bundle.git",
+                "reference": "254f4e05cbaa349d4ae68b9b2e6a22995e0887f9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/stimulus-bundle/zipball/254f4e05cbaa349d4ae68b9b2e6a22995e0887f9",
+                "reference": "254f4e05cbaa349d4ae68b9b2e6a22995e0887f9",
+>>>>>>> ff5014e (third commit)
                 "shasum": ""
             },
             "require": {
@@ -6231,7 +6286,11 @@
                 "symfony-ux"
             ],
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/stimulus-bundle/tree/v2.22.1"
+=======
+                "source": "https://github.com/symfony/stimulus-bundle/tree/v2.23.0"
+>>>>>>> ff5014e (third commit)
             },
             "funding": [
                 {
@@ -6247,7 +6306,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2024-12-06T14:30:33+00:00"
+=======
+            "time": "2025-01-16T21:55:09+00:00"
+>>>>>>> ff5014e (third commit)
         },
         {
             "name": "symfony/stopwatch",
@@ -6765,6 +6828,7 @@
         },
         {
             "name": "symfony/ux-turbo",
+<<<<<<< HEAD
             "version": "v2.22.1",
             "source": {
                 "type": "git",
@@ -6775,6 +6839,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/ux-turbo/zipball/97718ea4bca26f0db843c3c0de338d6900c5a002",
                 "reference": "97718ea4bca26f0db843c3c0de338d6900c5a002",
+=======
+            "version": "v2.23.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/ux-turbo.git",
+                "reference": "db96cf04d70a8c820671ce55530e8bf641ada33f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/ux-turbo/zipball/db96cf04d70a8c820671ce55530e8bf641ada33f",
+                "reference": "db96cf04d70a8c820671ce55530e8bf641ada33f",
+>>>>>>> ff5014e (third commit)
                 "shasum": ""
             },
             "require": {
@@ -6843,7 +6919,11 @@
                 "turbo-stream"
             ],
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/ux-turbo/tree/v2.22.1"
+=======
+                "source": "https://github.com/symfony/ux-turbo/tree/v2.23.0"
+>>>>>>> ff5014e (third commit)
             },
             "funding": [
                 {
@@ -6859,7 +6939,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2024-12-05T14:25:02+00:00"
+=======
+            "time": "2025-02-06T08:47:30+00:00"
+>>>>>>> ff5014e (third commit)
         },
         {
             "name": "symfony/validator",
@@ -7277,6 +7361,7 @@
         },
         {
             "name": "twig/extra-bundle",
+<<<<<<< HEAD
             "version": "v3.19.0",
             "source": {
                 "type": "git",
@@ -7291,6 +7376,22 @@
             },
             "require": {
                 "php": ">=8.0.2",
+=======
+            "version": "v3.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/twig-extra-bundle.git",
+                "reference": "9df5e1dbb6a68c0665ae5603f6f2c20815647876"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/twig-extra-bundle/zipball/9df5e1dbb6a68c0665ae5603f6f2c20815647876",
+                "reference": "9df5e1dbb6a68c0665ae5603f6f2c20815647876",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1.0",
+>>>>>>> ff5014e (third commit)
                 "symfony/framework-bundle": "^5.4|^6.4|^7.0",
                 "symfony/twig-bundle": "^5.4|^6.4|^7.0",
                 "twig/twig": "^3.2|^4.0"
@@ -7335,7 +7436,11 @@
                 "twig"
             ],
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/twigphp/twig-extra-bundle/tree/v3.19.0"
+=======
+                "source": "https://github.com/twigphp/twig-extra-bundle/tree/v3.20.0"
+>>>>>>> ff5014e (third commit)
             },
             "funding": [
                 {
@@ -7347,6 +7452,7 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2024-09-26T19:22:23+00:00"
         },
         {
@@ -7369,6 +7475,29 @@
                 "symfony/polyfill-ctype": "^1.8",
                 "symfony/polyfill-mbstring": "^1.3",
                 "symfony/polyfill-php81": "^1.29"
+=======
+            "time": "2025-02-08T09:47:15+00:00"
+        },
+        {
+            "name": "twig/twig",
+            "version": "v3.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "3468920399451a384bef53cf7996965f7cd40183"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3468920399451a384bef53cf7996965f7cd40183",
+                "reference": "3468920399451a384bef53cf7996965f7cd40183",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1.0",
+                "symfony/deprecation-contracts": "^2.5|^3",
+                "symfony/polyfill-ctype": "^1.8",
+                "symfony/polyfill-mbstring": "^1.3"
+>>>>>>> ff5014e (third commit)
             },
             "require-dev": {
                 "phpstan/phpstan": "^2.0",
@@ -7415,7 +7544,11 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/twigphp/Twig/tree/v3.19.0"
+=======
+                "source": "https://github.com/twigphp/Twig/tree/v3.20.0"
+>>>>>>> ff5014e (third commit)
             },
             "funding": [
                 {
@@ -7427,7 +7560,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2025-01-29T07:06:14+00:00"
+=======
+            "time": "2025-02-13T08:34:43+00:00"
+>>>>>>> ff5014e (third commit)
         },
         {
             "name": "webmozart/assert",
@@ -7558,6 +7695,7 @@
         },
         {
             "name": "myclabs/deep-copy",
+<<<<<<< HEAD
             "version": "1.12.1",
             "source": {
                 "type": "git",
@@ -7568,6 +7706,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/123267b2c49fbf30d78a7b2d333f6be754b94845",
                 "reference": "123267b2c49fbf30d78a7b2d333f6be754b94845",
+=======
+            "version": "1.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/myclabs/DeepCopy.git",
+                "reference": "024473a478be9df5fdaca2c793f2232fe788e414"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/024473a478be9df5fdaca2c793f2232fe788e414",
+                "reference": "024473a478be9df5fdaca2c793f2232fe788e414",
+>>>>>>> ff5014e (third commit)
                 "shasum": ""
             },
             "require": {
@@ -7606,7 +7756,11 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/myclabs/DeepCopy/tree/1.12.1"
+=======
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.0"
+>>>>>>> ff5014e (third commit)
             },
             "funding": [
                 {
@@ -7614,7 +7768,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2024-11-08T17:47:46+00:00"
+=======
+            "time": "2025-02-12T12:17:51+00:00"
+>>>>>>> ff5014e (third commit)
         },
         {
             "name": "nikic/php-parser",

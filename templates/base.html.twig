@@ -8,8 +8,12 @@
   <meta name="description" content="">
   <meta name="keywords" content="">
 
+<<<<<<< HEAD
   <!-- Favicons -->
   <link href="img/favicon.png" rel="icon">
+=======
+  <link href="{{ asset('img/logo2.png') }}" rel="icon">
+>>>>>>> ff5014e (third commit)
   <link href="img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Fonts -->
@@ -17,7 +21,11 @@
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
+<<<<<<< HEAD
 {% block css %}
+=======
+  {% block css %}
+>>>>>>> ff5014e (third commit)
   <!-- Vendor CSS Files -->
   <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
@@ -28,14 +36,24 @@
 
   <!-- Main CSS File -->
   <link href="{{ asset('css/main.css') }}" rel="stylesheet">
+<<<<<<< HEAD
 {% endblock %}
+=======
+  {% endblock %}
+>>>>>>> ff5014e (third commit)
 
 </head>
 
 <body class="index-page">
+<<<<<<< HEAD
 
   <header id="header" class="header sticky-top">
 
+=======
+  
+  <header id="header" class="header sticky-top">
+    {% block header %}
+>>>>>>> ff5014e (third commit)
     <div class="topbar d-flex align-items-center">
       <div class="container d-flex justify-content-center justify-content-md-between">
         <div class="d-none d-md-flex align-items-center">
@@ -46,10 +64,15 @@
         </div>
       </div>
     </div><!-- End Top Bar -->
+<<<<<<< HEAD
+=======
+    {% endblock %}
+>>>>>>> ff5014e (third commit)
 
     <div class="branding d-flex align-items-center">
 
       <div class="container position-relative d-flex align-items-center justify-content-end">
+<<<<<<< HEAD
         <a href="index.html" class="logo d-flex align-items-center me-auto">
           <img src="img/logo.png" alt="">
           <!-- Uncomment the line below if you also wish to use a text logo -->
@@ -93,6 +116,23 @@
 
 
         <a class="cta-btn" href="index.html#appointment">Make an Appointment</a>
+=======
+        <a href='#' class="logo d-flex align-items-center me-auto" style="max-width: 200px;"> <!-- Adjust max-width as needed -->
+          <img src="{{ asset('img/logo.png') }}" alt="Logo" class="img-fluid" style="width: 200%; height: auto;">
+        </a>
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                <li><a href="#" class="active">Acceuil</a></li>
+                <li><a href="#">Consernant</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Departments</a></li>
+                <li><a href="#">Médecin</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+        <a class="cta-btn" href="#">Mon Profile</a>
+>>>>>>> ff5014e (third commit)
 
       </div>
 
@@ -101,7 +141,11 @@
   </header>
 
   <main class="main">
+<<<<<<< HEAD
 {% block section %}
+=======
+{% block body %}
+>>>>>>> ff5014e (third commit)
     <!-- Hero Section -->
     <section id="hero" class="hero section">
 

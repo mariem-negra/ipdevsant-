@@ -2,6 +2,7 @@
 
 {% block title %}New Event{% endblock %}
 
+<<<<<<< HEAD
 {% block main %}
    
 
@@ -9,4 +10,12 @@
 
     <a href="{{ path('app_event_indexback') }}">back to list</a>
     
+=======
+{% block body %}
+    <h1>Create new Event</h1>
+
+    {{ include('event/_form.html.twig') }}
+
+    <a href="{{ path('app_event_index') }}">back to list</a>
+>>>>>>> ff5014e (third commit)
 {% endblock %}
