@@ -4,7 +4,7 @@
         <div class="card-body text-center">
             <h2 class="text-gradient mb-4">Modifier l'utilisateur</h2>
 
-            {{ form_start(form, {'attr': {'class': 'form-horizontal','enctype': 'multipart/form-data'}}) }}
+            {{ form_start(form, {'attr': {'novalidate':'novalidate','class': 'form-horizontal','enctype': 'multipart/form-data'}}) }}
 
                 <div class="form-group">
                     <div class="input-group mb-3">
@@ -68,7 +68,7 @@
                         <div class="input-group mb-3">
                             <span class="input-group-text"><i class="bi bi-file-earmark-arrow-up"></i></span>
                             <div class="form-control">
-                                {{ form_widget(form.diploma) }}
+                                {{ form_widget(form.diploma, {'attr': {'class': 'form-input form-image', 'multiple': 'multiple'}}) }}
                             </div>
                         </div>
                     </div>

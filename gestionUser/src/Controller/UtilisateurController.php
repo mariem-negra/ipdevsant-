@@ -19,7 +19,7 @@ use App\Enum\UserRole;
 final class UtilisateurController extends AbstractController
 {
 
-    #[Route(name: 'app_utilisateur_index', methods: ['GET'])]
+    #[Route(name: 'app_utilisateur_index', methods: ['GET', 'POST'])]
     public function index(UtilisateurRepository $utilisateurRepository): Response
     {
         $user = $this->getUser();
@@ -93,41 +93,79 @@ final class UtilisateurController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_utilisateur_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(UtilisateurType::class, $utilisateur);
-        $form->handleRequest($request);
-        $user = $this->getUser();
-
-        if ($form->isSubmitted() && $form->isValid()) {
-        $diplomaFile = $form->get('diploma')->getData();
-
-        if ($diplomaFile) {
-            // Handle file upload (e.g., move the file to a directory)
-            $newFilename = uniqid().'.'.$diplomaFile->guessExtension();
-            $diplomaFile->move(
-                $this->getParameter('diplomas'),
-                $newFilename
-            );
-            $utilisateur->setDiploma($newFilename);
+// Controller:
+#[Route('/{id}/edit', name: 'app_utilisateur_edit', methods: ['GET', 'POST'])]
+public function edit(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager): Response
+{
+    if ($request->isMethod('POST')) {
+        // Get form data
+        $utilisateur->setNom($request->request->get('nom'));
+        $utilisateur->setPrenom($request->request->get('prenom'));
+        $utilisateur->setEmail($request->request->get('email'));
+        $utilisateur->setTelephone($request->request->get('telephone'));
+        $utilisateur->setDateNaissance(new \DateTime($request->request->get('dateNaissance')));
+        
+        if ($utilisateur->getRole() === 'Médecin') {
+            $utilisateur->setSpecialite($request->request->get('specialite'));
         }
 
-        // Save the user
-        $entityManager->persist($utilisateur);        
+        // Handle profile image upload
+        $imageFile = $request->files->get('image');
+        if ($imageFile instanceof UploadedFile) {
+            $allowedMimeTypes = ['image/jpeg', 'image/png'];
+            if (!in_array($imageFile->getMimeType(), $allowedMimeTypes)) {
+                $this->addFlash('error', 'Type de fichier non autorisé pour l\'image. Utilisez JPG ou PNG.');
+                return $this->redirectToRoute('app_utilisateur_edit', ['id' => $utilisateur->getId()]);
+            }
+
+            $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+            $uploadDirectory = $this->getParameter('profile_images_directory');
+
+            try {
+                $imageFile->move($uploadDirectory, $newFilename);
+                $utilisateur->setImage($newFilename);
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Échec du téléchargement de l\'image.');
+                return $this->redirectToRoute('app_utilisateur_edit', ['id' => $utilisateur->getId()]);
+            }
+        }
+
+        // Handle diploma upload
+        $diplomaFile = $request->files->get('diploma');
+        if ($diplomaFile instanceof UploadedFile) {
+            $allowedMimeTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+            if (!in_array($diplomaFile->getMimeType(), $allowedMimeTypes)) {
+                $this->addFlash('error', 'Type de fichier non autorisé pour le diplôme. Utilisez PDF, JPG ou PNG.');
+                return $this->redirectToRoute('app_utilisateur_edit', ['id' => $utilisateur->getId()]);
+            }
+
+            $newFilename = uniqid() . '.' . $diplomaFile->guessExtension();
+            $uploadDirectory = $this->getParameter('diplomas_directory');
+
+            try {
+                $diplomaFile->move($uploadDirectory, $newFilename);
+                $utilisateur->setDiploma($newFilename);
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Échec du téléchargement du diplôme.');
+                return $this->redirectToRoute('app_utilisateur_edit', ['id' => $utilisateur->getId()]);
+            }
+        }
+
+        try {
             $entityManager->flush();
-            $this->addFlash('success', 'Historique de traitement créé avec succès.');
-
-            return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Profil mis à jour avec succès.');
+            return $this->redirectToRoute('app_utilisateur_index');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Une erreur est survenue lors de la mise à jour du profil.');
+            return $this->redirectToRoute('app_utilisateur_edit', ['id' => $utilisateur->getId()]);
         }
-
-        return $this->render('utilisateur/edit.html.twig', [
-            'utilisateur' => $utilisateur,
-            'form' => $form,
-            'user' => $user,
-
-        ]);
     }
+
+    return $this->render('utilisateur/edit.html.twig', [
+        'utilisateur' => $utilisateur,
+        'user' => $this->getUser(),
+    ]);
+}
 
     #[Route('/{id}', name: 'app_utilisateur_delete', methods: ['POST'])]
     public function delete(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager): Response

@@ -1,10 +1,355 @@
 {% extends 'baseBack.html.twig' %}
 
-{% block title %}
-    <h1 style="margin: 20px auto; padding: 20px; color: #3fbbc0; text-align: center;">
-        modifier le compte
-    </h1>
-{% endblock %}
 {% block body %}
-    {{ include('utilisateur/_form.html.twig', {'button_label': 'Update'}) }}
+<div class="container py-5">
+    <div class="card shadow-lg rounded-lg">
+ 
+        
+        <div class="card-body p-4">
+            <form id="profileEditForm" action="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
+                <input type="hidden" name="token" value="{{ csrf_token('edit-utilisateur') }}"/>
+                
+                <div class="row g-4">
+                    <!-- Personal Information Section -->
+                    <div class="col-12">
+                        <h4 class="section-title">Informations Personnelles</h4>
+                        <hr class="section-divider">
+                    </div>
+
+                    <!-- Name Fields -->
+                    <div class="col-md-6">
+                        <label for="nom" class="form-label">Nom</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-person-fill"></i>
+                            </span>
+                            <input name="nom" type="text" class="form-control" id="nom" value="{{ utilisateur.nom }}" required>
+                        </div>
+                        <div id="nomError" class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="prenom" class="form-label">Prénom</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-person-fill"></i>
+                            </span>
+                            <input name="prenom" type="text" class="form-control" id="prenom" value="{{ utilisateur.prenom }}" required>
+                        </div>
+                        <div id="prenomError" class="invalid-feedback"></div>
+                    </div>
+
+                    <!-- Contact Information Section -->
+                    <div class="col-12">
+                        <h4 class="section-title mt-4">Coordonnées</h4>
+                        <hr class="section-divider">
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="email" class="form-label">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-envelope-fill"></i>
+                            </span>
+                            <input name="email" type="email" class="form-control" id="email" value="{{ utilisateur.email }}" required>
+                        </div>
+                        <div id="emailError" class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="telephone" class="form-label">Téléphone</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-telephone-fill"></i>
+                            </span>
+                            <input name="telephone" type="text" class="form-control" id="telephone" value="{{ utilisateur.telephone }}" required>
+                        </div>
+                        <div id="telephoneError" class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="dateNaissance" class="form-label">Date de naissance</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-calendar-fill"></i>
+                            </span>
+                            <input name="dateNaissance" type="date" class="form-control" id="dateNaissance" value="{{ utilisateur.dateNaissance|date('Y-m-d') }}" required>
+                        </div>
+                        <div id="dateNaissanceError" class="invalid-feedback"></div>
+                    </div>
+
+                    {% if utilisateur.role.value == 'Médecin' %}
+                    <!-- Professional Information Section -->
+                    <div class="col-12">
+                        <h4 class="section-title mt-4">Informations Professionnelles</h4>
+                        <hr class="section-divider">
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="specialite" class="form-label">Spécialité</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-briefcase-fill"></i>
+                            </span>
+                            <input name="specialite" type="text" class="form-control" id="specialite" value="{{ utilisateur.specialite }}">
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Documents Section -->
+                    <div class="col-12">
+                        <h4 class="section-title mt-4">Documents</h4>
+                        <hr class="section-divider">
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="upload-container">
+                            <label for="image" class="form-label">Photo de Profil</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-image-fill"></i>
+                                </span>
+                                <input name="image" type="file" class="form-control" id="image">
+                            </div>
+                            {% if utilisateur.image %}
+                            <div class="current-file mt-2">
+                                <small class="text-muted">
+                                    Fichier actuel: <a href="{{ asset('uploads/profile_images/' ~ utilisateur.image) }}" target="_blank">{{ utilisateur.image }}</a>
+                                </small>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if utilisateur.role.value == 'Médecin' %}
+                    <div class="col-md-12">
+                        <div class="upload-container">
+                            <label for="diploma" class="form-label">Diplôme</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                                </span>
+                                <input name="diploma" type="file" class="form-control" id="diploma">
+                            </div>
+                            {% if utilisateur.diploma %}
+                            <div class="current-file mt-2">
+                                <small class="text-muted">
+                                    Fichier actuel: <a href="{{ asset('uploads/diplomas/' ~ utilisateur.diploma) }}" target="_blank">{{ utilisateur.diploma }}</a>
+                                </small>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="d-grid gap-2 mt-5">
+                    <button type="submit" class="btn btn-primary btn-lg save-button">
+                        <i class="bi bi-save me-2"></i>Enregistrer les modifications
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 1000px;
+    }
+
+    .card {
+        border: none;
+        background: #fff;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #3fbbc0 0%, #2a9d9f 100%);
+        border-radius: 12px 12px 0 0;
+    }
+
+    .section-title {
+        color: #2a9d9f;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .section-divider {
+        border-top: 2px solid #3fbbc0;
+        opacity: 0.2;
+        margin: 0.5rem 0 1.5rem 0;
+    }
+
+    .form-label {
+        color: #3fbbc0;
+        font-weight: 500;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        color: #3fbbc0;
+        padding: 0.75rem;
+    }
+
+    .form-control {
+        padding: 0.75rem;
+        border: 1px solid #ced4da;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #3fbbc0;
+        box-shadow: 0 0 0 0.2rem rgba(63, 187, 192, 0.25);
+    }
+
+    .upload-container {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px dashed #ced4da;
+    }
+
+    .current-file {
+        background: #fff;
+        padding: 0.5rem;
+        border-radius: 4px;
+    }
+
+    .save-button {
+        background: linear-gradient(135deg, #3fbbc0 0%, #2a9d9f 100%);
+        border: none;
+        padding: 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .save-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(63, 187, 192, 0.2);
+    }
+
+    .invalid-feedback {
+        display: none;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .is-invalid:focus {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+
+    .is-invalid + .invalid-feedback {
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+    }
+</style>
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+    const profileEditForm = document.getElementById('profileEditForm');
+
+    if (profileEditForm) {
+        profileEditForm.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form submission by default
+            let isValid = true;
+
+            // Validate Nom (only letters)
+            const nom = document.getElementById('nom');
+            const nomError = document.getElementById('nomError');
+            if (!/^[A-Za-zÀ-ÿ\s]+$/.test(nom.value)) {
+                nom.classList.add('is-invalid');
+                nomError.textContent = 'Le nom ne doit contenir que des lettres.';
+                nomError.style.display = 'block';
+                isValid = false;
+            } else {
+                nom.classList.remove('is-invalid');
+                nomError.textContent = '';
+                nomError.style.display = 'none';
+            }
+
+            // Validate Prénom (only letters)
+            const prenom = document.getElementById('prenom');
+            const prenomError = document.getElementById('prenomError');
+            if (!/^[A-Za-zÀ-ÿ\s]+$/.test(prenom.value)) {
+                prenom.classList.add('is-invalid');
+                prenomError.textContent = 'Le prénom ne doit contenir que des lettres.';
+                prenomError.style.display = 'block';
+                isValid = false;
+            } else {
+                prenom.classList.remove('is-invalid');
+                prenomError.textContent = '';
+                prenomError.style.display = 'none';
+            }
+
+            // Validate Email
+            const email = document.getElementById('email');
+            const emailError = document.getElementById('emailError');
+            // Regular expression for email validation
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            
+            if (!emailRegex.test(email.value)) {
+                email.classList.add('is-invalid');
+                emailError.textContent = 'Veuillez entrer une adresse email valide.';
+                emailError.style.display = 'block';
+                isValid = false;
+            } else {
+                email.classList.remove('is-invalid');
+                emailError.textContent = '';
+                emailError.style.display = 'none';
+            }
+
+            // Validate Téléphone (exactly 8 digits)
+            const telephone = document.getElementById('telephone');
+            const telephoneError = document.getElementById('telephoneError');
+            if (!/^\d{8}$/.test(telephone.value)) {
+                telephone.classList.add('is-invalid');
+                telephoneError.textContent = 'Le téléphone doit contenir exactement 8 chiffres.';
+                telephoneError.style.display = 'block';
+                isValid = false;
+            } else {
+                telephone.classList.remove('is-invalid');
+                telephoneError.textContent = '';
+                telephoneError.style.display = 'none';
+            }
+
+            // Validate Date de Naissance (not in the future)
+            const dateNaissance = document.getElementById('dateNaissance');
+            const dateNaissanceError = document.getElementById('dateNaissanceError');
+            const today = new Date().toISOString().split('T')[0];
+            if (dateNaissance.value > today) {
+                dateNaissance.classList.add('is-invalid');
+                dateNaissanceError.textContent = 'La date de naissance ne peut pas être dans le futur.';
+                dateNaissanceError.style.display = 'block';
+                isValid = false;
+            } else {
+                dateNaissance.classList.remove('is-invalid');
+                dateNaissanceError.textContent = '';
+                dateNaissanceError.style.display = 'none';
+            }
+
+            // If all validations pass, submit the form
+            if (isValid) {
+                profileEditForm.submit();
+            }
+        });
+    }
+ });
+</script>
 {% endblock %}
