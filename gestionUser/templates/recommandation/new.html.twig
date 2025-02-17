@@ -1,0 +1,19 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Créer Une Recommandation{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-3 text-center">Créer Une Recommandation</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {{ include('recommandation/_form.html.twig', {'button_label': 'Créer'}) }}
+        </div>
+    </div>
+    <div class="mt-3 text-center">
+        <a href="{{ path('app_recommandation_index') }}" class="btn btn-secondary">
+            ← Retourner à la liste
+        </a>
+    </div>
+</div>
+{% endblock %}

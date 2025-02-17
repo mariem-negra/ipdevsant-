@@ -1,0 +1,10 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}
+    <h1 style="margin: 20px auto; padding: 20px; color: #3fbbc0; text-align: center;">
+        modifier le compte
+    </h1>
+{% endblock %}
+{% block body %}
+    {{ include('utilisateur/_form.html.twig', {'button_label': 'Update'}) }}
+{% endblock %}

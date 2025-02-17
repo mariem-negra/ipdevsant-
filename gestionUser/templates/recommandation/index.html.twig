@@ -1,0 +1,47 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Liste des Recommandations{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Liste des Recommandations</h1>
+
+        <table class="table table-striped table-hover">
+            <thead style="background-color: #343a40; color: white;">
+                <tr>
+                    <th>Petit Déjeuner</th>
+                    <th>Déjeuner</th>
+                    <th>Dîner</th>
+                    <th>Activité</th>
+                    <th>Calories</th>
+                    <th>Durée</th>
+                    <th>Suppléments</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for recommandation in recommandations %}
+                <tr>
+                    <td>{{ recommandation.PetitDejeuner }}</td>
+                    <td>{{ recommandation.Dejeuner }}</td>
+                    <td>{{ recommandation.Diner }}</td>
+                    <td>{{ recommandation.Activity }}</td>
+                    <td>{{ recommandation.Calories }}</td>
+                    <td>{{ recommandation.Duree }}</td>
+                    <td>{{ recommandation.Supplements }}</td>
+                    <td>
+                        <a href="{{ path('app_recommandation_show', {'id': recommandation.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                        <a href="{{ path('app_recommandation_edit', {'id': recommandation.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8" class="text-center">Aucune recommandation trouvée</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        
+    </div>
+{% endblock %}

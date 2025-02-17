@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create New Demande{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-3 text-center">Créer Une Demande</h1>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {{ include('demande/_form.html.twig') }}
+        </div>
+    </div>
+
+    <div class="mt-3 text-center">
+        <a href="{{ path('app_demande_dashboard') }}" class="btn btn-secondary">
+            ← Retourner au Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

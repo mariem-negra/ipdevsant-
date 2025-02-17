@@ -1,0 +1,18 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Modifier la Recommandation{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center text-primary">Modifier la Recommandation</h2>
+    <div class="card shadow p-4">
+        {{ include('recommandation/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+    </div>
+    <div class="mt-3 text-center">
+        <a href="{{ path('app_recommandation_index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+        {{ include('recommandation/_delete_form.html.twig', {'attr': {'class': 'd-inline'}}) }}
+    </div>
+</div>
+{% endblock %}

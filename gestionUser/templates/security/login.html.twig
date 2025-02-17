@@ -1,0 +1,251 @@
+{% block body %}
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <!-- Add your logo here -->
+      <img src="{{ asset('img/logo.png') }}" alt="Logo" class="login-logo">
+      <h1 class="login-title">Bienvenue !</h1>
+    </div>
+    {% for message in app.flashes('warning') %}
+      <div class="custom-warning-message">
+          <div class="warning-icon">⚠️</div>
+          <div class="warning-text">{{ message }}</div>
+          <button class="close-button" onclick="this.parentElement.style.display='none';">&times;</button>
+      </div>
+    {% endfor %}
+    <form method="post" class="login-form">
+
+      {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+      {% endif %}
+      {# Display flash messages #}
+      {% for message in app.flashes('warning') %}
+        <div class="alert alert-warning">
+          {{ message }}
+        </div>
+      {% endfor %}
+ 
+      <!-- Email/Username Field -->
+      <div class="form-group">
+        <label for="username">Email</label>
+        <input type="text" name="_username" id="username" class="form-control" placeholder="Entrez votre email" required>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" name="_password" id="password" class="form-control" placeholder="Entrez votre mot de passe" required>
+      </div>
+
+      <!-- Remember Me Checkbox -->
+      <div class="form-group remember-me">
+        <input type="checkbox" name="_remember_me" id="remember_me">
+        <label for="remember_me">Se souvenir de moi</label>
+      </div>
+
+      <!-- CSRF Token -->
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+      <!-- Submit Button -->
+      <button class="btn btn-primary btn-block" type="submit">
+        Se connecter
+        <br>
+
+      </button>
+      <!-- Forgot Password Link -->
+      <div class="text-center mt-3">
+      <br>
+
+        <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+    .close-button {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        margin-left: auto;
+        color: #856404;
+    }
+
+    .close-button:hover {
+        color: #664d03;
+    }
+        /* Custom Warning Message */
+    .custom-warning-message {
+        background-color: #fff3cd; /* Light yellow background */
+        border: 1px solid #ffeeba; /* Yellow border */
+        color: #856404; /* Dark yellow text */
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        margin: 20px auto; /* Center the message */
+        max-width: 400px; /* Match the width of the login form */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .warning-icon {
+        font-size: 24px;
+        margin-right: 15px;
+    }
+
+    .warning-text {
+        font-size: 16px;
+        font-weight: 500;
+    }
+  body {
+    background: linear-gradient(-45deg, #3fbbc0, #2a9d9f, #1c7a7d, #0d4d4f);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+  }
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    perspective: 1000px; /* For 3D effect */
+  }
+
+  .login-card {
+    background: #fff; /* White background for the form */
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+  }
+
+  .login-card:hover {
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .login-logo {
+    max-width: 100%; /* Ensure the logo doesn't overflow */
+    height: auto;
+    margin-bottom: 20px; /* Add some space below the logo */
+  }
+
+  .login-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #036EB8; /* Dark blue color for the title */
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .login-subtitle {
+    font-size: 14px;
+    color: #036EB8; /* Dark blue color for the subtitle */
+  }
+
+  .login-form .form-group {
+    margin-bottom: 20px;
+  }
+
+  .login-form .form-group label {
+    font-size: 14px;
+    color: #036EB8; /* Dark blue color for labels */
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  .login-form .form-control {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-size: 14px;
+    color: #036EB8; /* Dark blue color for input text */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .login-form .form-control::placeholder {
+    color: rgba(26, 46, 90, 0.5); /* Dark blue placeholder with reduced opacity */
+  }
+
+  .login-form .form-control:focus {
+    border-color: #3fbbc0;
+    box-shadow: 0 0 0 0.2rem rgba(63, 187, 192, 0.25);
+  }
+
+  .login-form .remember-me {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .login-form .remember-me input {
+    margin-right: 10px;
+  }
+
+  .login-form .remember-me label {
+    color: #036EB8; /* Dark blue color for the "Remember Me" label */
+  }
+
+  .login-form .btn-primary {
+    width: 100%;
+    background-color: #3fbbc0;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .login-form .btn-primary:hover {
+    background-color: #2a9d9f;
+    transform: translateY(-2px);
+  }
+
+  .login-form .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .login-form .forgot-password {
+    color: #036EB8; /* Dark blue color for the "Forgot Password" link */
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+  }
+
+  .login-form .forgot-password:hover {
+    color: #3fbbc0; /* Change to your primary color on hover */
+    text-decoration: underline;
+  }
+</style>
+{% endblock %}

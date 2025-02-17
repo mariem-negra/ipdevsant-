@@ -1,0 +1,37 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Demandes en Attente{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Demandes en Attente</h1>
+    {% if demandes is empty %}
+        <p>Aucune demande en attente.</p>
+    {% else %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Patient</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for demande in demandes %}
+                    <tr>
+                        <td>{{ demande.id }}</td>
+                        <td>{{ demande.Date|date('Y-m-d') }}</td>
+                        <td>{{ demande.Patient.nom }} {{ demande.Patient.prenom }}</td>
+                        <td>
+                            <a href="{{ path('app_recommandation_new', {'demandeId': demande.id}) }}" class="btn btn-sm btn-success">
+                                Créer Recommandation
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}

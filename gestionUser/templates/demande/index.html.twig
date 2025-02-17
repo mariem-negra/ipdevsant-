@@ -1,0 +1,53 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Demande List{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Liste des Demandes</h1>
+
+        <table class="table table-striped table-hover">
+            <thead style="background-color: #343a40; color: white;">
+                <tr>
+                    
+                    <th>Date</th>
+                    <th>Eau</th>
+                    <th>Nbr Repas</th>
+                    <th>Snacks</th>
+                    <th>Calories</th>
+                    <th>Activité</th>
+                    <th>Sommeil</th>
+                    <th>Durée Activité</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for demande in demandes %}
+                <tr>
+                    
+                    <td>{{ demande.Date ? demande.Date|date('Y-m-d') : 'N/A' }}</td>
+                    <td>{{ demande.Eau }}</td>
+                    <td>{{ demande.NbrRepas }}</td>
+                    <td>{{ demande.Snacks ? 'Oui' : 'Non' }}</td>
+                    <td>{{ demande.Calories }}</td>
+                    <td>{{ demande.Activity }}</td>
+                    <td>{{ demande.Sommeil }}</td>
+                    <td>{{ demande.DureeActivite }}</td>
+                    <td>
+                        <a href="{{ path('app_demande_show', {'id': demande.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                        
+                        <a href="{{ path('app_recommandation_new', {'demandeId': demande.id}) }}" class="btn btn-sm btn-success">Créer Recommandation</a>
+
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="10" class="text-center">Aucun enregistrement trouvé</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        
+    </div>
+{% endblock %}

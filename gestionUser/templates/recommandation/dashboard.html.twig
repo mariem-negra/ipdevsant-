@@ -1,0 +1,46 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Tableau de bord des Recommandations{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="section-title text-center" data-aos="fade-up">
+        <h2>Tableau de bord des Recommandations</h2>
+        <p>Accédez rapidement aux recommandations et aux demandes en attente.</p>
+    </div>
+    <div class="row justify-content-center">
+        <!-- Card for viewing pending Demandes -->
+        <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
+            <div class="service-item position-relative" style="transition: transform 0.3s, box-shadow 0.3s; margin-bottom: 30px; cursor: pointer;" 
+                 onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.2)'" 
+                 onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                <div class="icon" style="color: #007bff; font-size: 3rem;">
+                    <i class="fas fa-hourglass-start"></i>
+                </div>
+                <h4>
+                    <a href="{{ path('app_demande_pending') }}" class="stretched-link" style="color: #007bff; text-decoration: none;">
+                        Demandes en Attente
+                    </a>
+                </h4>
+                <p style="color: #555;">Consultez toutes les demandes sans recommandation pour agir rapidement.</p>
+            </div>
+        </div>
+        <!-- Card for viewing all Recommendations -->
+        <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-item position-relative" style="transition: transform 0.3s, box-shadow 0.3s; margin-bottom: 30px; cursor: pointer;" 
+                 onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.2)'" 
+                 onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                <div class="icon" style="color: #28a745; font-size: 3rem;">
+                    <i class="fas fa-list-alt"></i>
+                </div>
+                <h4>
+                    <a href="{{ path('app_recommandation_index') }}" class="stretched-link" style="color: #28a745; text-decoration: none;">
+                        Toutes les Recommandations
+                    </a>
+                </h4>
+                <p style="color: #555;">Accédez à toutes les recommandations que vous avez créées ou modifiées.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

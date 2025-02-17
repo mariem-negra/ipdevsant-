@@ -1,0 +1,23 @@
+{% block form %}
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    
+    <div class="row g-4">
+        {% for field in form %}
+            {% if field.vars.name not in ['_token'] %}
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {{ form_label(field, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(field, {'attr': {'class': 'form-control', 'placeholder': field.vars.label}}) }}
+                        {{ form_errors(field) }}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    
+    <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary px-5">Envoyer</button>
+    </div>
+
+    {{ form_end(form) }}
+{% endblock %}
