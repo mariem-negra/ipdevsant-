@@ -1,15 +1,71 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier un planning{% endblock %}
+{% block title %}Modifier un Planning{% endblock %}
 
 {% block section %}
-    <h1>Modifier un planning</h1>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-warning text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-calendar-alt"></i> Modifier un Planning
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {# Affichage des messages flash #}
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
 
-    <div class="form-container">
-        {{ include('planning/edit.html.twig', {'button_label': 'Modifier'}) }}
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
 
-        <div class="button-container">
-            {{ include('planning/_delete_form.html.twig') }}
+                    {# Affichage du formulaire #}
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    <div class="form-group">
+                        {{ form_label(form.jour, 'Jour de la semaine', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.jour, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.jour) }}
+                    </div>
+
+                    <div class="form-group mt-3">
+                        {{ form_label(form.heuredebut, 'Heure de début', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.heuredebut, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.heuredebut) }}
+                    </div>
+
+                    <div class="form-group mt-3">
+                        {{ form_label(form.heurefin, 'Heure de fin', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                        {{ form_widget(form.heurefin, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.heurefin) }}
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ path('app_planning_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Enregistrer le Planning
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
         </div>
     </div>
+</div>
 {% endblock %}

@@ -55,8 +55,8 @@ public function adminIndex(RendezVousRepository $rendezVousRepository): Response
             }
 
             // Vérifier que la description contient au moins 10 caractères
-            if (strlen($rendezVous->getDescription()) < 10) {
-                $errors[] = "La description doit contenir au moins 10 caractères.";
+            if (strlen($rendezVous->getDescription()) < 5) {
+                $errors[] = "La description doit contenir au moins 5 caractères.";
             }
 
             // Vérifier que le planning est bien sélectionné
@@ -105,20 +105,25 @@ public function adminIndex(RendezVousRepository $rendezVousRepository): Response
     #[Route('/{id}/edit', name: 'app_rendez_vous_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, RendezVous $rendezVou, EntityManagerInterface $entityManager): Response
     {
+        // Créer le formulaire pour l'entité RendezVous
         $form = $this->createForm(RendezVousType::class, $rendezVou);
         $form->handleRequest($request);
-
+    
+        // Si le formulaire est soumis et valide, on enregistre les données
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+    
+            // Redirection vers la liste des rendez-vous après modification
             return $this->redirectToRoute('app_rendez_vous_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
+        // Retourner la vue avec le formulaire et l'objet 'rendez_vous'
         return $this->render('rendez_vous/edit.html.twig', [
-            'rendez_vou' => $rendezVou,
-            'form' => $form,
+            'rendez_vous' => $rendezVou,  // Assurez-vous que la variable est nommée 'rendez_vous'
+            'form' => $form->createView(),
         ]);
     }
+    
 
     #[Route('/{id}', name: 'app_rendez_vous_delete', methods: ['POST'])]
     public function delete(Request $request, RendezVous $rendezVou, EntityManagerInterface $entityManager): Response

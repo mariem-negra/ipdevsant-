@@ -37,8 +37,7 @@ class PlanningType extends AbstractType
             ->add('heurefin', TimeType::class, [
                 'widget' => 'single_text',
                 'input' => 'datetime',
-            ])
-            ->add('save', SubmitType::class, ['label' => 'Save Planning']);
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
