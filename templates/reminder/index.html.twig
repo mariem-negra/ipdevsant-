@@ -1,0 +1,56 @@
+{# templates/reminder/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block section %}
+    <link rel="stylesheet" href="{{ asset('css/calendar.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <div class="main">
+        <div class="calendar-app">
+            <div class="calendar-header">
+                <div class="header-controls">
+                    <h1 class="month-title">FÉVR. 2024</h1>
+                    <div class="month-navigation">
+                        <button class="nav-btn prev-month" aria-label="Mois précédent">&lt;</button>
+                        <button class="nav-btn next-month" aria-label="Mois suivant">&gt;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="weekday-header">LUN</div>
+                <div class="weekday-header">MAR</div>
+                <div class="weekday-header">MER</div>
+                <div class="weekday-header">JEU</div>
+                <div class="weekday-header">VEN</div>
+                <div class="weekday-header weekend">SAM</div>
+                <div class="weekday-header weekend">DIM</div>
+            </div>
+        </div>
+    </div>
+
+    {# Bouton notifications #}
+    <div class="bottom-nav">
+        <button id="notificationsButton" class="notification-btn">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+            <span id="notificationCount" class="notification-badge">0</span>
+        </button>
+    </div>
+
+    {# Modal notifications #}
+    <div id="notificationsModal" class="notifications-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Rappels d'aujourd'hui</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="notificationsList" class="notifications-list">
+                {# Les notifications seront injectées ici via JavaScript #}
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/notifications.js') }}" defer></script>
+    <script src="{{ asset('js/js.js') }}"></script>
+{% endblock %}

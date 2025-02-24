@@ -1,0 +1,226 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Suivie Médical{% endblock %}
+
+{% block section %}
+<style>
+        :root {
+            --primary-green: #16a34a;
+            --light-green: #dcfce7;
+            --hover-green: #15803d;
+            --border-green: #86efac;
+            --form-bg: #f0fdf4;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--form-bg) 0%, var(--light-green) 100%);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(22, 163, 74, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        h1 {
+            color: var(--primary-green);
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        h1::before {
+            content: '✏️';
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .form-group:hover {
+            transform: translateY(-2px);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--primary-green);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group label::before {
+            font-size: 1.2rem;
+        }
+
+        .form-group:nth-child(1) label::before { content: '📅'; }
+        .form-group:nth-child(2) label::before { content: '📝'; }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--border-green);
+            border-radius: 10px;
+            font-size: 16px;
+            background-color: white;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(22, 163, 74, 0.1);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary-green);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 35px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-green);
+            color: white;
+        }
+
+        .btn-primary::before {
+            content: '💾';
+        }
+
+        .btn-secondary {
+            background-color: #64748b;
+            color: white;
+        }
+
+        .btn-secondary::before {
+            content: '←';
+        }
+
+        /* Form validation styles */
+        .form-group input:invalid,
+        .form-group textarea:invalid {
+            border-color: #ef4444;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Success message animation */
+        .form-success {
+            background-color: var(--light-green);
+            color: var(--primary-green);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 15px;
+                padding: 25px;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Optional: Add a loading state for the submit button */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+</style>
+
+    <div class="form-container">
+        <h1>Modifier Suivie Médical</h1>
+        
+      
+        {{ include('suivie_medical/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+        <div class="button-container">
+            <a href="{{ path('app_suivie_medical_index_front') }}" class="btn btn-secondary">Retour à la liste</a>
+        </div>
+    </div>
+{% endblock %}

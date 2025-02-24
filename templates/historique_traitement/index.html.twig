@@ -1,0 +1,226 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+<style>
+    /* Header Styles */
+    .medical-header {
+        background: linear-gradient(135deg, rgb(31, 197, 172), #CAE9FF);
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0 0 25px 25px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .medical-header h2 {
+        color: white;
+        font-size: 1.5rem;
+        margin: 0;
+        text-align: center;
+    }
+
+    /* Search Bar Container */
+    .search-container {
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0;
+    }
+
+    /* Search Bar Styling */
+    .search-form {
+        display: flex;
+        align-items: center;
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        width: 100%;
+        max-width: 500px;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .search-form:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .search-form input[type="text"] {
+        flex: 1;
+        border: none;
+        padding: 0.8rem 1.2rem;
+        font-size: 1rem;
+        outline: none;
+        background: transparent;
+    }
+
+    .search-form input[type="text"]::placeholder {
+        color: #999;
+    }
+
+    .search-form button {
+        background: linear-gradient(135deg, rgb(31, 197, 172), #4a90e2);
+        border: none;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+    }
+
+    .search-form button:hover {
+        background: linear-gradient(135deg, #4a90e2, rgb(31, 197, 172));
+    }
+
+    .search-form button i {
+        margin-right: 0.5rem;
+    }
+
+    /* Table Container */
+    .table {
+        width: 100%;
+        margin: 1rem auto;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Table Headers */
+    .table th {
+        background: linear-gradient(135deg, rgb(31, 197, 172), #E6F3FF);
+        color: white;
+        padding: 0.6rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    /* Table Cells */
+    .table td {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    /* Action Buttons */
+    .btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+        border-radius: 4px;
+        margin: 0.1rem;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* Images in Table */
+    .table td img {
+        max-width: 60px;
+        height: auto;
+        border-radius: 4px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 1rem;
+        text-align: center;
+        color: #666;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .table th, .table td {
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .btn {
+            padding: 0.3rem 0.5rem;
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Button Colors */
+    .btn-info { background: rgb(31, 197, 172); color: white; }
+    .btn-warning { background: #f2994a; color: white; }
+    .btn-primary { background: #4a90e2; color: white; }
+    .btn-delete { background: #ff416c; color: white; }
+    .btn-success { background: #00b09b; color: white; }
+
+    /* No Bilan Text */
+    .no-bilan {
+        color: #999;
+        font-style: italic;
+        font-size: 0.8rem;
+    }
+</style>
+<div class="medical-header">
+    <h2>
+        <i class="fas fa-hospital-user medical-icon"></i>
+        Historique des Traitements
+    </h2>
+</div>
+
+<form method="get" action="{{ path('app_historique_traitement_index') }}" class="search-form">
+    <input type="text" name="search" placeholder="Rechercher par maladie..." value="{{ searchTerm }}">
+    <button type="submit" class="btn btn-primary">
+        <i class="fas fa-search"></i> Rechercher
+    </button>
+</form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th><i class ="id-user"></i>Id</th>
+                <th><i class="fas fa-user-circle"></i> Nom</th>
+                <th><i class="fas fa-user-tag"></i> Prénom</th>
+                <th><i class="fas fa-virus"></i> Maladie</th>
+                <th><i class="fas fa-comment-medical"></i> Description</th>
+                <th><i class="fas fa-prescription-bottle-medical"></i> Type Traitement</th>
+                <th><i class="fas fa-file-medical-alt"></i> Bilan</th>
+                <th><i class="fas fa-stethoscope"></i> Actions</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+        {% for historique_traitement in historique_traitements %}
+            <tr>
+                <td>{{ historique_traitement.id }}</td>
+                <td>{{ historique_traitement.nom }}</td>
+                <td>{{ historique_traitement.prenom }}</td>
+                <td>{{ historique_traitement.maladie }}</td>
+                <td>{{ historique_traitement.description }}</td>
+                <td>{{ historique_traitement.typeTraitement }}</td>
+                 <td>
+                    {% if historique_traitement.bilan %}
+                        <img src="{{ asset('uploads/bilan/' ~ historique_traitement.bilan) }}" alt="Bilan" style="max-width: 100px; height: auto;">
+                    {% else %}
+                      <span class="no-bilan">Aucun bilan disponible</span>
+                     {% endif %}
+                </td>
+                <td>
+                   <a href="{{ path('app_historique_traitement_showB', {'id': historique_traitement.id}) }}" 
+                       class="btn btn-info">
+                        <i class="fas fa-eye"></i> Voir
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+           <td colspan="7" class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    Pas de résultats trouvés
+                </td>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,107 @@
+{# templates/historique_traitement/statistiques.html.twig #}
+
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Statistiques des Maladies{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-gradient-primary text-white">
+            <h2 class="mb-0">
+                <i class="fas fa-chart-pie me-2"></i>Statistiques des Maladies
+            </h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="chart-container" style="position: relative; height:60vh; width:100%">
+                        <canvas id="maladieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-8 mx-auto">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Maladie</th>
+                                <th class="text-center">Nombre de patients</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in 0..labels|length-1 %}
+                                <tr>
+                                    <td>{{ labels[i] }}</td>
+                                    <td class="text-center">{{ data[i] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-center">
+            <a href="{{ path('app_historique_traitement_index') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Données du graphique
+        const labels = {{ labels|json_encode|raw }};
+        const data = {{ data|json_encode|raw }};
+        const backgroundColor = {{ backgroundColor|json_encode|raw }};
+        
+        // Création du graphique
+        const ctx = document.getElementById('maladieChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',  // Vous pouvez changer en 'bar', 'doughnut', etc.
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Nombre de patients',
+                    data: data,
+                    backgroundColor: backgroundColor,
+                    borderColor: 'white',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Répartition des patients par maladie',
+                        font: {
+                            size: 18
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

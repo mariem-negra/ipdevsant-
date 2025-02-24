@@ -1,0 +1,44 @@
+
+
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+    <div class="form-group">
+        {{ form_label(form.date) }}
+        {{ form_widget(form.date) }}
+        {% if form.date.vars.errors|length > 0 %}
+            <div class="form-error">
+                {% for error in form.date.vars.errors %}
+                    <div class="text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    {# Commentaire field #}
+    <div class="form-group">
+        {{ form_label(form.commentaire) }}
+        {{ form_widget(form.commentaire) }}
+        {% if form.commentaire.vars.errors|length > 0 %}
+            <div class="form-error">
+                {% for error in form.commentaire.vars.errors %}
+                    <div class="text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+
+{{ form_end(form) }}
+
+<style>
+    .form-error {
+        margin-top: 5px;
+    }
+    
+    .text-danger {
+        color: #ef4444;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+</style>

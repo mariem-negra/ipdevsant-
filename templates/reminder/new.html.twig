@@ -1,0 +1,169 @@
+{# templates/reminder/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .reminder-page {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        .page-header {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-cancel {
+            background-color: #eee;
+            color: #555;
+            margin-right: 10px;
+        }
+
+        .btn-save {
+            background-color:rgb(255, 0, 0);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Styles for horizontal layout */
+        .form-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-inline .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .form-inline .form-control {
+            width: auto; /* Adjusted this */
+        }
+
+        /* Specific styling for select */
+        select.form-control {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right .75rem center;
+            background-size: 8px 10px;
+            padding-right: 2rem;
+        }
+    </style>
+{% endblock %}
+
+{% block section %}
+    <div class="reminder-page">
+        <div class="page-header">
+            <h1 class="page-title">Nouveau rappel</h1>
+            <p class="page-subtitle">dimanche 23 février 2025</p>
+        </div>
+
+        {{ form_start(form, {'attr': {'class': 'reminder-form'}}) }}
+            <div class="form-group">
+                <label>Médicament</label>
+                {{ form_widget(form.title, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': 'Nom du médicament'
+                    }
+                }) }}
+            </div>
+
+            <div class="form-group form-inline">
+                <div class="form-group">
+                    <label>Rappel avant</label>
+                    {{ form_widget(form.notifyBefore, {
+                        'attr': {
+                            'class': 'form-control'
+                        },
+                        'choices': {
+                            '10 min': '10',
+                            '30 min': '30',
+                            '1 heure': '60'
+                        }
+                    }) }}
+                </div>
+                <div class="form-group">
+                    <label>Heure</label>
+                      {{ form_widget(form.dateTime, {
+                          'attr': {
+                              'class': 'form-control',
+                              'type': 'time' // Specify input type as time
+                          }
+                      }) }}
+                </div>
+            </div>
+
+            <div class="button-group">
+                <a href="{{ path('calendar') }}" class="btn btn-cancel">Annuler</a>
+                <button type="submit" class="btn btn-save">Enregistrer</button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

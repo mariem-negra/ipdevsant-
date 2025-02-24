@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block section %}
+<div class="editReminder-reminder-container">
+    <h1>Modifier le rappel</h1>
+    
+        {# Dans editReminder.html.twig #}
+        <form method="POST" action="{{ path('app_reminder_editReminder', {'id': reminder.id}) }}" class="edit-reminder-form">
+            <label for="title">Titre</label>
+            <input type="text" id="title" name="title" value="{{ reminder.title }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="dateTime">Date et heure</label>
+            <input type="datetime-local" id="dateTime" name="dateTime" 
+                   value="{{ reminder.dateTime|date('Y-m-d\\TH:i') }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="notifyBefore">Notification (minutes avant)</label>
+            <input type="number" id="notifyBefore" name="notifyBefore" 
+                   value="{{ reminder.notifyBefore }}" required>
+        </div>
+        
+        <div class="form-actions">
+                <button type="submit" class="btn-save">Enregistrer</button>
+            <a href="{{ path('app_reminder_index') }}" class="btn-cancel">Annuler</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

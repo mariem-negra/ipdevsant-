@@ -1,0 +1,297 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Suivie Médical{% endblock %}
+
+{% block section %}
+<style>
+        :root {
+            --primary-green: #16a34a;
+            --light-green: #dcfce7;
+            --hover-green: #15803d;
+            --border-green: #86efac;
+        }
+
+        .table-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 25px;
+            background: linear-gradient(135deg, #f0fdf4 0%, var(--light-green) 100%);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(22, 163, 74, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: var(--primary-green);
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h1::before {
+            content: '🏥';
+            font-size: 2.2rem;
+        }
+
+        .section-title {
+            color: var(--primary-green);
+            margin: 20px 0 10px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-green);
+            font-size: 1.5rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary-green);
+        }
+
+        .patient-info {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--primary-green);
+            box-shadow: 0 4px 15px rgba(22, 163, 74, 0.1);
+            transform: translateZ(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .patient-info:hover {
+            transform: translateY(-5px) translateZ(0);
+            box-shadow: 0 8px 25px rgba(22, 163, 74, 0.2);
+        }
+
+        .patient-info h3 {
+            color: var(--primary-green);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .patient-info h3::before {
+            content: '👤';
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-label::before {
+            font-size: 1.1rem;
+        }
+
+        .info-value {
+            color: #1f2937;
+            background-color: var(--light-green);
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-green);
+            transition: all 0.3s ease;
+        }
+
+        .info-value:hover {
+            background-color: white;
+            border-color: var(--primary-green);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 30px;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(22, 163, 74, 0.1);
+        }
+
+        .table th,
+        .table td {
+            padding: 18px;
+            border-bottom: 1px solid var(--border-green);
+        }
+
+        .table th {
+            background-color: var(--primary-green);
+            font-weight: bold;
+            color: white;
+            text-align: left;
+        }
+
+        .table tr:hover td {
+            background-color: var(--light-green);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-back {
+            background-color: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-back::before {
+            content: '←';
+        }
+
+        .btn-edit {
+            background-color: var(--primary-green);
+            color: white;
+        }
+
+        .btn-edit::before {
+            content: '✏️';
+        }
+
+        .btn-delete {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .btn-delete::before {
+            content: '🗑️';
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .table th {
+                width: 120px;
+            }
+        }
+
+        /* Add icons to info labels */
+        .info-item:nth-child(1) .info-label::before { content: '📝'; }
+        .info-item:nth-child(2) .info-label::before { content: '👤'; }
+        .info-item:nth-child(3) .info-label::before { content: '🏥'; }
+        .info-item:nth-child(4) .info-label::before { content: '💊'; }
+        .info-item:nth-child(5) .info-label::before { content: '📋'; }
+</style>
+
+    <div class="table-container">
+        <h1>Suivie Médical</h1>
+
+{% if suivie_medical.id_historique is defined and suivie_medical.id_historique %}
+            <div class="patient-info">
+                <h3>Informations du Traitement</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Nom</span>
+                        <span class="info-value">{{ suivie_medical.id_historique.nom }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Prénom</span>
+                        <span class="info-value">{{ suivie_medical.id_historique.prenom }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Maladie</span>
+                        <span class="info-value">{{ suivie_medical.id_historique.maladie }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Type de Traitement</span>
+                        <span class="info-value">{{ suivie_medical.id_historique.typeTraitement }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Bilan</span>
+                        {% if suivie_medical.historique.bilan %}
+                            <span class="info-value">
+                                <img src="{{ asset('uploads/bilan/' ~ suivie_medical.id_historique.bilan) }}" alt="Bilan" style="max-width: 100%; height: auto; border-radius: 8px;">
+                            </span>
+                        {% else %}
+                            <span class="info-value">Aucun bilan disponible.</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <h3 class="section-title">Détails du Suivi</h3>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Date</th>
+                    <td>{{ suivie_medical.date ? suivie_medical.date|date('d/m/Y') : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Commentaire</th>
+                    <td>{{ suivie_medical.commentaire }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="button-container">
+            <a href="{{ path('app_suivie_medical_index_front') }}" class="btn btn-back">Retour à la liste</a>
+            <a href="{{ path('app_suivie_medical_edit', {'id': suivie_medical.id}) }}" class="btn btn-edit">Modifier</a>
+            {{ include('suivie_medical/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

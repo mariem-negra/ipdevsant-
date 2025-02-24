@@ -1,0 +1,59 @@
+{# form.html.twig #}
+
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+    {# Nom field #}
+    <div class="form-group">
+        {{ form_label(form.nom) }}
+        {{ form_widget(form.nom) }}
+        {% for error in form.nom.vars.errors %}
+            <div class="text-danger">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+
+    {# Prénom field #}
+    <div class="form-group">
+        {{ form_label(form.prenom) }}
+        {{ form_widget(form.prenom) }}
+        {% for error in form.prenom.vars.errors %}
+            <div class="text-danger">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+
+    {# Maladie field #}
+    <div class="form-group">
+        {{ form_label(form.maladie) }}
+        {{ form_widget(form.maladie) }}
+        {% for error in form.maladie.vars.errors %}
+            <div class="text-danger">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+
+    {# Description field #}
+    <div class="form-group">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description) }}
+        {% for error in form.description.vars.errors %}
+            <div class="text-danger">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+
+    {# Type Traitement field #}
+    <div class="form-group">
+        {{ form_label(form.type_traitement) }}
+        {{ form_widget(form.type_traitement) }}
+        {% for error in form.type_traitement.vars.errors %}
+            <div class="text-danger">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+ {# Bilan field #}
+    <div class="form-group">
+        {{ form_label(form.bilan) }}
+        {{ form_widget(form.bilan) }}
+        {% for error in form.bilan.vars.errors %}
+            <div class="text-danger">{{ error.message }}</div>
+        {% endfor %}
+    </div>
+    <button class="btn">{{ button_label|default('Enregistrer') }}</button>
+
+{{ form_end(form) }}

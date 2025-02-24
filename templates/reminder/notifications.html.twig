@@ -1,0 +1,79 @@
+{# templates/reminder/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block section %}
+    <link rel="stylesheet" href="{{ asset('css/calendar.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/notifications.css') }}">
+    <div class="main">
+           <div class="calendar-app">
+            <div class="calendar-header">
+                <div class="header-controls">
+                    <h1 class="month-title">FÉVR. 2024</h1>
+                    <div class="month-navigation">
+                        <button class="nav-btn prev-month" aria-label="Mois précédent">&lt;</button>
+                        <button class="nav-btn next-month" aria-label="Mois suivant">&gt;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="weekday-header">LUN</div>
+                <div class="weekday-header">MAR</div>
+                <div class="weekday-header">MER</div>
+                <div class="weekday-header">JEU</div>
+                <div class="weekday-header">VEN</div>
+                <div class="weekday-header weekend">SAM</div>
+                <div class="weekday-header weekend">DIM</div>
+            </div>
+        </div>
+    </div>
+
+    {# Bouton notifications avec compteur #}
+    <div class="main">
+        <div class="bottom-nav">
+            <button id="notificationsButton" class="notification-btn" aria-label="Voir les notifications">
+                <i class="fas fa-bell"></i>
+                <span>Notifications</span>
+                {% if reminders|length > 0 %}
+                    <span id="notificationCount" class="notification-badge">{{ reminders|length }}</span>
+                {% endif %}
+            </button>
+        </div>
+
+        {# Modal des notifications #}
+        <div id="notificationsModal" class="notifications-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Vos rappels</h2>
+                    <button class="close-modal" aria-label="Fermer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="notificationsList" class="notifications-list">
+                    {% for reminder in reminders|default([]) %}
+                        <div class="notification-item">
+                            <div class="notification-content">
+                                <span class="notification-time">{{ reminder.dateTime|date('H:i') }}</span>
+                                <div class="notification-text">{{ reminder.title }}</div>
+                            </div>
+                            <div class="notification-actions">
+                                <button class="edit-btn" aria-label="Modifier" onclick="window.location.href='{{ path('app_reminder_editReminder', {'id': reminder.id}) }}'">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="delete-btn" aria-label="Supprimer" onclick="deleteNotification({{ reminder.id }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p>Aucun rappel pour le moment.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/notifications.js') }}" defer></script>
+    <script src="{{ asset('js/js.js') }}" defer></script>
+{% endblock %}

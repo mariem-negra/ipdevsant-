@@ -1,0 +1,277 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .calendar-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .month-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: 1px solid #ddd;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .day-cell {
+            padding: 10px;
+            border: 1px solid #eee;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .day-cell:hover {
+            background-color: #f5f5f5;
+        }
+
+        .weekend {
+            color: #ff4444;
+        }
+
+        .today {
+            background-color: #f0f9ff;
+            border-left: 3px solid #2196f3;
+        }
+
+        .has-event {
+            background-color: #e8f4ff;
+        }
+
+        .reminder-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-group button {
+            padding: 10px 20px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block section %}
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <h1 class="month-title" id="monthTitle">FÉVR. 2024</h1>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-month">&lt;</button>
+                <button class="nav-btn next-month">&gt;</button>
+            </div>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid">
+            <!-- Les jours seront générés dynamiquement par JavaScript -->
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter un rappel -->
+    <div id="reminderModal" class="reminder-modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Ajouter un rappel</h2>
+            <form id="reminderForm">
+                <div class="form-group">
+                    <label for="title">Médicament</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="time">Heure</label>
+                    <input type="time" id="time" name="time" required>
+                </div>
+                <div class="form-group">
+                    <label for="notifyBefore">Rappel avant</label>
+                    <select id="notifyBefore" name="notifyBefore">
+                        <option value="10">10 minutes avant</option>
+                        <option value="30">30 minutes avant</option>
+                        <option value="60">1 heure avant</option>
+                        <option value="1440">1 jour avant</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="repeatType">Répétition</label>
+                    <select id="repeatType" name="repeatType">
+                        <option value="none">Pas de répétition</option>
+                        <option value="daily">Chaque jour</option>
+                        <option value="weekly">Chaque semaine</option>
+                        <option value="monthly">Chaque mois</option>
+                    </select>
+                </div>
+                <button type="submit">Enregistrer</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const monthTitle = document.getElementById('monthTitle');
+            const calendarGrid = document.getElementById('calendarGrid');
+            const reminderModal = document.getElementById('reminderModal');
+            const reminderForm = document.getElementById('reminderForm');
+            let currentMonth = new Date().getMonth();
+            let currentYear = new Date().getFullYear();
+
+            function renderCalendar() {
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startingDay = firstDay.getDay();
+
+                calendarGrid.innerHTML = '';
+
+                // Ajouter les jours vides pour le début du mois
+                for (let i = 0; i < startingDay; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'day-cell';
+                    calendarGrid.appendChild(emptyCell);
+                }
+
+                // Ajouter les jours du mois
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const dayCell = document.createElement('div');
+                    dayCell.className = 'day-cell';
+                    dayCell.textContent = i;
+                    dayCell.addEventListener('click', () => openReminderModal(i));
+                    calendarGrid.appendChild(dayCell);
+                }
+
+                monthTitle.textContent = `${getMonthName(currentMonth)} ${currentYear}`;
+            }
+
+            function openReminderModal(day) {
+                reminderModal.style.display = 'flex';
+                reminderForm.onsubmit = function(e) {
+                    e.preventDefault();
+                    saveReminder(day);
+                };
+            }
+
+            function saveReminder(day) {
+                const title = document.getElementById('title').value;
+                const time = document.getElementById('time').value;
+                const notifyBefore = document.getElementById('notifyBefore').value;
+                const repeatType = document.getElementById('repeatType').value;
+
+                // Envoyer les données au backend
+                fetch('{{ path('app_reminder_new_ajax') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        date: `${currentYear}-${currentMonth + 1}-${day}`,
+                        time: time,
+                        notifyBefore: notifyBefore,
+                        repeatType: repeatType
+                    })
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.success) {
+                          reminderModal.style.display = 'none';
+                          loadReminders();
+                      }
+                  });
+            }
+
+            function loadReminders() {
+                // Charger les rappels depuis le backend
+            }
+
+            function getMonthName(month) {
+                const monthNames = ['JANV.', 'FÉVR.', 'MARS', 'AVR.', 'MAI', 'JUIN', 'JUIL.', 'AOÛT', 'SEPT.', 'OCT.', 'NOV.', 'DÉC.'];
+                return monthNames[month];
+            }
+
+            document.querySelector('.prev-month').addEventListener('click', () => {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                renderCalendar();
+            });
+
+            document.querySelector('.next-month').addEventListener('click', () => {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                renderCalendar();
+            });
+
+            renderCalendar();
+        });
+    </script>
+{% endblock %}

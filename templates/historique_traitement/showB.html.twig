@@ -1,0 +1,253 @@
+{% extends 'baseBack.html.twig' %}
+{% block body %}
+<style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+            @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css');
+
+   
+
+    body {
+        background: #f8fbff;
+        font-family: 'Poppins', sans-serif;
+        min-height: 100vh;
+    }
+
+        
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #6B8CEF, #9CB2FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 35px;
+            position: relative;
+            text-shadow: 0 4px 8px rgba(107, 140, 239, 0.2);
+        }
+
+        h1 .fas {
+            font-size: 2.8rem;
+            margin-right: 15px;
+            filter: drop-shadow(0 4px 6px rgba(107, 140, 239, 0.3));
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(45deg, #6B8CEF, #9CB2FF);
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(107, 140, 239, 0.2);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.05),
+                0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 20px 0;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+        }
+
+        .table th {
+            background: linear-gradient(45deg, #6B8CEF, #9CB2FF);
+            color: white;
+            padding: 20px 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(107, 140, 239, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .table th .fas {
+            margin-right: 10px;
+            font-size: 1.3rem;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+        }
+
+        .table td {
+            padding: 20px 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .table tr:hover td {
+            background: #EEF2FF;
+            transform: scale(1.01) translateY(-2px);
+            box-shadow: 0 4px 15px rgba(107, 140, 239, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
+            transform: translateY(-100%);
+            transition: 0.3s;
+        }
+
+        .btn:hover::before {
+            transform: translateY(0);
+        }
+
+        .btn-back {
+            background: linear-gradient(45deg, #8796A5, #A5B4C2);
+        }
+
+        .btn-edit {
+            background: linear-gradient(45deg, #6B8CEF, #9CB2FF);
+        }
+
+        .btn-delete {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .bilan-link {
+            color: #6B8CEF;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: #EEF2FF;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(107, 140, 239, 0.1);
+        }
+
+        .bilan-link:hover {
+            background: #DFE7FF;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(107, 140, 239, 0.2);
+        }
+
+        .text-danger {
+            color: #FF6B6B;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+</style>
+
+
+    <div class="container">
+        <h1><i class="fas fa-file-medical"></i> Détails du Traitement</h1>
+
+        <div class="table-container">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th><i class="fas fa-virus"></i> Maladie</th>
+                        <td>{{ historique_traitement.maladie }}</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-sticky-note"></i> Description</th>
+                        <td>{{ historique_traitement.description }}</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-pills"></i> Type Traitement</th>
+                        <td>{{ historique_traitement.typeTraitement }}</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-user"></i> Nom</th>
+                        <td>{{ historique_traitement.nom }}</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-user-friends"></i> Prénom</th>
+                        <td>{{ historique_traitement.prenom }}</td>
+                    </tr>
+                    <tr>
+                        <th><i class="fas fa-file-alt"></i> Bilan</th>
+                        <td>
+                            {% if historique_traitement.bilan %}
+                                <a href="{{ asset('uploads/bilan/' ~ historique_traitement.bilan) }}" target="_blank" class="bilan-link">
+                                    <i class="fas fa-folder-open"></i> Voir le bilan
+                                </a>
+                            {% else %}
+                                <span class="text-danger"><i class="fas fa-times-circle"></i> Aucun bilan disponible</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="button-container">
+            <a href="{{ path('app_historique_traitement_index') }}" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+
+        </div>
+    </div>
+{% endblock %}

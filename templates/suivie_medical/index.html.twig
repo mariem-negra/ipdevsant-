@@ -1,0 +1,217 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Suivie Médical{% endblock %}
+
+{% block body %}
+<style>
+    .table-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 25px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,255,244,0.95) 100%);
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+        color: #1e6d68;
+        margin-bottom: 30px;
+        font-size: 2.2rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-bottom: 3px solid #e5f3f2;
+        padding-bottom: 15px;
+    }
+
+    h1::before {
+        content: '📋';
+        font-size: 2rem;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 30px;
+        background-color: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .table thead {
+        background: linear-gradient(45deg, #1e6d68, #2dd4bf);
+    }
+
+    .table th {
+        padding: 18px;
+        font-weight: 600;
+        color: white;
+        text-align: left;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+        border: none;
+    }
+
+    .table td {
+        padding: 16px;
+        border-bottom: 1px solid #eef7f6;
+        color: #444;
+        font-size: 0.95rem;
+    }
+
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f8fffd;
+        transform: translateX(5px);
+    }
+
+    .button-container {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-info {
+        background-color: #2dd4bf;
+        color: white;
+    }
+
+    .btn-info::before {
+        content: '👁️';
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        color: #333;
+    }
+
+    .btn-warning::before {
+        content: '✏️';
+    }
+
+    .btn-success {
+        background-color: #10b981;
+        color: white;
+        font-size: 15px;
+        padding: 12px 24px;
+    }
+
+    .btn-success::before {
+        content: '➕';
+    }
+
+    /* Empty state styling */
+    tbody tr:only-child td {
+        padding: 40px;
+        text-align: center;
+        color: #666;
+        font-style: italic;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%23dedede' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'%3E%3C/path%3E%3Cpolyline points='14 2 14 8 20 8'%3E%3C/polyline%3E%3Cline x1='16' y1='13' x2='8' y2='13'%3E%3C/line%3E%3Cline x1='16' y1='17' x2='8' y2='17'%3E%3C/line%3E%3Cpolyline points='10 9 9 9 8 9'%3E%3C/polyline%3E%3C/svg%3E") center 20px no-repeat;
+        background-size: 60px;
+        padding-top: 100px;
+    }
+
+    /* Date column styling */
+    .table td:first-child {
+        font-family: monospace;
+        color: #666;
+    }
+
+    /* Add subtle stripe effect */
+    .table tbody tr:nth-child(even) {
+        background-color: #fbfefe;
+    }
+
+    @media (max-width: 768px) {
+        .table-container {
+            padding: 15px;
+            margin: 10px;
+        }
+
+        .button-container {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .table th, 
+        .table td {
+            padding: 12px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+        }
+
+        .table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    }
+</style>
+
+<div class="table-container">
+    <h1>Suivie Médical</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>                             
+                <th>Commentaire</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for suivie_medical in suivie_medicals %}
+            <tr>
+                <td>{{ suivie_medical.date ? suivie_medical.date|date('Y-m-d') : '' }}</td>
+                <td>{{ suivie_medical.commentaire }}</td>
+                <td>
+                    <div class="button-container">
+                        <a href="{{ path('app_suivie_medical_showB', {'id': suivie_medical.id}) }}" class="btn btn-info">Afficher</a>
+                    </div>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Pas de documents trouvés</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+   
+</div>
+{% endblock %}
