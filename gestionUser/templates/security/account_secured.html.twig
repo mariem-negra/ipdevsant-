@@ -1,0 +1,142 @@
+{# templates/security/account_secured.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Compte Sécurisé{% endblock %}
+
+{% block body %}
+<div class="secure-container">
+  <div class="secure-card">
+    <div class="secure-header">
+      <img src="{{ asset('img/logo.png') }}" alt="Logo" class="secure-logo">
+      <h1 class="secure-title">Compte Sécurisé</h1>
+    </div>
+    
+    <div class="secure-content">
+      <div class="secure-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      
+      <h2 class="secure-subtitle">Votre compte a été sécurisé</h2>
+      
+      <p>Suite à votre signal, nous avons appliqué des mesures de sécurité renforcées à votre compte :</p>
+      
+      <ul class="secure-list">
+        <li>Votre compte est verrouillé pour les prochaines 24 heures</li>
+        <li>Toutes les sessions actives ont été déconnectées</li>
+        <li>Une notification a été envoyée à l'administrateur système</li>
+      </ul>
+      
+      <p>Pour récupérer l'accès à votre compte, vous devrez réinitialiser votre mot de passe. Pour votre sécurité, nous vous recommandons :</p>
+      
+      <ul class="secure-list">
+        <li>Utiliser un mot de passe fort et unique</li>
+        <li>Vérifier régulièrement les activités de votre compte</li>
+        <li>Ne jamais partager vos informations d'identification</li>
+      </ul>
+      
+      <div class="secure-actions">
+        <a href="{{ path('app_login') }}" class="btn btn-primary">Retour à la page d'accueil</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  body {
+    background: linear-gradient(-45deg, #3fbbc0, #2a9d9f, #1c7a7d, #0d4d4f);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .secure-container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+  }
+
+  .secure-card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+  }
+
+  .secure-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .secure-logo {
+    max-width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+
+  .secure-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #036EB8;
+    margin-bottom: 10px;
+  }
+
+  .secure-content {
+    text-align: center;
+  }
+
+  .secure-icon {
+    font-size: 48px;
+    color: #3fbbc0;
+    margin-bottom: 20px;
+  }
+
+  .secure-subtitle {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .secure-list {
+    text-align: left;
+    margin: 20px 0;
+    padding-left: 20px;
+  }
+
+  .secure-list li {
+    margin-bottom: 10px;
+  }
+
+  .secure-actions {
+    margin-top: 30px;
+  }
+
+  .btn-primary {
+    background-color: #3fbbc0;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: #2a9d9f;
+  }
+</style>
+{% endblock %}

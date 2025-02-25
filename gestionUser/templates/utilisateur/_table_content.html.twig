@@ -1,0 +1,48 @@
+{# templates/utilisateur/_table_content.html.twig #}
+{% for utilisateur in utilisateurs %}
+    <tr class="align-middle">
+        <td>{{ utilisateur.id }}</td>
+        <td>{{ utilisateur.nom }}</td>
+        <td>{{ utilisateur.prenom }}</td>
+        <td>{{ utilisateur.email }}</td>
+        <td> ************</td>
+        <td>
+            <span class="badge bg-{{ utilisateur.role.value == 'ADMIN' ? 'danger' : 'success' }}">
+                {{ utilisateur.role.value }}
+            </span>
+        </td>
+        <td> {{ utilisateur.dateNaissance ? utilisateur.dateNaissance|date('Y-m-d') : '' }}</td>
+        <td>{{ utilisateur.specialite ?? 'NULL' }}</td>
+        <td>{{ utilisateur.telephone }}</td>
+        <td>
+            {% if utilisateur.diploma %}
+                <img src="{{ asset('uploads/diplomas/' ~ utilisateur.diploma) }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+            {% else %}
+            NULL
+            {% endif %}
+        </td>
+        <td> 
+            {% if utilisateur.image %}
+                <img src="{{ asset('uploads/profile_images/' ~ utilisateur.image) }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+            {% else %}
+                <img src="{{ asset('imgBack/images.jpg') }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+            {% endif %}
+        </td>
+
+        <td class="text-center">
+            <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}" class="btn btn-info btn-sm">
+                <i class="bi bi-eye"></i> 
+            </a>
+            <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}" class="btn btn-warning btn-sm">
+                <i class="bi bi-pencil"></i> 
+            </a>
+            {{ include('utilisateur/_delete_form.html.twig') }}
+        </td>
+    </tr>
+{% else %}
+    <tr>
+        <td colspan="12" class="text-center text-muted">
+            <i class="bi bi-exclamation-circle text-secondary"></i> Aucun utilisateur trouvé
+        </td>
+    </tr>
+{% endfor %}

@@ -72,6 +72,86 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface{
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private ?bool $isVerified = null;
 
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    private int $loginAttempts = 0;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $lockedUntil = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $verificationToken = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $tokenExpiresAt = null;
+
+    #[ORM\Column(type: 'string', length: 6, nullable: true)]
+    private ?string $otp = null;
+
+    // Add these getters and setters to your Utilisateur entity
+
+    public function getVerificationToken(): ?string
+    {
+        return $this->verificationToken;
+    }
+
+    public function setVerificationToken(?string $verificationToken): self
+    {
+        $this->verificationToken = $verificationToken;
+        return $this;
+    }
+
+    public function getTokenExpiresAt(): ?\DateTimeInterface
+    {
+        return $this->tokenExpiresAt;
+    }
+
+    public function setTokenExpiresAt(?\DateTimeInterface $tokenExpiresAt): self
+    {
+        $this->tokenExpiresAt = $tokenExpiresAt;
+        return $this;
+    }
+
+    public function getOtp(): ?string
+    {
+        return $this->otp;
+    }
+
+    public function setOtp(?string $otp): self
+    {
+        $this->otp = $otp;
+        return $this;
+    }
+    // Add getters and setters
+    public function getLoginAttempts(): int
+    {
+        return $this->loginAttempts;
+    }
+
+    public function setLoginAttempts(int $loginAttempts): self
+    {
+        $this->loginAttempts = $loginAttempts;
+        return $this;
+    }
+
+    public function getLockedUntil(): ?\DateTimeInterface
+    {
+        return $this->lockedUntil;
+    }
+
+    public function setLockedUntil(?\DateTimeInterface $lockedUntil): self
+    {
+        $this->lockedUntil = $lockedUntil;
+        return $this;
+    }
+
+    public function isLocked(): bool
+    {
+        if ($this->lockedUntil === null) {
+            return false;
+        }
+        return $this->lockedUntil > new \DateTime();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

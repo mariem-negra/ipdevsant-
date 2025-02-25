@@ -354,4 +354,29 @@
         {{ form_end(form) }}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     </div>
+<script>
+    async function registerWebAuthn() {
+    // Get options
+    const optionsResponse = await fetch('/webauthn/register/options', {
+        method: 'POST',
+        credentials: 'same-origin'
+    });
+    const options = await optionsResponse.json();
+    
+    // Create credentials
+    const credential = await navigator.credentials.create({
+        publicKey: options
+    });
+    
+    // Verify registration
+    const verification = await fetch('/webauthn/register/verify', {
+        method: 'POST',
+        credentials: 'same-origin',
+        body: JSON.stringify(credential)
+    });
+    
+    return verification.json();
+}
+</script>
+
 {% endblock %}

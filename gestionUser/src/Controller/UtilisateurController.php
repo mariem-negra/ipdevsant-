@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-
 use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
 use App\Repository\UtilisateurRepository;
@@ -10,29 +9,98 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+use App\Service\DoctorMailerService;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Enum\UserRole;
+use Psr\Log\LoggerInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 #[Route('/utilisateur')]
 final class UtilisateurController extends AbstractController
 {
+    private $logger; // Add this line
 
-    #[Route(name: 'app_utilisateur_index', methods: ['GET', 'POST'])]
-    public function index(UtilisateurRepository $utilisateurRepository): Response
+    public function __construct(LoggerInterface $logger) // Add this line
     {
-        $user = $this->getUser();
-
-        return $this->render('utilisateur/index.html.twig', [
-            'utilisateurs' => $utilisateurRepository->findAll(),
-                'user' => $user,
-            
-        ]);
+        $this->logger = $logger; // Add this line
     }
 
+    #[Route(name: 'app_utilisateur_index', methods: ['GET', 'POST'])]
+    public function index(Request $request, UtilisateurRepository $utilisateurRepository): Response
+    {
+        $user = $this->getUser();
+        
+        // Get sort parameters from request
+        $sortField = $request->query->get('sort', 'id');
+        $sortDirection = $request->query->get('direction', 'asc');
+        
+        $searchQuery = $request->query->get('search', '');
+    
+        // Get users with sorting and search
+        if (!empty($searchQuery)) {
+            $utilisateurs = $utilisateurRepository->searchUsers($searchQuery, $sortField, $sortDirection);
+        } else {
+            $utilisateurs = $utilisateurRepository->findAllSorted($sortField, $sortDirection);
+        }
+        
+        // Check if it's an Ajax request
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('utilisateur/_table_content.html.twig', [
+                'utilisateurs' => $utilisateurs,
+            ]);
+        }
+        
+        return $this->render('utilisateur/index.html.twig', [
+            'utilisateurs' => $utilisateurs,
+            'user' => $user,
+            'sortField' => $sortField,
+            'sortDirection' => $sortDirection,
+            'searchQuery' => $searchQuery
+
+        ]);
+    }
+    #[Route('/export-pdf', name: 'app_utilisateur_export_pdf', methods: ['GET'])]
+    public function exportPdf(UtilisateurRepository $utilisateurRepository): Response
+    {
+        // Fetch all users
+        $utilisateurs = $utilisateurRepository->findAll();
+    
+        // Render the table HTML
+        $html = $this->renderView('utilisateur/pdf_template.html.twig', [
+            'utilisateurs' => $utilisateurs,
+        ]);
+    
+        // Configure Dompdf with enhanced options
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true); // Enable remote assets (e.g., images)
+        $options->set('isPhpEnabled', true); 
+        $options->set('defaultFont', 'Arial');
+        
+        // Important for CSS print color adjustments
+        $options->set('dpi', 150); // Higher DPI for better quality
+        $options->set('defaultMediaType', 'screen'); // Use screen media type instead of print
+        $options->set('isFontSubsettingEnabled', true);
+    
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape'); // Changed to landscape for wide tables
+        $dompdf->render();
+    
+        // Stream the PDF to the browser
+        $output = $dompdf->output();
+        $response = new Response($output);
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="liste_utilisateurs.pdf"');
+    
+        return $response;
+    }
     #[Route('/new', name: 'app_utilisateur_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, DoctorMailerService $doctorMailer
+    ): Response
     {
         $utilisateur = new Utilisateur();
         $form = $this->createForm(UtilisateurType::class, $utilisateur);
@@ -69,7 +137,9 @@ final class UtilisateurController extends AbstractController
                         'form' => $form->createView(),
                     ]);
                 }
-            }
+                    $this->logger->info('Creating a doctor account. Sending verification email...');
+                    $doctorMailer->sendVerificationPendingEmail($utilisateur);
+                           }
             $entityManager->persist($utilisateur);
             $entityManager->flush();
 
@@ -177,4 +247,5 @@ public function edit(Request $request, Utilisateur $utilisateur, EntityManagerIn
 
         return $this->redirectToRoute('app_utilisateur_index', [], Response::HTTP_SEE_OTHER);
     }
+
 }

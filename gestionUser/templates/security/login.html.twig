@@ -26,6 +26,8 @@
           {{ message }}
         </div>
       {% endfor %}
+
+
  
       <!-- Email/Username Field -->
       <div class="form-group">
@@ -250,4 +252,49 @@
     text-decoration: underline;
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+      const captureBtn = document.getElementById("capture-btn");
+
+      // Accéder à la caméra
+      navigator.mediaDevices.getUserMedia({ video: true })
+          .then(stream => {
+              video.srcObject = stream;
+          })
+          .catch(err => {
+              console.error("Erreur d'accès à la caméra :", err);
+          });
+
+      captureBtn.addEventListener("click", function () {
+          const context = canvas.getContext("2d");
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          // Convertir l'image en base64
+          const imageData = canvas.toDataURL("image/png");
+
+          // Envoyer l'image au serveur pour authentification
+          fetch('/face-login', {
+              method: 'POST',
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ image: imageData })
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  window.location.href = "/dashboard"; // Redirection après succès
+              } else {
+                  alert("Échec de la reconnaissance faciale.");
+              }
+          })
+          .catch(error => console.error("Erreur lors de l'envoi :", error));
+      });
+  });
+</script>
+
+
 {% endblock %}

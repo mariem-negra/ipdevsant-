@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\DoctorMailerService;
 
 #[Route('/admin')]
 class AdminController extends AbstractController
@@ -44,7 +45,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('app_home');
     }
     #[Route('/verify-doctor/{id}', name: 'admin_verify_doctor', methods: ['POST'])]
-    public function verifyDoctor(Utilisateur $doctor, EntityManagerInterface $em): Response
+    public function verifyDoctor(Utilisateur $doctor, EntityManagerInterface $em, DoctorMailerService $doctorMailer): Response
     {
         // Check if the user has the 'ROLE_ADMIN' role
         if (!$this->isGranted('ROLE_ADMIN')) {
@@ -53,7 +54,8 @@ class AdminController extends AbstractController
     
         $doctor->setIsVerified(true);
         $em->flush();
-    
+        $doctorMailer->sendVerificationApprovedEmail($doctor);
+
         $this->addFlash('success', 'Doctor account has been verified.');
         return $this->redirectToRoute('admin_pending_doctors');
     }
