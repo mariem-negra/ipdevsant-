@@ -1,0 +1,423 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier{% endblock %}
+
+    {% block header %}
+    <div class="topbar d-flex align-items-center">
+      <div class="container d-flex justify-content-center justify-content-md-between">
+        <div class="d-none d-md-flex align-items-center">
+          <i class="bi bi-clock me-1"></i> Monday - Saturday, 8AM to 10PM
+        </div>
+        <div class="d-flex align-items-center">
+          <i class="bi bi-phone me-1"></i> Call us now +1 5589 55488 55
+        </div>
+      </div>
+    </div><!-- End Top Bar -->
+    
+
+    <div class="branding d-flex align-items-center">
+
+      <div class="container position-relative d-flex align-items-center justify-content-end">
+        <a href='#' class="logo d-flex align-items-center me-auto" style="max-width: 200px;"> <!-- Adjust max-width as needed -->
+          <img src="{{ asset('img/logo.png') }}" alt="Logo" class="img-fluid" style="width: 200%; height: auto;">
+        </a>
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                <li><a href="{{ path('app_home') }}" >Acceuil</a></li>
+                <li><a href="{{ path('app_home') }}">Consernant</a></li>
+                <li><a href="{{ path('app_home') }}">Services</a></li>
+                <li><a href="{{ path('app_home') }}">Departments</a></li>
+                <li><a href="{{ path('app_produit_display') }}#produit" class="active">Produit</a></li>
+                <li><a href="{{ path('app_home') }}">Médecin</a></li>
+                <li><a href="{{ path('app_home') }}">Contact</a></li>
+                
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+        <a class="cta-btn" href="{{ path('app_profile') }}">Mon Profile</a>
+
+      </div>
+      <a href="{{ path('app_panier') }}" class="cart-icon-wrapper">
+      <div class="cart-icon">
+        <i class="bi bi-cart3"></i>
+        <span class="cart-count">{{ app.session.get('panier')|length|default(0) }}</span>
+      </div>
+    </a>
+    </div>
+
+  </header>
+   <style>
+    .cart-icon-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-right: 50px;
+  text-decoration: none;
+}
+
+.cart-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #30b4b4; /* Using your teal brand color */
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.cart-icon:hover {
+  background-color: #2a9d9d;
+  transform: scale(1.05);
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color:rgb(47, 63, 241);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4 text-center">Mon Panier</h1>
+
+            {% if produits is empty %}
+                <div class="alert alert-info text-center">
+                    Votre panier est vide.
+                </div>
+                <div class="mt-4 text-center">
+                    <a href="{{ path('app_produit_index') }}" class="btn btn-secondary">
+                        Continuer mes achats
+                    </a>
+                    <button class="btn btn-primary">
+                        Procéder au paiement
+                    </button>
+                </div>
+            {% else %}
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Produit</th>
+                                        <th>Image</th>
+                                        <th>Prix unitaire</th>
+                                        <th>Quantité</th>
+                                        <th>Prix</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for produit in produits %}
+                                        <tr id="product-row-{{ produit.id }}">
+                                            <td>{{ produit.nom }}</td>
+                                            <td>
+                                                <img src="{{ asset('uploads/images/' ~ produit.image) }}" 
+                                                     alt="{{ produit.nom }}" 
+                                                     class="cart-product-image rounded">
+                                            </td>
+                                            <td>{{ produit.prix }} TND</td>
+                                            <td>
+                                                <div class="quantity-controls">
+                                                    <button class="btn btn-sm btn-outline-secondary quantity-btn" 
+                                                            onclick="updateQuantity({{ produit.id }}, -1)">-</button>
+                                                    <span id="quantity-{{ produit.id }}" class="quantity">{{ panier[produit.id] }}</span>
+                                                    <button class="btn btn-sm btn-outline-secondary quantity-btn" 
+                                                            onclick="updateQuantity({{ produit.id }}, 1)">+</button>
+                                                </div>
+                                            </td>
+                                            <td id="total-{{ produit.id }}">
+                                                {{ (produit.prix * panier[produit.id])|number_format(2) }} TND
+                                            </td>
+                                            <td>
+                                                <form action="{{ path('remove_from_panier', {'id': produit.id}) }}" method="POST" style="display: inline;">
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit?')">
+                                                        <i class="fas fa-trash"></i> Supprimer
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot class="bg-light">
+                                    <tr>
+                                        <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                                        <td colspan="2"><strong id="cart-total">{{ total|number_format(2) }} TND</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <a href="{{ path('app_produit_index') }}" class="btn btn-secondary">
+                        Continuer mes achats
+                    </a>
+                
+                    <a href="{{ path('app_commande_new') }}" class="btn btn-secondary">
+                        Procéder au paiement
+                    </a>
+                    <br>
+                    <br>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.cart-product-image {
+    max-width: 100px;
+    height: auto;
+    border: 2px solid #ddd;
+    transition: transform 0.3s ease;
+}
+
+.cart-product-image:hover {
+    transform: scale(1.1);
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.quantity-btn:hover {
+    background-color: rgb(47, 63, 241);
+    color: white;
+}
+
+.quantity {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color:rgb(47, 63, 241);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #2a9d9d;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color:rgb(47, 63, 241);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+</style>
+
+<script>
+function updateTotal() {
+    let total = 0;
+    document.querySelectorAll('[id^="total-"]').forEach(el => {
+        const amount = parseFloat(el.textContent.replace(' TND', '').replace(',', ''));
+        if (!isNaN(amount)) {
+            total += amount;
+        }
+    });
+    document.getElementById('cart-total').textContent = total.toFixed(2) + ' TND';
+}
+
+function updateQuantity(productId, change) {
+    const quantityElement = document.getElementById(`quantity-${productId}`);
+    let newQuantity = parseInt(quantityElement.textContent) + change;
+
+    if (newQuantity < 1) newQuantity = 1;
+
+    fetch(`/update-quantity/${productId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ quantite: newQuantity })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            quantityElement.textContent = data.quantite;
+            document.getElementById(`total-${productId}`).textContent = data.newTotal + ' TND';
+            updateCartTotal();
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function updateCartTotal() {
+    let total = 0;
+    document.querySelectorAll('[id^="total-"]').forEach(el => {
+        const amount = parseFloat(el.textContent.replace(' TND', '').replace(/,/g, ''));
+        if (!isNaN(amount)) {
+            total += amount;
+        }
+    });
+    document.getElementById('cart-total').textContent = total.toFixed(2) + ' TND';
+}
+
+function removeFromCart(productId) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit du panier?')) {
+        return;
+    }
+    
+    fetch(`/remove-from-panier/${productId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token('delete-item') }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const row = document.getElementById(`product-row-${productId}`);
+            if (row) {
+                row.remove();
+            }
+            
+            // Check if cart is empty and reload if necessary
+            if (document.querySelectorAll('tbody tr').length === 0) {
+                window.location.reload();
+            }
+            
+            // Update cart count
+            updateCartCount();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Une erreur est survenue lors de la suppression du produit');
+    });
+}
+
+// Add this to your existing JavaScript
+function clearCart() {
+    fetch('/commande/clear-cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Clear the cart display
+            const tbody = document.querySelector('tbody');
+            if (tbody) {
+                tbody.innerHTML = '';
+            }
+            
+            // Update the cart total
+            document.getElementById('cart-total').textContent = '0.00 TND';
+            
+            // Update the floating cart count
+            document.getElementById('panier-count').textContent = '0';
+            
+            // Show empty cart message
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <div class="alert alert-info text-center">
+                    Votre panier est vide.
+                </div>
+                <div class="mt-4 text-center">
+                    <a href="${window.location.origin}/produit" class="btn btn-secondary">
+                        Continuer mes achats
+                    </a>
+                </div>
+            `;
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function updateCartCount() {
+    fetch('/panier-count')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('panier-count').innerText = data.count;
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,1074 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ produit.nom }}{% endblock %}
+{% block header %}
+    <div class="topbar d-flex align-items-center">
+      <div class="container d-flex justify-content-center justify-content-md-between">
+        <div class="d-none d-md-flex align-items-center">
+          <i class="bi bi-clock me-1"></i> Monday - Saturday, 8AM to 10PM
+        </div>
+        <div class="d-flex align-items-center">
+          <i class="bi bi-phone me-1"></i> Call us now +1 5589 55488 55
+        </div>
+      </div>
+    </div><!-- End Top Bar -->
+    
+    <div class="branding d-flex align-items-center">
+      <div class="container position-relative d-flex align-items-center justify-content-end">
+        <a href='#' class="logo d-flex align-items-center me-auto" style="max-width: 200px;">
+          <img src="{{ asset('img/logo.png') }}" alt="Logo" class="img-fluid" style="width: 200%; height: auto;">
+        </a>
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                <li><a href="{{ path('app_home') }}">Acceuil</a></li>
+                <li><a href="{{ path('app_home') }}">Consernant</a></li>
+                <li><a href="{{ path('app_home') }}">Services</a></li>
+                <li><a href="{{ path('app_home') }}">Departments</a></li>
+                <li><a href="{{ path('app_produit_display') }}#produit" class="active">Produit</a></li>
+                <li><a href="{{ path('app_home') }}">Médecin</a></li>
+                <li><a href="{{ path('app_home') }}">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+        <!-- Cart icon added here -->
+        
+        <a class="cta-btn" href="{{ path('app_profile') }}">Mon Profile</a>
+      </div>
+      <a href="{{ path('app_panier') }}" class="cart-icon-wrapper">
+      <div class="cart-icon">
+        <i class="bi bi-cart3"></i>
+        <span class="cart-count">{{ app.session.get('panier')|length|default(0) }}</span>
+      </div>
+    </a>
+    </div>
+  </header>
+{% endblock %}
+{% block main %}
+    <div class="product-container">
+        <div class="breadcrumb">
+            <a href="{{ path('app_produit_index') }}" class="back-link">
+                <span class="back-icon">&#8592;</span>
+                <span>Catégorie</span>
+            </a>
+            <span class="separator">/</span>
+            <span class="current-page">{{ produit.nom }}</span>
+        </div>
+
+        <div class="product-content">
+            <!-- Left column: Product images and thumbnails -->
+            <div class="product-images-column">
+                <div class="main-image-container">
+                    {% if produit.image|split(',')|length > 0 %}
+                        {% set mainImage = produit.image|split(',')|first %}
+                        <img src="{{ asset('uploads/images/' ~ mainImage) }}" alt="{{ produit.nom }}" class="main-product-image" id="mainImage">
+                    {% endif %}
+                </div>
+                
+                <div class="thumbnail-container">
+                    {% for image in produit.image|split(',') %}
+                        <div class="thumbnail-item" onclick="changeMainImage('{{ asset('uploads/images/' ~ image) }}')">
+                            <img src="{{ asset('uploads/images/' ~ image) }}" alt="{{ produit.nom }}" class="thumbnail-image">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right column: Product details and actions -->
+            <div class="product-details-column">
+                <div class="product-brand">{{ produit.marque ?? 'Marque' }}</div>
+                <h1 class="product-title">{{ produit.nom }}</h1>
+                
+                <div class="product-rating">
+                    <div class="star-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">5 <span class="rating-text">sur</span> {{ produit.ratings ?? '13' }} <span class="rating-text">évaluations</span></span>
+                    </div>
+                    <div class="product-id">
+                        <span class="id-label">Art. No.:</span>
+                        <span class="id-value">{{ produit.reference ?? '135363W' }}</span>
+                    </div>
+                    <div class="product-ean">
+                        <span class="ean-label">EAN:</span>
+                        <span class="ean-value">{{ produit.ean ?? '4260306777716' }}</span>
+                    </div>
+                </div>
+
+                <div class="product-price-section">
+                    <div class="price-container">
+                        <span class="current-price">€ {{ produit.prix|number_format(2, ',', '.') }}</span>
+                        <span class="price-notes">net</span>
+                    </div>
+                    <div class="original-price">
+                        <span>€ {{ (produit.prix * 1.2)|number_format(2, ',', '.') }} brut</span>
+                    </div>
+                    <div class="savings-info">
+                        <span class="savings-label">Votre <strong>PLUS</strong> économies client</span>
+                        <span class="savings-value">€ {{ (produit.prix * 0.05)|number_format(2, ',', '.') }} net</span>
+                    </div>
+                </div>
+
+                <div class="product-overview">
+                    <h2 class="section-title">Aperçu du produit</h2>
+                    <ul class="feature-list">
+                        <li>Dossier pivote à 360°</li>
+                        <li>Idéal pour différentes positions assises</li>
+                        <li>Hauteur réglable de 48 - 58 cm</li>
+                        <li>Siège Ø: 38 cm</li>
+                        <li>Avec anneau de déverrouillage</li>
+                    </ul>
+                    <p class="product-description">{{ produit.description }}</p>
+                </div>
+
+                <div class="delivery-info">
+                    <div class="stock-info">
+                        <span class="stock-icon">✓</span>
+                        <span class="stock-text">En stock. Date de livraison prévue: {{ "now"|date_modify("+3 days")|date("Y-m-d") }} à 18h</span>
+                    </div>
+                </div>
+
+                <div class="add-to-cart-section">
+                    <div class="quantity-selector">
+                        <input type="number" min="1" value="1" id="quantity" class="quantity-input">
+                    </div>
+                    <button class="add-to-panier-btn" onclick="event.stopPropagation(); addTopanier({{ produit.id }})" {% if produit.stockQuantite <= 0 %}disabled{% endif %}>
+                                        {% if produit.stockQuantite > 0 %}
+                                            🛒 Ajouter au panier
+                                        {% else %}
+                                            Rupture de stock
+                                        {% endif %}
+                                    </button>
+                </div>
+                <div class="wishlist-action">
+                    <a href="#" class="wishlist-link">Ajouter à la liste de souhaits</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="additional-info">
+            <div class="shipping-info">
+                <span class="shipping-icon">🚚</span>
+                <span class="shipping-text">Expédition rapide à des prix raisonnables</span>
+            </div>
+            <div class="delivery-options">
+                <span class="delivery-icon">📅</span>
+                <span class="delivery-text">Livraison préférée</span>
+            </div>
+            <div class="discount-info">
+                <span class="discount-icon">🏷️</span>
+                <span class="discount-text">5% de remise pour les membres PD PLUS</span>
+            </div>
+            <div class="faq-link">
+                <span class="faq-icon">❓</span>
+                <span class="faq-text">Questions fréquemment posées</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panier Icon -->
+    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    console.log("Page loaded!"); // Debugging line
+});
+
+        function addTopanier(id) {
+    const quantity = parseInt(document.getElementById('quantity').value);
+
+    fetch('/add-to-panier/' + id, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ quantity: quantity })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the cart count immediately
+            document.querySelector('.cart-count').textContent = data.count;
+            showNotification(data.message, 'success');
+        } else {
+            showNotification(data.message, 'warning');
+        }
+    })
+    .catch(error => {
+        console.error("Erreur lors de l'ajout au panier:", error);
+        showNotification("Une erreur est survenue", 'error');
+    });
+}
+
+        function updatePanierCount() {
+    fetch('/panier-count')
+    .then(response => response.json())
+    .then(data => {
+        // Update using the correct selector for the cart counter
+        document.querySelector('.cart-count').textContent = data.count ?? 0;
+    })
+    .catch(error => console.error("Erreur lors de la récupération du panier:", error));
+}
+
+        function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    // Remove any existing notifications
+    const existingNotifications = document.querySelectorAll('.notification');
+    existingNotifications.forEach(notif => notif.remove());
+    
+    document.body.appendChild(notification);
+    
+    // Remove notification after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+
+// Enhanced Product Image Zoom Functionality
+document.addEventListener("DOMContentLoaded", function() {
+    // Get elements
+    const mainImage = document.getElementById('mainImage');
+    const modalElement = document.querySelector('.image-modal');
+    const zoomImage = document.getElementById('zoomImage');
+    const closeButton = document.querySelector('.close-button');
+    const zoomInButton = document.querySelector('.zoom-in');
+    const zoomOutButton = document.querySelector('.zoom-out');
+    const zoomResetButton = document.querySelector('.zoom-reset');
+    
+    // Variables for zoom and drag functionality
+    let zoomLevel = 1;
+    const zoomStep = 0.2;
+    let isDragging = false;
+    let startX, startY, translateX = 0, translateY = 0;
+    
+    // Create modal if it doesn't exist
+    if (!modalElement) {
+        const modalHTML = `
+            <div class="image-modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <div class="zoom-controls">
+                        <button class="zoom-in">+</button>
+                        <button class="zoom-out">-</button>
+                        <button class="zoom-reset">Reset</button>
+                    </div>
+                    <div class="image-container">
+                        <img id="zoomImage" src="" alt="Zoomed Image">
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+    
+    // Get elements again in case they were just created
+    const updatedModalElement = document.querySelector('.image-modal');
+    const updatedZoomImage = document.getElementById('zoomImage');
+    const updatedCloseButton = document.querySelector('.close-button');
+    const updatedZoomInButton = document.querySelector('.zoom-in');
+    const updatedZoomOutButton = document.querySelector('.zoom-out');
+    const updatedZoomResetButton = document.querySelector('.zoom-reset');
+    const imageContainer = document.querySelector('.image-container');
+    
+    // Set up click event on main image
+    if (mainImage) {
+        console.log("Adding click event to main image");
+        mainImage.addEventListener('click', function(e) {
+            console.log("Main image clicked");
+            e.preventDefault(); // Prevent any default behavior
+            openModal(this.src);
+        });
+        // Add pointer cursor to indicate clickable
+        mainImage.style.cursor = 'pointer';
+    }
+    
+    // Modal functions
+    function openModal(imageUrl) {
+        console.log("Opening modal with image:", imageUrl);
+        resetZoom();
+        if (updatedZoomImage) {
+            updatedZoomImage.src = imageUrl;
+            updatedModalElement.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+    }
+    
+    function closeModal() {
+        console.log("Closing modal");
+        if (updatedModalElement) {
+            updatedModalElement.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
+    }
+    
+    function zoomIn() {
+        zoomLevel += zoomStep;
+        updateZoom();
+    }
+    
+    function zoomOut() {
+        zoomLevel = Math.max(1, zoomLevel - zoomStep);
+        updateZoom();
+    }
+    
+    function resetZoom() {
+        zoomLevel = 1;
+        translateX = 0;
+        translateY = 0;
+        updateZoom();
+    }
+    
+    function updateZoom() {
+        if (updatedZoomImage) {
+            updatedZoomImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
+        }
+    }
+    
+    // Event listeners for modal controls
+    if (updatedCloseButton) {
+        updatedCloseButton.addEventListener('click', closeModal);
+    }
+    
+    if (updatedZoomInButton) {
+        updatedZoomInButton.addEventListener('click', zoomIn);
+    }
+    
+    if (updatedZoomOutButton) {
+        updatedZoomOutButton.addEventListener('click', zoomOut);
+    }
+    
+    if (updatedZoomResetButton) {
+        updatedZoomResetButton.addEventListener('click', resetZoom);
+    }
+    
+    // Close modal when clicking outside the image
+    if (updatedModalElement) {
+        updatedModalElement.addEventListener('click', function(e) {
+            if (e.target === updatedModalElement) {
+                closeModal();
+            }
+        });
+    }
+    
+    // Mouse wheel zoom
+    if (imageContainer) {
+        imageContainer.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomIn();
+            } else {
+                zoomOut();
+            }
+        });
+    }
+    
+    // Drag functions
+    function startDrag(e) {
+        e.preventDefault();
+        isDragging = true;
+        
+        if (e.type === 'touchstart') {
+            startX = e.touches[0].clientX - translateX;
+            startY = e.touches[0].clientY - translateY;
+        } else {
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+        }
+    }
+    
+    function drag(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        
+        let newX, newY;
+        if (e.type === 'touchmove') {
+            newX = e.touches[0].clientX - startX;
+            newY = e.touches[0].clientY - startY;
+        } else {
+            newX = e.clientX - startX;
+            newY = e.clientY - startY;
+        }
+        
+        // Apply the translation
+        translateX = newX;
+        translateY = newY;
+        updateZoom();
+    }
+    
+    function endDrag() {
+        isDragging = false;
+    }
+    
+    // Set up dragging functionality
+    if (updatedZoomImage) {
+        updatedZoomImage.addEventListener('mousedown', startDrag);
+        updatedZoomImage.addEventListener('touchstart', startDrag, {passive: false});
+    }
+    
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag, {passive: false});
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+    
+    // Make sure changeMainImage function works with the zoom
+    
+    
+    // Make changeMainImage function global
+    window.changeMainImage = function(imageUrl) {
+        if (mainImage) {
+            mainImage.src = imageUrl;
+            
+            // Update zoom result background when main image changes
+            const zoomResult = document.querySelector('.zoom-result');
+            if (zoomResult) {
+                zoomResult.style.backgroundImage = `url('${imageUrl}')`;
+            }
+        }
+    };
+    
+    console.log("Zoom functionality initialized");
+});
+    </script>
+
+    <style>
+    /* Hover Zoom Styles */
+/* Hover Zoom Styles */
+/* Hover Zoom Styles */
+.main-image-container {
+    position: relative;
+    overflow: visible;
+    width: 100%;
+    height: auto;
+}
+
+.main-product-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    cursor: crosshair; /* Use crosshair cursor for zoom indication */
+}
+
+.zoom-lens {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    background-color: rgba(255, 255, 255, 0.2);
+    width: 100px;
+    height: 100px;
+    display: none;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.zoom-result {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    background-repeat: no-repeat;
+    width: 300px;
+    height: 300px;
+    display: none;
+    z-index: 20;
+    right: -310px;
+    top: 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    pointer-events: none;
+}
+
+/* Modal zoom styles */
+/* Enhanced Modal Zoom Styles */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    position: relative;
+    width: 90%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+.close-button {
+    position: absolute;
+    top: -30px;
+    right: 0;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1010;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.close-button:hover {
+    background-color: rgba(255, 0, 0, 0.5);
+}
+
+.zoom-controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.zoom-controls button {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 18px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.zoom-controls button:hover {
+    background-color: white;
+    transform: scale(1.1);
+}
+
+.zoom-reset {
+    width: auto !important;
+    padding: 0 15px !important;
+    border-radius: 20px !important;
+}
+
+.image-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+#zoomImage {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.1s ease;
+    cursor: grab;
+    transform-origin: center center;
+}
+
+#zoomImage:active {
+    cursor: grabbing;
+}
+
+/* Improve main image styling to indicate it's clickable */
+.main-product-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    cursor: pointer; /* Change cursor to indicate it's clickable */
+    transition: opacity 0.3s;
+}
+
+.main-product-image:hover {
+    opacity: 0.9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .zoom-controls {
+        position: fixed;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        margin: 0 auto;
+        width: fit-content;
+        border-radius: 30px;
+    }
+    
+    .close-button {
+        top: 10px;
+        right: 10px;
+    }
+}
+
+/* Notification styles for cart actions */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    z-index: 1100;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+.notification.success {
+    background-color: #4CAF50;
+}
+
+.notification.warning {
+    background-color: #ff9800;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+    .cart-icon-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-right: 50px;
+  text-decoration: none;
+}
+
+.cart-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #30b4b4; /* Using your teal brand color */
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.cart-icon:hover {
+  background-color: #2a9d9d;
+  transform: scale(1.05);
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color:rgb(47, 63, 241);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+        /* General Styles */
+
+        .add-to-panier-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-panier-btn:hover {
+    background-color:  #3fbbc0;;
+}
+.add-to-panier-btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .product-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+        }
+
+        .back-icon {
+            margin-right: 5px;
+        }
+
+        .separator {
+            margin: 0 10px;
+            color: #666;
+        }
+
+        .current-page {
+            color: #666;
+        }
+
+        /* Product Content Layout */
+        .product-content {
+            display: flex;
+            gap: 30px;
+        }
+
+        /* Left Column - Images */
+        .product-images-column {
+            flex: 1;
+            max-width: 450px;
+        }
+
+        .main-image-container {
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .main-product-image {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .thumbnail-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .thumbnail-item {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .thumbnail-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Right Column - Details */
+        .product-details-column {
+            flex: 1;
+        }
+
+        .product-brand {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .product-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 0 15px 0;
+        }
+
+        /* Rating Section */
+        .product-rating {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .star-rating {
+            display: flex;
+            align-items: center;
+        }
+
+        .stars {
+            color: #FFD700;
+            margin-right: 5px;
+        }
+
+        .rating-count {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .rating-text {
+            color: #999;
+        }
+
+        .product-id, .product-ean {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Price Section */
+        .product-price-section {
+            margin-bottom: 20px;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+
+        .price-container {
+            display: flex;
+            align-items: baseline;
+        }
+
+        .current-price {
+            font-size: 28px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .price-notes {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .original-price {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .savings-info {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .savings-label {
+            color: #666;
+            margin-right: 10px;
+        }
+
+        .savings-value {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        /* Product Overview */
+        .product-overview {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin: 0 0 15px 0;
+        }
+
+        .feature-list {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .feature-list li {
+            margin-bottom: 5px;
+        }
+
+        .product-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        /* Variant Selection */
+        .variant-selection {
+            margin-bottom: 20px;
+        }
+
+        .variant-title {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .selected-variant {
+            font-weight: bold;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .color-option.selected {
+            border: 2px solid #4285F4;
+        }
+
+        .white {
+            background-color: #fff;
+        }
+
+        .black {
+            background-color: #000;
+        }
+
+        .blue {
+            background-color: #1E88E5;
+        }
+
+        .gray {
+            background-color: #9E9E9E;
+        }
+
+        /* Delivery Info */
+        .delivery-info {
+            margin-bottom: 20px;
+        }
+
+        .stock-info {
+            display: flex;
+            align-items: center;
+            color: #28a745;
+            font-size: 14px;
+        }
+
+        .stock-icon {
+            margin-right: 5px;
+        }
+
+        /* Add to Cart Section */
+        .add-to-cart-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .quantity-selector {
+            width: 70px;
+        }
+
+        .quantity-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .add-to-cart-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background-color: #66c04f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #4fa83d;
+        }
+
+        .cart-icon {
+            margin-right: 10px;
+        }
+
+        /* Wishlist */
+        .wishlist-action {
+            margin-bottom: 20px;
+        }
+
+        .wishlist-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .wishlist-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Additional Info Section */
+        .additional-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .shipping-info, .delivery-options, .discount-info, .faq-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .shipping-icon, .delivery-icon, .discount-icon, .faq-icon {
+            margin-right: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .product-content {
+                flex-direction: column;
+            }
+
+            .product-images-column {
+                max-width: 100%;
+            }
+
+            .additional-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+{% endblock %}

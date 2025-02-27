@@ -1,0 +1,231 @@
+<style>
+    /* Overall Form Styling */
+    .form-container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 25px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Form Group */
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    /* Form Labels */
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #444;
+        font-size: 14px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* Input Group */
+/* Input Group - Fixed for left-aligned icons */
+.input-group {
+    display: flex;
+    align-items: center; /* Aligns icon and input in one row */
+    width: 100%;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.input-group-text {
+    background: #3fbbc0;
+    color: white;
+    border: none;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px 0 0 8px; /* Ensures rounded left side */
+    width: 45px; /* Fixed width to maintain alignment */
+}
+
+.form-input {
+    flex: 1; /* Allows input to take remaining space */
+    padding: 12px;
+    border: none;
+    font-size: 15px;
+    background-color: #fff;
+    outline: none;
+}
+
+    /* Input Focus Effect */
+    .form-input:focus {
+        outline: none;
+        box-shadow: 0px 4px 15px rgba(0, 191, 255, 0.4);
+        border: 1px solid #3fbbc0;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, #3fbbc0, #5ce1e6);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Hover Effect for Button */
+    .btn-submit:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Error Messages */
+    .form-error {
+        color: #dc3545;
+        font-size: 13px;
+        margin-top: 5px;
+        font-weight: 500;
+    }
+
+    /* Cart Items Table */
+    .cart-table {
+        width: 100%;
+        margin-bottom: 20px;
+        border-collapse: collapse;
+    }
+
+    .cart-table th, .cart-table td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .cart-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .cart-table tfoot td {
+        font-weight: bold;
+        background-color: #f8f9fa;
+    }
+
+    /* Product Image */
+    .product-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+
+    /* Gradient Text */
+    .text-gradient {
+        background: linear-gradient(90deg, #3fbbc0, #5ce1e6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 24px;
+        font-weight: bold;
+    }
+</style>
+
+<div class="form-container">
+    <h2 class="text-gradient">Mon Panier</h2>
+
+    {% if produits is empty %}
+        <div class="alert alert-info">
+            Votre panier est vide.
+        </div>
+    {% else %}
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Nom</th>
+                    <th>Quantité</th>
+                    <th>Prix Unitaire</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in panier %}
+                    <tr>
+                        <td>
+                            <img src="{{ asset('uploads/images/' ~ item.produit.image) }}" 
+                                 alt="{{ item.produit.nom }}" 
+                                 class="product-image">
+                        </td>
+                        <td>{{ item.produit.nom }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.produit.prix }} TND</td>
+                        <td>{{ item.produit.prix * item.quantity }} TND</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="text-right">Total</td>
+                    <td>{{ total }} TND</td>
+                </tr>
+            </tfoot>
+        </table>
+    {% endif %}
+
+    <h2 class="text-gradient">Formulaire de Commande</h2>
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            {{ form_widget(form.nom, {'attr': {'class': 'form-input', 'placeholder': 'Nom'}}) }}
+        </div>
+        <div class="form-error">{{ form_errors(form.nom) }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            {{ form_widget(form.prenom, {'attr': {'class': 'form-input', 'placeholder': 'Prénom'}}) }}
+        </div>
+        <div class="form-error">{{ form_errors(form.prenom) }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+            {{ form_widget(form.email, {'attr': {'class': 'form-input', 'placeholder': 'Email'}}) }}
+        </div>
+        <div class="form-error">{{ form_errors(form.email) }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+            {{ form_widget(form.phoneNumber, {'attr': {'class': 'form-input', 'placeholder': 'Téléphone'}}) }}
+        </div>
+        <div class="form-error">{{ form_errors(form.phoneNumber) }}</div>
+    </div>
+
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+            {{ form_widget(form.adresse, {'attr': {'class': 'form-input', 'placeholder': 'Adresse'}}) }}
+        </div>
+        <div class="form-error">{{ form_errors(form.adresse) }}</div>
+    </div>
+
+    <button class="btn-submit">{{ button_label|default('Enregistrer') }}</button>
+
+    {{ form_end(form) }}
+</div>

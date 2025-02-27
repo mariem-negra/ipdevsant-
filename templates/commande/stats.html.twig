@@ -1,0 +1,75 @@
+{% extends 'baseback.html.twig' %}
+
+{% block title %}Checkout Statistics{% endblock %}
+
+{% block main %}
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold mb-6">Checkout Statistics</h1>
+        
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="bg-green-100 p-6 rounded-lg">
+                <h3 class="text-xl font-semibold text-green-800">Total Successful Orders</h3>
+                <p class="text-3xl font-bold text-green-600">{{ stats.totalCheckouts }}</p>
+            </div>
+            <div class="bg-blue-100 p-6 rounded-lg">
+                <h3 class="text-xl font-semibold text-blue-800">Total Revenue</h3>
+                <p class="text-3xl font-bold text-blue-600">{{ stats.totalAmount|number_format(2) }}€</p>
+            </div>
+        </div>
+        
+        <!-- Chart -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <canvas id="statsChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Include Chart.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    
+    <script>
+        // Create the chart
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Order Statistics'],
+                datasets: [
+                    {
+                        label: 'Successful Orders',
+                        data: [{{ stats.totalCheckouts }}],
+                        backgroundColor: '#4CAF50',
+                        yAxisID: 'y',
+                    },
+                    {
+                        label: 'Total Amount (€)',
+                        data: [{{ stats.totalAmount }}],
+                        backgroundColor: '#2196F3',
+                        yAxisID: 'y1',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Number of Orders'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Total Amount (€)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+{% endblock %}

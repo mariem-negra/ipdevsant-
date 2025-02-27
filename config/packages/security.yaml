@@ -1,0 +1,50 @@
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\Utilisateur:
+            algorithm: auto
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\Utilisateur
+                property: email # or the field you use for authentication
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+                   
+            pattern: ^/
+            lazy: true
+            provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true # Ensure CSRF is enabled
+                username_parameter: _username
+                password_parameter: _password
+            logout:
+                path: app_logout
+                target: app_login
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800 # 1 week in seconds
+                path: /
+                domain: ~
+            custom_authenticators:
+                - App\Security\LoginAuthenticator
+            entry_point: App\Security\LoginAuthenticator # Set the entry point
+
+    access_control:
+        - { path: ^/login, roles: PUBLIC_ACCESS } # Allow unauthenticated access to the login page
+        - { path: ^/admin, roles: ROLE_ADMIN } # Require 'ROLE_ADMIN' for admin routes
+
+        - { path: ^/admin/profile, roles: ROLE_ADMIN }
+        - { path: ^/utilisateur/new, roles: PUBLIC_ACCESS }  # Add this line
+        - { path: ^/, roles: ROLE_USER } # Require authentication for all other routes
+        
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_MEDECIN, ROLE_PATIENT] # 'ROLE_ADMIN' includes 'ROLE_MEDECIN' and 'ROLE_PATIENT'
+        ROLE_MEDECIN: [ROLE_PATIENT]

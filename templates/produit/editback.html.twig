@@ -1,0 +1,10 @@
+{% extends 'baseback.html.twig' %}
+
+{% block title %}Edit Produit{% endblock %}
+
+{% block body %}
+    <h1>Edit Produit</h1>
+
+    {{ include('produit/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+{% endblock %}

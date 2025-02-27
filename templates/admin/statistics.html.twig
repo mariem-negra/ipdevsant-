@@ -1,0 +1,287 @@
+{# templates/admin/statistics.html.twig #}
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Statistiques Utilisateurs{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Statistiques Utilisateurs</h1>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Répartition des utilisateurs</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="roleChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Statistiques générales</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Nombre total d'utilisateurs</th>
+                                <td>{{ stats.total }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nombre de patients</th>
+                                <td>{{ stats.by_role.Patient ?? 0 }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nombre de médecins</th>
+                                <td>{{ stats.by_role.Médecin ?? 0 }}</td>
+                            </tr>
+                            <tr>
+                                <th>Médecins vérifiés</th>
+                                <td>{{ stats.verified_doctors }}</td>
+                            </tr>
+                            <tr>
+                                <th>Médecins en attente de vérification</th>
+                                <td>{{ stats.unverified_doctors }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# Ajoutez cela dans la section des graphiques, peut-être sous les spécialités médicales #}
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Statut de vérification des médecins</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="doctorVerificationChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Pourcentage des rôles</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Rôle</th>
+                                <th>Pourcentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for role, percentage in stats.percentage %}
+                            <tr>
+                                <td>{{ role }}</td>
+                                <td>{{ percentage }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Spécialités médicales</h5>
+                </div>
+                <div class="card-body">
+                    {% if stats.specialties is not empty %}
+                        <canvas id="specialtyChart" width="400" height="300"></canvas>
+                    {% else %}
+                        <p>Aucune spécialité médicale disponible.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chart pour la répartition des rôles
+        const roleCtx = document.getElementById('roleChart').getContext('2d');
+        const roleChart = new Chart(roleCtx, {
+            type: 'pie',
+            data: {
+                labels: [
+                    {% for role, count in stats.by_role %}
+                        '{{ role }}',
+                    {% endfor %}
+                ],
+                datasets: [{
+                    data: [
+                        {% for role, count in stats.by_role %}
+                            {{ count }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Répartition des utilisateurs par rôle'
+                    }
+                }
+            }
+        });
+        
+        // Chart pour les spécialités (si disponible)
+        {% if stats.specialties is not empty %}
+            const specialtyCtx = document.getElementById('specialtyChart').getContext('2d');
+            const specialtyChart = new Chart(specialtyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        {% for specialty in stats.specialties %}
+                            '{{ specialty.specialty }}',
+                        {% endfor %}
+                    ],
+                    datasets: [{
+                        data: [
+                            {% for specialty in stats.specialties %}
+                                {{ specialty.count }},
+                            {% endfor %}
+                        ],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)',
+                            'rgba(255, 159, 64, 0.7)',
+                            'rgba(199, 199, 199, 0.7)',
+                            'rgba(83, 102, 255, 0.7)',
+                            'rgba(40, 159, 64, 0.7)',
+                            'rgba(210, 199, 199, 0.7)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(199, 199, 199, 1)',
+                            'rgba(83, 102, 255, 1)',
+                            'rgba(40, 159, 64, 1)',
+                            'rgba(210, 199, 199, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Répartition par spécialité médicale'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return label + ': ' + value + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        {% endif %}
+    });
+
+
+// Graphique à barres horizontales pour la vérification des médecins
+const verificationCtx = document.getElementById('doctorVerificationChart').getContext('2d');
+const verificationChart = new Chart(verificationCtx, {
+    type: 'bar',
+    data: {
+        labels: ['Statut des médecins'],
+        datasets: [
+            {
+                label: 'Vérifiés',
+                data: [{{ stats.verified_doctors }}],
+                backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Non vérifiés',
+                data: [{{ stats.unverified_doctors }}],
+                backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Statut de vérification des médecins'
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.dataset.label + ': ' + context.raw + ' médecins';
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                stacked: false,
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            },
+            y: {
+                stacked: false
+            }
+        }
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

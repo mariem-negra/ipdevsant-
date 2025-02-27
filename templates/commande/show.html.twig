@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande Details{% endblock %}
+
+{% block main %}
+  <section id="call-to-action" class="call-to-action section accent-background">
+    <div class="container">
+      <div class="row justify-content-center" data-aos="zoom-in" data-aos-delay="100">
+        <div class="col-xl-10">
+          <div class="text-center">
+            <h1>Commande Details</h1>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Prénom</th>
+                  <th>Email</th>
+                  <th>Adresse</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{ commande.nom }}</td>
+                  <td>{{ commande.prenom }}</td>
+                  <td>{{ commande.email }}</td>
+                  <td>{{ commande.adresse }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h2>Cart Items</h2>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Produit</th>
+                  <th>Quantité</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for cartItem in commande.cartItems %}
+                  <tr>
+                    <td>{{ cartItem.produit.nom }}</td>
+                    <td>{{ cartItem.quantite }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+            <a href="{{ path('app_commande_index') }}" class="btn btn-success">Back to list</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+    <style>
+        .product-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .product-table th, .product-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .product-table th {
+            background-color: #f2f2f2;
+            color: #555;
+        }
+
+        .product-table td {
+            background-color: #fff;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-back {
+            background-color: rgb(47, 173, 193);
+            color: white;
+        }
+
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-edit {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+    </style>
+{% endblock %}

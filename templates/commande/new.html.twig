@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Commande{% endblock %}
+{% block header %}
+    <div class="topbar d-flex align-items-center">
+      <div class="container d-flex justify-content-center justify-content-md-between">
+        <div class="d-none d-md-flex align-items-center">
+          <i class="bi bi-clock me-1"></i> Monday - Saturday, 8AM to 10PM
+        </div>
+        <div class="d-flex align-items-center">
+          <i class="bi bi-phone me-1"></i> Call us now +1 5589 55488 55
+        </div>
+      </div>
+    </div><!-- End Top Bar -->
+    
+
+    <div class="branding d-flex align-items-center">
+
+      <div class="container position-relative d-flex align-items-center justify-content-end">
+        <a href='#' class="logo d-flex align-items-center me-auto" style="max-width: 200px;"> <!-- Adjust max-width as needed -->
+          <img src="{{ asset('img/logo.png') }}" alt="Logo" class="img-fluid" style="width: 200%; height: auto;">
+        </a>
+        <nav id="navmenu" class="navmenu">
+            <ul>
+                <li><a href="{{ path('app_home') }}">Acceuil</a></li>
+                <li><a href="{{ path('app_home') }}">Consernant</a></li>
+                <li><a href="{{ path('app_home') }}">Services</a></li>
+                <li><a href="{{ path('app_home') }}">Departments</a></li>
+                <li><a href="{{ path('app_produit_display') }}#produit" class="active">Produit</a></li>
+                <li><a href="{{ path('app_home') }}">Médecin</a></li>
+                <li><a href="{{ path('app_home') }}">Contact</a></li>
+                
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+        <a class="cta-btn" href="{{ path('app_profile') }}">Mon Profile</a>
+
+      </div>
+      <a href="{{ path('app_panier') }}" class="cart-icon-wrapper">
+      <div class="cart-icon">
+        <i class="bi bi-cart3"></i>
+        <span class="cart-count">{{ app.session.get('panier')|length|default(0) }}</span>
+      </div>
+    </a>
+    </div>
+
+  </header>
+   <style>
+    .cart-icon-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-right: 50px;
+  text-decoration: none;
+}
+
+.cart-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #30b4b4; /* Using your teal brand color */
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.cart-icon:hover {
+  background-color: #2a9d9d;
+  transform: scale(1.05);
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color:rgb(47, 63, 241);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+</style>
+{% endblock %}
+
+{% block main %}
+   
+
+    {{ include('commande/_form.html.twig') }}
+
+    
+{% endblock %}

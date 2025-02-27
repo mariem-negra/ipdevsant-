@@ -1,0 +1,309 @@
+{% extends 'baseBack.html.twig' %}
+
+
+
+{% block body %}
+    <div>
+        <div class="row mb-4">
+            <div class="col-md-6 offset-md-6">
+                <div class="input-group">
+                    <input type="text" id="search-input" class="form-control" placeholder="Rechercher un utilisateur..." value="{{ searchQuery|default('') }}">
+                    <button class="btn btn-info" type="button" id="search-button" >
+                        <i class="bi bi-search"></i> Rechercher
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="text-dark d-flex align-items-center justify-content-between" style="padding: 15px; border-bottom: 2px solid #f0f0f0;">
+            <h3 class="card-title m-0 d-flex align-items-center gap-2">
+                <i class="bi bi-people-fill text-warning fs-3"></i> 
+                <span class="fw-bold fs-3">Liste des Utilisateurs :</span>
+            </h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col" class="text-primary sortable" data-field="id">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-hash"></i> Id
+                                {% if sortField == 'id' %}
+                                    <i class="bi bi-sort-{{ sortDirection == 'asc' ? 'up' : 'down' }} sort-icon"></i>
+                                {% endif %}
+                            </span>
+                        </th>
+                        <th scope="col" class="text-info sortable" data-field="nom">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-person-badge"></i> Nom
+                                {% if sortField == 'nom' %}
+                                    <i class="bi bi-sort-{{ sortDirection == 'asc' ? 'up' : 'down' }} sort-icon"></i>
+                                {% endif %}
+                            </span>
+                        </th>
+                        <th scope="col" style="color:rgb(49, 243, 247);" class="sortable" data-field="prenom">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-person"></i> Prénom
+                                {% if sortField == 'prenom' %}
+                                    <i class="bi bi-sort-{{ sortDirection == 'asc' ? 'up' : 'down' }} sort-icon"></i>
+                                {% endif %}
+                            </span>
+                        </th>
+                        <th scope="col" style="color:rgb(227, 72, 121);" class="sortable" data-field="email">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-envelope"></i> Email
+                                {% if sortField == 'email' %}
+                                    <i class="bi bi-sort-{{ sortDirection == 'asc' ? 'up' : 'down' }} sort-icon"></i>
+                                {% endif %}
+                            </span>
+                        </th>
+                        <th scope="col" style="color:rgb(133, 192, 243);">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-lock"></i> Mot de passe
+                            </span>
+                        </th>
+                        <th scope="col" style="color: #ffc107;" class="sortable" data-field="role">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-person-rolodex"></i> Rôle
+                                {% if sortField == 'role' %}
+                                    <i class="bi bi-sort-{{ sortDirection == 'asc' ? 'up' : 'down' }} sort-icon"></i>
+                                {% endif %}
+                            </span>
+                        </th>
+                        <th scope="col" style="color: #007bff;">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-calendar"></i> Date de naissance
+                            </span>
+                        </th>
+                        <th scope="col" style="color: #20c997;">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-briefcase"></i> Spécialité
+                            </span>
+                        </th>
+                        <th scope="col" style="color: #6610f2;" class="sortable" data-field="telephone">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-telephone"></i> Téléphone
+                                {% if sortField == 'telephone' %}
+                                    <i class="bi bi-sort-{{ sortDirection == 'asc' ? 'up' : 'down' }} sort-icon"></i>
+                                {% endif %}
+                            </span>
+                        </th>
+                        <th scope="col" style="color:rgb(49, 243, 247);">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-person"></i> Diplome
+                            </span>
+                        </th>
+                        <th scope="col" style="color: #ffc107;">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-person-rolodex"></i> Profile
+                            </span>
+                        </th>
+                        <th scope="col" style="color: #e83e8c;">
+                            <span class="d-flex align-items-center gap-1">
+                                <i class="bi bi-gear"></i> Actions
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body">
+                    {% for utilisateur in utilisateurs %}
+                        <tr class="align-middle">
+                            <td>{{ utilisateur.id }}</td>
+                            <td>{{ utilisateur.nom }}</td>
+                            <td>{{ utilisateur.prenom }}</td>
+                            <td>{{ utilisateur.email }}</td>
+                            <td> ************</td>
+                            <td>
+                                <span class="badge bg-{{ utilisateur.role.value == 'ADMIN' ? 'danger' : 'success' }}">
+                                    {{ utilisateur.role.value }}
+                                </span>
+                            </td>
+                            <td> {{ utilisateur.dateNaissance ? utilisateur.dateNaissance|date('Y-m-d') : '' }}</td>
+                            <td>{{ utilisateur.specialite ?? 'NULL' }}</td>
+                            <td>{{ utilisateur.telephone }}</td>
+                            <td>
+                                {% if utilisateur.diploma %}
+                                    <img src="{{ asset('uploads/diplomas/' ~ utilisateur.diploma) }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+                                {% else %}
+                                NULL
+                                {% endif %}
+                            </td>
+                            <td> 
+                                {% if utilisateur.image %}
+                                    <img src="{{ asset('uploads/profile_images/' ~ utilisateur.image) }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+                                {% else %}
+                                    <img src="{{ asset('imgBack/images.jpg') }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center">
+                                <a href="{{ path('app_utilisateur_show', {'id': utilisateur.id}) }}" class="btn btn-info btn-sm">
+                                    <i class="bi bi-eye"></i> 
+                                </a>
+                                <a href="{{ path('app_utilisateur_edit', {'id': utilisateur.id}) }}" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil"></i> 
+                                </a>
+                                {{ include('utilisateur/_delete_form.html.twig') }}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="12" class="text-center text-muted">
+                                <i class="bi bi-exclamation-circle text-secondary"></i> Aucun utilisateur trouvé
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="d-flex justify-content-end">
+                <a href="{{ path('app_utilisateur_new') }}" class="btn px-4 py-2 shadow-lg rounded-pill d-flex align-items-center gap-2" 
+                    style="background: linear-gradient(135deg, #ff7eb3, #ff4d4d); border: none; color: white;">
+                    <i class="bi bi-plus-circle fs-5"></i> 
+                    <span class="fw-bold">Créer un nouvel utilisateur</span>
+                </a>
+<a href="{{ path('app_utilisateur_export_pdf') }}" 
+   class="btn px-4 py-2 shadow-lg rounded-pill d-flex align-items-center gap-2" 
+   style="background: linear-gradient(135deg, #ff7eb3, #ff4d4d); border: none; color: white; font-weight: 500; transition: all 0.3s ease;">
+   <i class="bi bi-file-earmark-pdf"></i> <!-- PDF icon from Bootstrap Icons -->
+   Export to PDF
+</a></div>
+        </div>
+    </div>
+
+    <style>
+        .sortable {
+            cursor: pointer;
+        }
+        .sortable:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        .sort-icon {
+            margin-left: 5px;
+        }
+    </style>
+<script>
+    let currentSort = {
+        field: '{{ sortField }}',
+        direction: '{{ sortDirection }}'
+    };
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all sortable headers
+            const sortableHeaders = document.querySelectorAll('.sortable');
+            
+            // Current sort state
+            let currentSort = {
+                field: '{{ sortField }}',
+                direction: '{{ sortDirection }}'
+            };
+            
+            // Add click event to all sortable headers
+            sortableHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const field = this.getAttribute('data-field');
+                    
+                    // Toggle direction if clicking on the same field
+                    let direction = 'asc';
+                    if (field === currentSort.field) {
+                        direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    }
+                    
+                    // Update the UI to show loading state
+                    const tableBody = document.getElementById('users-table-body');
+                    tableBody.innerHTML = '<tr><td colspan="12" class="text-center"><i class="bi bi-hourglass-split"></i> Chargement...</td></tr>';
+                    
+                    // Make the Ajax request
+                    fetch(`{{ path('app_utilisateur_index') }}?sort=${field}&direction=${direction}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Update the table content
+                        tableBody.innerHTML = html;
+                        
+                        // Update sort icons
+                        sortableHeaders.forEach(h => {
+                            const icon = h.querySelector('.sort-icon');
+                            if (icon) {
+                                icon.remove();
+                            }
+                        });
+                        
+                        // Add icon to the sorted column
+                        const iconClass = direction === 'asc' ? 'bi-sort-up' : 'bi-sort-down';
+                        const icon = document.createElement('i');
+                        icon.className = `bi ${iconClass} sort-icon`;
+                        this.querySelector('span').appendChild(icon);
+                        
+                        // Update current sort state
+                        currentSort = { field, direction };
+                        
+                        // Update URL without page reload
+                        const url = new URL(window.location);
+                        url.searchParams.set('sort', field);
+                        url.searchParams.set('direction', direction);
+                        window.history.pushState({}, '', url);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        tableBody.innerHTML = '<tr><td colspan="12" class="text-center text-danger"><i class="bi bi-exclamation-triangle"></i> Erreur lors du chargement des données</td></tr>';
+                    });
+                });
+            });
+        });
+        
+    </script>
+    <script>
+    // Add this to your existing script section
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+
+        // Search when the button is clicked
+        searchButton.addEventListener('click', performSearch);
+
+        // Also search when Enter key is pressed in the input field
+        searchInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        function performSearch() {
+            const query = searchInput.value.trim();
+            const tableBody = document.getElementById('users-table-body');
+            
+            // Show loading state
+            tableBody.innerHTML = '<tr><td colspan="12" class="text-center"><i class="bi bi-hourglass-split"></i> Chargement...</td></tr>';
+            
+            // Get current sort state
+            const field = currentSort.field;
+            const direction = currentSort.direction;
+            
+            // Make the Ajax request
+            fetch(`{{ path('app_utilisateur_index') }}?search=${encodeURIComponent(query)}&sort=${field}&direction=${direction}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                // Update the table content
+                tableBody.innerHTML = html;
+                
+                // Update URL without page reload
+                const url = new URL(window.location);
+                url.searchParams.set('search', query);
+                url.searchParams.set('sort', field);
+                url.searchParams.set('direction', direction);
+                window.history.pushState({}, '', url);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                tableBody.innerHTML = '<tr><td colspan="12" class="text-center text-danger"><i class="bi bi-exclamation-triangle"></i> Erreur lors du chargement des données</td></tr>';
+            });
+        }
+    </script>
+
+{% endblock %}
+

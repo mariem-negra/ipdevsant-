@@ -1,0 +1,671 @@
+{% extends 'baseBack.html.twig' %}
+{% block body %}
+
+<div class="d-flex justify-content-end mt-3">
+    <a href="{{ path('app_logout') }}" class="logout-button">
+        <i class="bi bi-box-arrow-right logout-icon"></i>
+        <span>Déconnexion</span>
+    </a>
+</div>
+
+<style>
+  .logout-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px; /* Space between icon and text */
+      padding: 10px 20px;
+      background-color: #ffffff; /* White background */
+      color: #2c3e50; /* Dark blue-gray text */
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'Roboto', sans-serif; /* Modern sans-serif font */
+      border: 1px solid #dee2e6; /* Light gray border */
+      border-radius: 6px; /* Slightly rounded corners */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+      transition: all 0.3s ease;
+  }
+  /* Icon styling */
+  .logout-icon {
+      color: #2c3e50; /* Dark blue-gray icon */
+      font-size: 16px;
+      transition: color 0.3s ease;
+  }
+    /* Profile Card */
+  .card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Gradient Background */
+  .bg-gradient {
+    z-index: 1;
+  }
+
+  /* Profile Image */
+  .profile-image {
+    border: 4px solid #fff; /* White border around the image */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .profile-image:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+  }
+
+  /* User Name */
+  h2.text-dark {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #2c3e50; /* Dark blue-gray for better contrast */
+  }
+
+  /* Role Badge */
+  .role-badge {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 20px; /* Rounded badge */
+    background-color: #3fbbc0; /* Teal background */
+    color: #fff; /* White text */
+    text-transform: uppercase; /* Uppercase text */
+    transition: background-color 0.3s ease;
+  }
+
+  .role-badge:hover {
+    background-color: #2a9d9f; /* Darker teal on hover */
+  }
+
+</style>    
+      </div>
+          {# Add this flash messages display section #}
+    <div class="container">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <section class="container py-5">
+          <div class="row">
+            <!-- Profile Card -->
+            <div class="col-xl-4">
+              <div class="card shadow-lg rounded-lg border-0 overflow-hidden">
+                <div class="card-body text-center p-4 position-relative">
+                  <!-- Gradient Background -->
+                  <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient" style="background: linear-gradient(135deg, #3fbbc0, #2a9d9f); opacity: 0.1;"></div>
+                  
+                  <!-- Profile Image -->
+                  {% if user.image %}
+                    <img src="{{ asset('uploads/profile_images/' ~ user.image) }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+                  {% else %}
+                    <img src="{{ asset('imgBack/images.jpg') }}" class="rounded-circle mb-3 profile-image" width="120" height="120">
+                  {% endif %}
+                  
+                  <!-- User Name -->
+                  <h2 class="text-dark mb-3">{{ user.prenom }} {{ user.nom }}</h2>
+                  
+                  <!-- Role Badge -->
+                  <span class="badge bg-primary role-badge">{{ user.role.value }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Details & Tabs -->
+            <div class="col-xl-8">
+              <div class="card shadow-lg border-0">
+                <div class="card-body p-0">
+                  <!-- Tabs Navigation -->
+                  <ul class="nav nav-tabs nav-justified mb-0" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" data-bs-toggle="tab" href="#profile-overview">
+                        <i class="bi bi-eye-fill me-2 tab-icon tab-icon-overview"></i>Détail
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" data-bs-toggle="tab" href="#profile-edit">
+                        <i class="bi bi-pencil-fill me-2 tab-icon tab-icon-edit"></i>Modifier
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" data-bs-toggle="tab" href="#profile-change-password">
+                        <i class="bi bi-shield-lock-fill me-2 tab-icon tab-icon-password"></i>Changer Mot De Passe
+                      </a>
+                    </li>
+                  </ul>
+                 <style>
+                  /* Tab Icons */
+                  .tab-icon {
+                    font-size: 18px; /* Icon size */
+                    transition: color 0.3s ease;
+                  }
+
+                  /* Active Tab Icon Colors */
+                  .nav-link.active .tab-icon-overview {
+                    color: #3fbbc0; /* Teal for Détail */
+                  }
+
+                  .nav-link.active .tab-icon-edit {
+                    color: #f39c12; /* Orange for Modifier */
+                  }
+
+                  .nav-link.active .tab-icon-password {
+                    color: #e74c3c; /* Red for Changer Mot De Passe */
+                  }
+
+                  /* Inactive Tab Icon Colors */
+                  .nav-link:not(.active) .tab-icon-overview {
+                    color: #6c757d; /* Gray for Détail (inactive) */
+                  }
+
+                  .nav-link:not(.active) .tab-icon-edit {
+                    color: #6c757d; /* Gray for Modifier (inactive) */
+                  }
+
+                  .nav-link:not(.active) .tab-icon-password {
+                    color: #6c757d; /* Gray for Changer Mot De Passe (inactive) */
+                  }
+
+                  /* Tab Hover Effects */
+                  .nav-link:hover .tab-icon-overview {
+                    color: #3fbbc0; /* Teal on hover */
+                  }
+
+                  .nav-link:hover .tab-icon-edit {
+                    color: #f39c12; /* Orange on hover */
+                  }
+
+                  .nav-link:hover .tab-icon-password {
+                    color: #e74c3c; /* Red on hover */
+                  }
+
+                  /* Tab Styling */
+                  .nav-tabs {
+                    border-bottom: 2px solid #e9ecef;
+                    background-color: #f8f9fa;
+                    border-radius: 15px 15px 0 0;
+                  }
+
+                  .nav-tabs .nav-link {
+                    border: none;
+                    color: #6c757d;
+                    font-weight: 500;
+                    padding: 12px 20px;
+                    transition: all 0.3s ease;
+                    border-radius: 0;
+                  }
+
+                  .nav-tabs .nav-link.active {
+                    color: #3fbbc0; /* Active tab text color */
+                    border-bottom: 2px solid #3fbbc0; /* Active tab underline */
+                    background-color: transparent;
+                  }
+
+                  .nav-tabs .nav-link:hover {
+                    color: #3fbbc0; /* Hover text color */
+                    background-color: rgba(63, 187, 192, 0.1); /* Hover background */
+                  }
+                </style>
+
+                  <!-- Tab Content -->
+                  <div class="tab-content p-4">
+                    <!-- Profile Overview -->
+                    <div class="tab-pane fade show active" id="profile-overview">
+                      <!-- Nom -->
+                      <div class="row mb-4 align-items-center">
+                        <div class="col-md-4 text-muted d-flex align-items-center">
+                          <i class="bi bi-card-heading me-2 icon-nom"> Nom :</i>
+                        </div>
+                        <div class="col-md-8 fw-medium">{{ user.nom }}</div>
+                      </div>
+
+                      <!-- Prénom -->
+                      <div class="row mb-4 align-items-center">
+                        <div class="col-md-4 text-muted d-flex align-items-center">
+                          <i class="bi bi-person-vcard me-2 icon-prenom"> Prénom :</i>
+                        </div>
+                        <div class="col-md-8 fw-medium">{{ user.prenom }}</div>
+                      </div>
+
+                      <!-- Email -->
+                      <div class="row mb-4 align-items-center">
+                        <div class="col-md-4 text-muted d-flex align-items-center">
+                          <i class="bi bi-envelope-fill me-2 icon-email"> Email :</i>
+                        </div>
+                        <div class="col-md-8 fw-medium">{{ user.email }}</div>
+                      </div>
+
+                      <!-- Téléphone -->
+                      <div class="row mb-4 align-items-center">
+                        <div class="col-md-4 text-muted d-flex align-items-center">
+                          <i class="bi bi-telephone-fill me-2 icon-telephone"> Téléphone :</i> 
+                        </div>
+                        <div class="col-md-8 fw-medium">{{ user.telephone }}</div>
+                      </div>
+
+                      <!-- Date de naissance -->
+                      <div class="row mb-4 align-items-center">
+                        <div class="col-md-4 text-muted d-flex align-items-center">
+                          <i class="bi bi-calendar-fill me-2 icon-date">  Date de naissance :</i> 
+                        </div>
+                        <div class="col-md-8 fw-medium">{{ user.dateNaissance|date('d/m/Y') }}</div>
+                      </div>
+                    </div>
+                    <!-- Custom Styles -->
+                    <style>
+                     /* Custom Icon Colors */
+                      .icon-nom {
+                        color: #3fbbc0; /* Teal for Nom */
+                      }
+
+                      .icon-prenom {
+                        color: #e74c3c; /* Red for Prénom */
+                      }
+
+                      .icon-email {
+                        color: #f39c12; /* Orange for Email */
+                      }
+
+                      .icon-telephone {
+                        color: #8e44ad; /* Purple for Téléphone */
+                      }
+
+                      .icon-date {
+                        color: #2ecc71; /* Green for Date de naissance */
+                      }
+                      .text-primary {
+                        color: #3fbbc0 !important;
+                      }
+
+                      .text-muted {
+                        color: #6c757d !important;
+                      }
+
+                      .fw-medium {
+                        font-weight: 500;
+                      }
+
+                      .row {
+                        padding: 10px 0;
+                        border-bottom: 1px solid #e9ecef;
+                      }
+
+                      .row:last-child {
+                        border-bottom: none;
+                      }
+
+                      .row:hover {
+                        background-color: rgba(63, 187, 192, 0.05);
+                        transition: background-color 0.3s ease;
+                      }
+                      .text-danger {
+                          color: #dc3545; /* Red color for error messages */
+                          font-size: 0.875rem; /* Smaller font size for error messages */
+                          margin-top: 0.25rem; /* Space between the input field and the error message */
+                      }
+                    </style>
+
+                    <!-- Profile Edit -->
+                    <div class="tab-pane fade" id="profile-edit">
+                      <form id="profileEditForm" action="{{ path('app_admin_profile') }}" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
+                        <!-- Nom and Prénom Fields -->
+                        <div class="row mb-4">
+                          <div class="col-md-6">
+                            <label for="nom" class="form-label fw-bold text-primary">Nom</label>
+                            <div class="input-group">
+                              <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-person-fill text-muted"></i>
+                              </span>
+                              <input name="nom" type="text" class="form-control border-start-0" id="nom" value="{{ user.nom }}" required>
+                              
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <label for="prenom" class="form-label fw-bold text-primary">Prénom</label>
+                            <div class="input-group">
+                              <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-person-fill text-muted"></i>
+                              </span>
+                              <input name="prenom" type="text" class="form-control border-start-0" id="prenom" value="{{ user.prenom }}" required>
+                              
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="mb-4">
+                          <label for="email" class="form-label fw-bold text-primary">Email</label>
+                          <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                              <i class="bi bi-envelope-fill text-muted"></i>
+                            </span>
+                            <input name="email" type="email" class="form-control border-start-0" id="email" value="{{ user.email }}" required>
+
+                          </div>
+                        </div>
+
+                        <!-- Téléphone and Date de Naissance Fields -->
+                        <div class="row mb-4">
+                          <div class="col-md-6">
+                            <label for="telephone" class="form-label fw-bold text-primary">Téléphone</label>
+                            <div class="input-group">
+                              <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-telephone-fill text-muted"></i>
+                              </span>
+                              <input name="telephone" type="text" class="form-control border-start-0" id="telephone" value="{{ user.telephone }}" required>
+                              
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <label for="dateNaissance" class="form-label fw-bold text-primary">Date de naissance</label>
+                            <div class="input-group">
+                              <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-calendar-fill text-muted"></i>
+                              </span>
+                              <input name="dateNaissance" type="date" class="form-control border-start-0" id="dateNaissance" value="{{ user.dateNaissance|date('Y-m-d') }}" required>
+                              
+                            </div>
+                          </div>
+                            
+                        </div>
+                          <!-- Profile Image Upload -->
+                          <div class="mb-4">
+                            <label for="image" class="form-label fw-bold text-primary">Profile Image</label>
+                            <input name="image" type="file" class="form-control" id="image">
+                            {% if user.image %}
+                                  <small class="text-muted">Current file: <a href="{{ asset('uploads/profile_images/' ~ user.image) }}" target="_blank">{{ user.image }}</a></small>
+                            {% endif %}
+                          </div>
+                          
+                          
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                          <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save me-2"></i>Enregistrer
+                          </button>
+                        </div>
+                      </form>
+
+                      <!-- Custom Styles -->
+                      <style>
+                        .text-danger {
+                              color: #dc3545; /* Red color for error messages */
+                              font-size: 0.875rem; /* Smaller font size for error messages */
+                              margin-top: 0.25rem; /* Space between the input field and the error message */
+                          }
+
+                          .is-invalid {
+                              border-color: #dc3545 !important; /* Red border for invalid inputs */
+                          }
+                        .form-label {
+                          color: #3fbbc0;
+                          font-size: 14px;
+                          margin-bottom: 8px;
+                        }
+
+                        .input-group-text {
+                          background-color: #f8f9fa;
+                          border: 1px solid #ced4da;
+                          border-right: none;
+                          border-radius: 8px 0 0 8px;
+                        }
+
+                        .form-control {
+                          border: 1px solid #ced4da;
+                          border-left: none;
+                          border-radius: 0 8px 8px 0;
+                          padding: 10px;
+                          transition: border-color 0.3s ease, box-shadow 0.3s ease;
+                        }
+
+                        .form-control:focus {
+                          border-color: #3fbbc0;
+                          box-shadow: 0 0 0 0.2rem rgba(63, 187, 192, 0.25);
+                        }
+
+                        .btn-primary {
+                          background-color: #3fbbc0;
+                          border: none;
+                          border-radius: 8px;
+                          padding: 12px;
+                          font-size: 16px;
+                          transition: background-color 0.3s ease, transform 0.3s ease;
+                        }
+
+                        .btn-primary:hover {
+                          background-color: #2a9d9f;
+                          transform: translateY(-2px);
+                        }
+
+                        .btn-primary:active {
+                          transform: translateY(0);
+                        }
+
+                        .bi {
+                          vertical-align: middle;
+                        }
+                      </style>
+                    </div>
+
+                    <!-- Change Password -->
+                    <div class="tab-pane fade" id="profile-change-password">
+                      <form action="{{ path('app_admin_profile') }}" method="POST">
+                                <input type="hidden" name="action" value="change_password">
+                        <div class="mb-3">
+                          <label class="form-label">Ancien mot de passe</label>
+                          <input name="currentPassword" type="password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label">Nouveau mot de passe</label>
+                          <input name="newPassword" type="password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Confirmer le nouveau mot de passe</label>
+                            <input name="confirmPassword" type="password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-3">
+                          <i class="bi bi-arrow-repeat me-2"></i>Changer
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Custom Styles -->
+        <style>
+          .card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+          }
+
+          .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+          }
+
+          .bg-gradient {
+            z-index: 1;
+          }
+
+          .nav-tabs {
+            border-bottom: 2px solid #e9ecef;
+            background-color: #f8f9fa;
+            border-radius: 15px 15px 0 0;
+          }
+
+          .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 500;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            border-radius: 0;
+          }
+
+          .nav-tabs .nav-link.active {
+            color: #3fbbc0;
+            border-bottom: 2px solid #3fbbc0;
+            background-color: transparent;
+          }
+
+          .nav-tabs .nav-link:hover {
+            color: #3fbbc0;
+            background-color: rgba(63, 187, 192, 0.1);
+          }
+
+          .tab-content {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 0 0 15px 15px;
+          }
+
+          .form-control {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+          }
+
+          .form-control:focus {
+            border-color: #3fbbc0;
+            box-shadow: 0 0 0 0.2rem rgba(63, 187, 192, 0.25);
+          }
+
+          .btn-primary {
+            background-color: #3fbbc0;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+          }
+
+          .btn-primary:hover {
+            background-color: #2a9d9f;
+            transform: translateY(-2px);
+          }
+
+          .text-primary {
+            color: #3fbbc0 !important;
+          }
+
+          .badge.bg-primary {
+            background-color: #3fbbc0 !important;
+            padding: 5px 10px;
+            font-size: 14px;
+            border-radius: 8px;
+          }
+
+          .bi {
+            vertical-align: middle;
+          }
+        </style>
+
+      </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const profileEditForm = document.getElementById('profileEditForm');
+
+    if (profileEditForm) {
+        profileEditForm.addEventListener('submit', function (event) {
+            let isValid = true;
+
+            // Validate Nom (only letters)
+            const nom = document.getElementById('nom').value;
+            if (!/^[A-Za-zÀ-ÿ\s]+$/.test(nom)) {
+                document.getElementById('nom').classList.add('is-invalid');
+                document.getElementById('nomError').textContent = 'Le nom ne doit contenir que des lettres.';
+                isValid = false;
+            } else {
+                document.getElementById('nom').classList.remove('is-invalid');
+                document.getElementById('nomError').textContent = '';
+            }
+
+            // Validate Prénom (only letters)
+            const prenom = document.getElementById('prenom').value;
+            if (!/^[A-Za-zÀ-ÿ\s]+$/.test(prenom)) {
+                document.getElementById('prenom').classList.add('is-invalid');
+                document.getElementById('prenomError').textContent = 'Le prénom ne doit contenir que des lettres.';
+                isValid = false;
+            } else {
+                document.getElementById('prenom').classList.remove('is-invalid');
+                document.getElementById('prenomError').textContent = '';
+            }
+
+            // Validate Téléphone (exactly 8 digits)
+            const telephone = document.getElementById('telephone').value;
+            if (!/^\d{8}$/.test(telephone)) {
+                document.getElementById('telephone').classList.add('is-invalid');
+                document.getElementById('telephoneError').textContent = 'Le téléphone doit contenir exactement 8 chiffres.';
+                isValid = false;
+            } else {
+                document.getElementById('telephone').classList.remove('is-invalid');
+                document.getElementById('telephoneError').textContent = '';
+            }
+
+            // Validate Date de Naissance (not in the future)
+            const dateNaissance = document.getElementById('dateNaissance').value;
+            const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+            if (dateNaissance > today) {
+                document.getElementById('dateNaissance').classList.add('is-invalid');
+                document.getElementById('dateNaissanceError').textContent = 'La date de naissance ne peut pas être dans le futur.';
+                isValid = false;
+            } else {
+                document.getElementById('dateNaissance').classList.remove('is-invalid');
+                document.getElementById('dateNaissanceError').textContent = '';
+            }
+
+            // Prevent form submission if validation fails
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    }
+  });
+</script>
+
+<script>
+    document.getElementById('passwordChangeForm').addEventListener('submit', function(event) {
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    // Reset previous error states
+    document.getElementById('newPassword').classList.remove('is-invalid');
+    document.getElementById('confirmPassword').classList.remove('is-invalid');
+    
+    // Check if passwords match
+    if (newPassword !== confirmPassword) {
+        document.getElementById('confirmPassword').classList.add('is-invalid');
+        event.preventDefault();
+        return;
+    }
+    
+    // Check password length
+    if (newPassword.length < 8) {
+        document.getElementById('newPassword').classList.add('is-invalid');
+        event.preventDefault();
+        return;
+    }
+    });
+</script>
+ 
+{% endblock %}

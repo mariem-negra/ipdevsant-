@@ -1,0 +1,178 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}CartItem Details{% endblock %}
+
+{% block main %}
+  <section id="call-to-action" class="call-to-action section accent-background">
+    <div class="container">
+      <div class="row justify-content-center" data-aos="zoom-in" data-aos-delay="100">
+        <div class="col-xl-10">
+          <div class="text-center">
+            <h1 class="display-4 mb-4">Cart Item Details</h1>
+
+            <div class="row">
+              <!-- Left Table: Cart Item Information -->
+              <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100">
+                  <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">Cart Item Information</h2>
+                  </div>
+                  <div class="card-body">
+                    <table class="table table-hover mb-0">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Quantity</th>
+                          <th>Product</th>
+                          <th>Order ID</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ cart_item.id }}</td>
+                          <td>{{ cart_item.quantite }}</td>
+                          <td>
+                            {% if cart_item.produit %}
+                              {{ cart_item.produit.nom }}
+                            {% else %}
+                              <span class="text-muted">NULL</span>
+                            {% endif %}
+                          </td>
+                          <td>
+                            {% if cart_item.commande %}
+                              {{ cart_item.commande.id }}
+                            {% else %}
+                              <span class="text-muted">NULL</span>
+                            {% endif %}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Table: Product Details -->
+              {% if cart_item.produit %}
+                <div class="col-md-6 mb-4">
+                  <div class="card shadow-sm h-100">
+                    <div class="card-header bg-success text-white">
+                      <h2 class="h5 mb-0">Product Details</h2>
+                    </div>
+                    <div class="card-body">
+                      <table class="table table-hover mb-0">
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Stock Quantity</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{{ cart_item.produit.nom }}</td>
+                            <td>{{ cart_item.produit.prix }} €</td>
+                            <td>{{ cart_item.produit.stockQuantite }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Back Button -->
+            <div class="action-buttons mt-4">
+              <a href="{{ path('app_cart_item_indexback') }}" class="btn btn-secondary btn-lg">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .card {
+      border: none;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      font-weight: 600;
+    }
+
+    .table {
+      margin-bottom: 0;
+    }
+
+    .table th,
+    .table td {
+      vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+      border-color: #545b62;
+    }
+
+    .btn-lg {
+      padding: 0.75rem 1.5rem;
+      font-size: 1.1rem;
+    }
+
+    .text-muted {
+      color: #6c757d !important;
+    }
+
+    .shadow-sm {
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+
+    .display-4 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .h5 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px; /* Adds spacing between columns */
+    }
+
+    .col-md-6 {
+      flex: 1 1 calc(50% - 20px); /* Ensures equal width for both columns */
+    }
+
+    @media (max-width: 768px) {
+      .col-md-6 {
+        flex: 1 1 100%; /* Stack columns on smaller screens */
+      }
+    }
+  </style>
+{% endblock %}

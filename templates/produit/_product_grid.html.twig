@@ -1,0 +1,29 @@
+{% for produit in produits %}
+  <div class="product-card {% if produit.stockQuantite == 0 %}sold-out{% endif %}">
+    <div class="product-brand">{{ produit.brand|default('Brand') }}</div>
+    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="product-image-link">
+      <div class="product-image-container">
+        {% set images = produit.image|split(',') %}
+        <img src="{{ asset('uploads/images/' ~ images[0]) }}" alt="{{ produit.nom }}" class="product-image">
+      </div>
+    </a>
+    <div class="product-info">
+      <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="product-title">{{ produit.nom }}</a>
+      <p class="product-description">{{ produit.description|default('Dual-tube measurement with velcro cuff')|slice(0, 80) }}{% if produit.description|length > 80 %}...{% endif %}</p>
+      {% if produit.rating is defined %}
+        <div class="product-rating">
+          {% for i in 1..5 %}
+            <i class="bi {% if i <= produit.rating %}bi-star-fill{% else %}bi-star{% endif %}"></i>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <div class="product-price">
+        <span class="from-text">from</span>
+        <span class="price-amount">{{ produit.prix }} TND</span>
+        <span class="price-tax">ex. VAT*</span>
+      </div>
+    </div>
+  </div>
+{% else %}
+  <p class="text-center">Aucun produit trouvé.</p>
+{% endfor %}

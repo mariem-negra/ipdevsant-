@@ -1,0 +1,252 @@
+{# Template with enhanced styling based on the first example #}
+
+<div class="container py-5">
+    <div class="card shadow-lg rounded-lg">
+        <div class="card-body p-4">
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="row g-4">
+                    <!-- Product Information Section -->
+                    <div class="col-12">
+                        <h4 class="section-title">Informations du Produit</h4>
+                        <hr class="section-divider">
+                    </div>
+
+                    <!-- Name Field -->
+                    <div class="col-md-12">
+                        <label for="{{ form.nom.vars.id }}" class="form-label">Nom</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-tag-fill"></i>
+                            </span>
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'id': form.nom.vars.id}}) }}
+                        </div>
+                        <div class="invalid-feedback">{{ form_errors(form.nom) }}</div>
+                    </div>
+
+                    <!-- Description Field -->
+                    <div class="col-md-12">
+                        <label for="{{ form.description.vars.id }}" class="form-label">Description</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-text-paragraph"></i>
+                            </span>
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'id': form.description.vars.id, 'rows': '4'}}) }}
+                        </div>
+                        <div class="invalid-feedback">{{ form_errors(form.description) }}</div>
+                    </div>
+
+                    <!-- Price and Stock Section -->
+                    <div class="col-12">
+                        <h4 class="section-title mt-4">Prix et Stock</h4>
+                        <hr class="section-divider">
+                    </div>
+
+                    <!-- Price Field -->
+                    <div class="col-md-6">
+                        <label for="{{ form.prix.vars.id }}" class="form-label">Prix</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-currency-dollar"></i>
+                            </span>
+                            {{ form_widget(form.prix, {'attr': {'class': 'form-control', 'id': form.prix.vars.id, 'oninput': 'filterFloatInput(this)'}}) }}
+                        </div>
+                        <div class="invalid-feedback">{{ form_errors(form.prix) }}</div>
+                    </div>
+
+                    <!-- Stock Quantity Field -->
+                    <div class="col-md-6">
+                        <label for="{{ form.stock_quantite.vars.id }}" class="form-label">Quantité en stock</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-box-seam"></i>
+                            </span>
+                            {{ form_widget(form.stock_quantite, {'attr': {'class': 'form-control', 'id': form.stock_quantite.vars.id}}) }}
+                        </div>
+                        <div class="invalid-feedback">{{ form_errors(form.stock_quantite) }}</div>
+                    </div>
+
+                    <!-- Date Field -->
+                    <div class="col-md-12">
+                        <label for="{{ form.date.vars.id }}" class="form-label">Date</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-calendar-fill"></i>
+                            </span>
+                            {{ form_widget(form.date, {'attr': {'class': 'form-control', 'id': form.date.vars.id, 'type': 'datetime-local'}}) }}
+                        </div>
+                        <div class="invalid-feedback">{{ form_errors(form.date) }}</div>
+                    </div>
+
+                    <!-- Images Section -->
+                    <div class="col-12">
+                        <h4 class="section-title mt-4">Images</h4>
+                        <hr class="section-divider">
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="upload-container">
+                            <label for="{{ form.images.vars.id }}" class="form-label">Images du Produit</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-image-fill"></i>
+                                </span>
+                                {{ form_widget(form.images, {'attr': {'class': 'form-control', 'id': form.images.vars.id, 'multiple': 'multiple'}}) }}
+                            </div>
+                            <div class="invalid-feedback">{{ form_errors(form.images) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-5">
+                    <button type="submit" class="btn btn-primary btn-lg save-button">
+                        <i class="bi bi-save me-2"></i>{{ button_label|default('Enregistrer') }}
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 1000px;
+    }
+
+    .card {
+        border: none;
+        background: #fff;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #3fbbc0 0%, #2a9d9f 100%);
+        border-radius: 12px 12px 0 0;
+    }
+
+    .section-title {
+        color: #2a9d9f;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .section-divider {
+        border-top: 2px solid #3fbbc0;
+        opacity: 0.2;
+        margin: 0.5rem 0 1.5rem 0;
+    }
+
+    .form-label {
+        color: #3fbbc0;
+        font-weight: 500;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        color: #3fbbc0;
+        padding: 0.75rem;
+    }
+
+    .form-control {
+        padding: 0.75rem;
+        border: 1px solid #ced4da;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #3fbbc0;
+        box-shadow: 0 0 0 0.2rem rgba(63, 187, 192, 0.25);
+    }
+
+    .upload-container {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+        border: 1px dashed #ced4da;
+    }
+
+    .current-file {
+        background: #fff;
+        padding: 0.5rem;
+        border-radius: 4px;
+    }
+
+    .save-button {
+        background: linear-gradient(135deg, #3fbbc0 0%, #2a9d9f 100%);
+        border: none;
+        padding: 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .save-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(63, 187, 192, 0.2);
+    }
+
+    .invalid-feedback {
+        display: none;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .is-invalid:focus {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+
+    .is-invalid + .invalid-feedback {
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Block past dates
+        let dateInput = document.querySelector("input[type='datetime-local']");
+        let now = new Date();
+        let formattedDate = now.toISOString().slice(0, 16); // Format YYYY-MM-DDTHH:MM
+        dateInput.setAttribute("min", formattedDate);
+        
+        // Form validation
+        const form = document.querySelector('.needs-validation');
+        
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            form.classList.add('was-validated');
+        });
+    });
+    
+    // Ensure "Prix" field only allows numbers and one decimal point
+    function filterFloatInput(input) {
+        input.value = input.value.replace(/[^0-9.,]/g, '') // Remove non-numeric characters except . and ,
+                           .replace(/,/g, '.');            // Replace commas with periods
+        
+        // Prevent multiple decimal points
+        const parts = input.value.split('.');
+        if (parts.length > 2) {
+            input.value = parts[0] + '.' + parts.slice(1).join('');
+        }
+    }
+</script>
