@@ -7,39 +7,44 @@
 
     <table class="table table-striped">
         <thead>
-            <tr>
-                <th>ID</th>
-                <th>Date et Heure</th>
-                <th>Statut</th>
-                <th>Description</th>
-                <th>Planning Associé</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th>ID</th>
+            <th>Date et Heure</th>
+            <th>Statut</th>
+            <th>Description</th>
+            <th>Planning Associé</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-            {% for rendezVous in rendez_vouses %}
-                <tr>
-                    <td>{{ rendezVous.id }}</td>
-                    <td>{{ rendezVous.dateheure|date('d/m/Y H:i') }}</td>
-                    <td>{{ rendezVous.statut }}</td>
-                    <td>{{ rendezVous.description }}</td>
-                    <td>{{ rendezVous.planning.jour }} {{ rendezVous.planning.heuredebut|date('H:i') }} - {{ rendezVous.planning.heurefin|date('H:i') }}</td>
-                    <td>
-                        <a href="{{ path('app_rendez_vous_edit', {'id': rendezVous.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+        {% for rendezVous in rendez_vouses %}
+            <tr>
+                <td>{{ rendezVous.id }}</td>
+                <td>{{ rendezVous.dateheure|date('d/m/Y H:i') }}</td>
+                <td>{{ rendezVous.statut }}</td>
+                <td>{{ rendezVous.description }}</td>
+                <td>{{ rendezVous.planning.jour }} {{ rendezVous.planning.heuredebut|date('H:i') }} - {{ rendezVous.planning.heurefin|date('H:i') }}</td>
+                <td>
+                    <a href="{{ path('app_rendez_vous_edit', {'id': rendezVous.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
 
-                        <form action="{{ path('app_rendez_vous_delete', {'id': rendezVous.id}) }}" method="post" style="display:inline;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rendezVous.id) }}">
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')">Supprimer</button>
-                        </form>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="6">Aucun rendez-vous trouvé</td>
-                </tr>
-            {% endfor %}
+                    <form action="{{ path('app_rendez_vous_delete', {'id': rendezVous.id}) }}" method="post" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rendezVous.id) }}">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')">Supprimer</button>
+                    </form>
+
+                    <a href="{{ path('app_rendez_vous_qr_code', {'id': rendezVous.id}) }}" class="btn btn-success btn-sm" target="_blank">
+                        Générer QR Code
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">Aucun rendez-vous trouvé</td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
+
 
     <a href="{{ path('app_rendez_vous_new') }}" class="btn btn-primary">Ajouter un rendez-vous</a>
 {% endblock %}

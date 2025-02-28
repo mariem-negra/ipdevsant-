@@ -3,34 +3,39 @@
 {% block title %}Gestion des Plannings - Back-Office{% endblock %}
 
 {% block main %}
-    <h1>Gestion des Plannings</h1>
+    <h1>Gestion des </h1>
 
     <table class="table table-striped">
         <thead>
-            <tr>
-                <th>ID</th>
-                <th>Jour</th>
-                <th>Heure de début</th>
-                <th>Heure de fin</th>
-                
-            </tr>
+        <tr>
+            <th>ID</th>
+            <th>Jour</th>
+            <th>Heure de début</th>
+            <th>Heure de fin</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-            {% for planning in plannings %}
-                <tr>
-                    <td>{{ planning.id }}</td>
-                    <td>{{ planning.jour }}</td>
-                    <td>{{ planning.heuredebut|date('H:i') }}</td>
-                    <td>{{ planning.heurefin|date('H:i') }}</td>
-                    
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="5">Aucun planning trouvé</td>
-                </tr>
-            {% endfor %}
+        {% for planning in plannings %}
+            <tr>
+                <td>{{ planning.id }}</td>
+                <td>{{ planning.jour }}</td>
+                <td>{{ planning.heuredebut|date('H:i') }}</td>
+                <td>{{ planning.heurefin|date('H:i') }}</td>
+                <td>
+                    <a href="{{ path('app_planning_pdf', { id: planning.id }) }}" class="btn btn-primary">
+                        Générer PDF
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun planning trouvé</td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 
-    
+
+
 {% endblock %}

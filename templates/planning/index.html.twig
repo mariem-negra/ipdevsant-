@@ -4,37 +4,38 @@
 
 {% block section %}
     <style>
-        /* Ajouter vos styles ici */
+        .bell-icon {
+            cursor: pointer;
+            color: #ffc107;
+            margin-left: 10px;
+        }
     </style>
 
     <h1>Planning du Médecin</h1>
 
     <table class="table">
         <thead>
-            <tr>
-                
-                <th>Jour</th>
-                <th>Heure de début</th>
-                <th>Heure de fin</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th>Jour</th>
+            <th>Heure de début</th>
+            <th>Heure de fin</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
         {% for planning in plannings %}
             <tr>
-                
                 <td>{{ planning.jour }}</td>
                 <td>{{ planning.heuredebut|date('H:i') }}</td>
                 <td>{{ planning.heurefin|date('H:i') }}</td>
                 <td>
-    <a href="{{ path('app_planning_edit', {'id': planning.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
-
-    <form action="{{ path('app_planning_delete', {'id': planning.id}) }}" method="post" style="display:inline;">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ planning.id) }}">
-        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce planning ?')">Supprimer</button>
-    </form>
-</td>
-
+                    <a href="{{ path('app_planning_edit', {'id': planning.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    <form action="{{ path('app_planning_delete', {'id': planning.id}) }}" method="post" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ planning.id) }}">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce planning ?')">Supprimer</button>
+                    </form>
+                    <i class="fas fa-bell bell-icon" onclick="showRendezVous({{ planning.id }})"></i> <!-- Bell icon -->
+                </td>
             </tr>
         {% else %}
             <tr>
@@ -45,4 +46,41 @@
     </table>
 
     <a href="{{ path('app_planning_new') }}" class="btn btn-primary">Ajouter un planning</a>
+
+    <!-- Include Toastify CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        function showRendezVous(planningId) {
+            fetch(`/api/get-rendezvous/${planningId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        data.forEach(rendezVous => {
+                            Toastify({
+                                text: `Rendez-vous: ${rendezVous.description} à ${rendezVous.dateheure}`,
+                                duration: 5000,
+                                close: true,
+                                gravity: "top",
+                                position: "right",
+                                backgroundColor: "#4caf50",
+                            }).showToast();
+                        });
+                    } else {
+                        Toastify({
+                            text: "Aucun rendez-vous trouvé pour ce planning.",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "#f44336",
+                        }).showToast();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching RendezVous:', error);
+                });
+        }
+    </script>
 {% endblock %}

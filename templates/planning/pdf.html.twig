@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Planning - {{ planning.id }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        h1 { text-align: center; font-size: 18px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<h1>Planning #{{ planning.id }}</h1>
+<p><strong>Jour :</strong> {{ planning.jour }}</p>
+<p><strong>Heure de début :</strong> {{ planning.heuredebut|date('H:i') }}</p>
+<p><strong>Heure de fin :</strong> {{ planning.heurefin|date('H:i') }}</p>
+
+<h2>Rendez-vous associés</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Description</th>
+        <th>Date et Heure</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for rdv in rendezVousList %}
+        <tr>
+            <td>{{ rdv.description }}</td>
+            <td>{{ rdv.dateheure|date('Y-m-d H:i') }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2">Aucun rendez-vous trouvé</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
