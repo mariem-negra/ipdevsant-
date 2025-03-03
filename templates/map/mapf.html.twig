@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Carte des événements{% endblock %}
+
+{% block section %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js"></script>  
+    <style>
+        html, body {
+            height: 100%;
+        }
+        #map {
+            width: 100%;
+            height: 400px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="priscing_area">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="section_title text-center mb-73">
+                        <h3>Map</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="single_prising text-center">
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display:flex">
+                <img src="https://maps.google.com/mapfiles/ms/icons/red-dot.png"/>
+                <p>Événements</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var markersData = {{ markers|json_encode|raw }};
+
+        // Initialize the map
+        var map = new OpenLayers.Map('map');
+        map.addLayer(new OpenLayers.Layer.OSM());
+
+        // Set default center (France as an example)
+        var centerLonLat = new OpenLayers.LonLat(2.213749, 46.227638)
+            .transform(
+                new OpenLayers.Projection("EPSG:4326"),
+                map.getProjectionObject()
+            );
+        map.setCenter(centerLonLat, 5);
+
+        // Create a marker layer
+        var markersLayer = new OpenLayers.Layer.Markers("Markers");
+        map.addLayer(markersLayer);
+
+        // Loop through event markers and add them to the map
+        markersData.forEach(function(marker) {
+            addMarker(marker.latitude, marker.longitude, markersLayer);
+        });
+
+        // Function to add a marker
+        function addMarker(lat, lon, layer) {
+            var lonLat = new OpenLayers.LonLat(lon, lat)
+                .transform(
+                    new OpenLayers.Projection("EPSG:4326"),
+                    map.getProjectionObject()
+                );
+            var icon = new OpenLayers.Icon('https://maps.google.com/mapfiles/ms/icons/red-dot.png');
+            layer.addMarker(new OpenLayers.Marker(lonLat, icon));
+        }
+    // Delete Event and Remove Marker
+        document.querySelectorAll('.delete-event').forEach(button => {
+            button.addEventListener('click', function () {
+                let eventId = this.dataset.eventId;
+
+                fetch(`/delete-event/${eventId}`, {
+                    method: 'DELETE',
+                    headers: { 
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Event deleted successfully') {
+                        if (markers[eventId]) {
+                            markersLayer.removeMarker(markers[eventId]); // ✅ Remove marker from map
+                            delete markers[eventId]; // ✅ Remove from memory
+                        }
+                        document.getElementById(`event-row-${eventId}`)?.remove(); // ✅ Remove event from table
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+</script>
+</html>
+
+{% endblock %}

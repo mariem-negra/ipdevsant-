@@ -1,0 +1,12 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}New Event{% endblock %}
+
+{% block main %}
+   
+
+    {{ include('event/_form.html.twig') }}
+
+    <a href="{{ path('app_event_indexback') }}">back to list</a>
+    
+{% endblock %}

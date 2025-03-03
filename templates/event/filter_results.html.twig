@@ -1,0 +1,15 @@
+{% extends 'baseBack.html.twig' %}
+{% block title %}Résultats de la recherche{% endblock %}
+
+{% block main %}
+    <h1>Résultats de la recherche</h1>
+    {% if events is empty %}
+        <p>Aucun événement trouvé avec cette description.</p>
+    {% else %}
+        <ul>
+            {% for event in events %}
+                <li>{{ event.name }} - {{ event.description }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

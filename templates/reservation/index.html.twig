@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des réservations{% endblock %}
+
+{% block section %}
+    <div class="container py-5">
+        <h1 class="text-center mb-4" style="font-family: 'Roboto', sans-serif; font-weight: bold; color: #333; text-transform: uppercase;">Liste des réservations</h1>
+
+        <div class="card shadow-lg" style="border-radius: 15px; background: #3fbbc0;">
+            <div class="card-body">
+                <!-- Formulaire de recherche -->
+                <form method="get" action="{{ path('app_reservation_indexr') }}" class="mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" name="keyword" class="form-control" placeholder="Rechercher par nom..." 
+                                       value="{{ app.request.query.get('keyword') }}" title="Entrez le nom ou l'email">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i> Rechercher
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end mt-2 mt-md-0">
+                            <a href="{{ path('app_reservation_indexr') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-repeat"></i> Réinitialiser
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+                {% if app.request.query.get('keyword') and reservations|length == 0 %}
+                    <div class="alert alert-danger text-center">
+                        Aucune réservation trouvée pour "{{ app.request.query.get('keyword') }}".
+                    </div>
+                {% endif %}
+
+                <table class="table table-hover text-center align-middle" style="border-radius: 12px; background-color: #f9f9f9; color: #333; overflow: hidden;">
+                    <thead class="bg-gradient-to-r from-pink-400 to-indigo-500 text-white">
+                        <tr>
+                            <th style="padding: 12px; font-weight: bold;">Nom de la réservation</th>
+                            <th style="padding: 12px; font-weight: bold;">Email</th>
+                            <th style="padding: 12px; font-weight: bold;">Nombre de personnes</th>
+                            <th style="padding: 12px; font-weight: bold;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for reservation in reservations %}
+                        <tr style="border-bottom: 2px solid rgba(0, 0, 0, 0.1);">
+                            <td style="padding: 15px; border-radius: 8px; background-color: #ffffff;">{{ reservation.nomreserv }}</td>
+                            <td style="padding: 15px; border-radius: 8px; background-color: #ffffff;">{{ reservation.mail }}</td>
+                            <td style="padding: 15px; border-radius: 8px; background-color: #ffffff;">{{ reservation.nbrpersonne }}</td>
+                            <td style="padding: 15px; display: flex; justify-content: center; gap: 10px;">
+                                <!-- Modifier -->
+                                <a href="{{ path('app_reservation_edit', {'id': reservation.id}) }}" class="btn btn-sm" style="border-radius: 20px; padding: 6px 12px; font-size: 14px; color: #333; border: 2px solid #333;">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </a>
+                                 <!-- Générer PDF -->
+    <a href="{{ path('generate_pdf_reservation', {'id': reservation.id}) }}" class="btn btn-sm" style="border-radius: 20px; padding: 6px 12px; font-size: 14px; color: #333; background-color: #f8f9fa; border: 2px solid #3fbbc0;">
+        <i class="fas fa-file-pdf"></i> PDF
+    </a>
+                                <!-- Supprimer -->
+                                <form action="{{ path('app_reservation_delete', {'id': reservation.id}) }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-danger" style="border-radius: 20px; padding: 6px 12px; font-size: 14px; color: #333; border: 2px solid #dc3545;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">
+                                        <i class="fas fa-trash-alt"></i> Supprimer
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-muted" style="padding: 20px; text-align: center;">
+                                {% if app.request.query.get('keyword') %}
+                                    Aucune réservation trouvée pour "{{ app.request.query.get('keyword') }}".
+                                {% else %}
+                                    Aucune réservation trouvée.
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Gestion des réservations{% endblock %}
+
+{% block main %}
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Gestion des réservations</h1>
+
+        <div class="card shadow-lg border-primary">
+            <div class="card-body">
+                <!-- Formulaire de recherche -->
+                <form method="get" action="{{ path('app_reservation_indexr') }}" class="mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" name="keyword" class="form-control" placeholder="Rechercher par nom..." 
+                                       value="{{ app.request.query.get('keyword') }}" title="Entrez le nom ou l'email">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i> Rechercher
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end mt-2 mt-md-0">
+                            <a href="{{ path('app_reservation_indexr') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-repeat"></i> Réinitialiser
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+                {% if app.request.query.get('keyword') and reservations|length == 0 %}
+                    <div class="alert alert-danger text-center">
+                        Aucune réservation trouvée pour "{{ app.request.query.get('keyword') }}".
+                    </div>
+                {% endif %}
+
+                <table class="table table-hover text-center align-middle">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>Id</th>
+                            <th>Nom de la réservation</th>
+                            <th>Email</th>
+                            <th>Nombre de personnes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for reservation in reservations %}
+                        <tr>
+                            <td><strong>{{ reservation.id }}</strong></td>
+                            <td>{{ reservation.nomreserv }}</td>
+                            <td>{{ reservation.mail }}</td>
+                            <td>{{ reservation.nbrpersonne }}</td>
+                            <td>
+                                <a href="{{ path('app_reservation_showback', {'id': reservation.id}) }}" class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-eye"></i> 
+                                </a>
+                                                             <!-- Générer PDF -->
+    <a href="{{ path('generate_pdf_reservation', {'id': reservation.id}) }}" class="btn btn-sm" style="border-radius: 20px; padding: 6px 12px; font-size: 14px; color: #333; background-color: #f8f9fa; border: 2px solid #3fbbc0;">
+        <i class="fas fa-file-pdf"></i> PDF
+    </a>
+         
+                                <form action="{{ path('app_reservation_delete', {'id': reservation.id}) }}" method="post" style="display: inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reservation.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-muted">
+                                {% if app.request.query.get('keyword') %}
+                                    Aucune réservation trouvée pour "{{ app.request.query.get('keyword') }}".
+                                {% else %}
+                                    Aucune réservation trouvée.
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+   
+{% endblock %}
