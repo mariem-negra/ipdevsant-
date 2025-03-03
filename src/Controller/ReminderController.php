@@ -34,6 +34,7 @@ class ReminderController extends AbstractController
             $reminder->setDateTime(new \DateTime($data['date'] . ' ' . $data['time']));
             $reminder->setNotifyBefore($data['notifyBefore']);
             $reminder->setRepeatType($data['repeatType'] ?? 'none');
+            $reminder->setSoundEnabled(isset($data['soundEnabled']) ? (bool)$data['soundEnabled'] : true);
 
             $reminderRepository->save($reminder, true);
 
@@ -122,18 +123,101 @@ class ReminderController extends AbstractController
         $reminders = $reminderRepository->findByDateRange($today, $endDate);
         
         $data = array_map(function($reminder) {
-            return [
-                'id' => $reminder->getId(),
-                'title' => $reminder->getTitle(),
-                'dateTime' => $reminder->getDateTime()->format('Y-m-d H:i:s'),
-                'notifyBefore' => $reminder->getNotifyBefore(),
-                'repeatType' => $reminder->getRepeatType(),
-                'formattedDate' => $reminder->getDateTime()->format('d/m/Y')
-            ];
-        }, $reminders);
+            // Calculer la date et l'heure de notification en fonction des préférences
+            $notificationTime = clone $reminder->getDateTime();
+            $minutesBefore = intval($reminder->getNotifyBefore());
+            $notificationTime->modify("-{$minutesBefore} minutes");
+                    return [
+            'id' => $reminder->getId(),
+            'title' => $reminder->getTitle(),
+            'dateTime' => $reminder->getDateTime()->format('Y-m-d H:i:s'),
+            'notifyBefore' => $reminder->getNotifyBefore(),
+            'notifyAt' => $notificationTime->format('Y-m-d H:i:s'),
+            'repeatType' => $reminder->getRepeatType(),
+            'formattedDate' => $reminder->getDateTime()->format('d/m/Y'),
+            'remainingTime' => $this->calculateRemainingTime($reminder),
+            'soundEnabled' => $reminder->isSoundEnabled() 
+        ];
+                }, $reminders);
         
         return new JsonResponse($data);
     }
+    
+    /**
+     * Calculer le temps restant avant un rappel
+     */
+    private function calculateRemainingTime(Reminder $reminder): array
+    {
+        $now = new \DateTime('now');
+        $eventTime = $reminder->getDateTime();
+        
+        // Calculer la différence en secondes
+        $diff = $eventTime->getTimestamp() - $now->getTimestamp();
+        
+        if ($diff < 0) {
+            return [
+                'status' => 'past',
+                'text' => 'Passé'
+            ];
+        }
+        
+        // Convertir en jours, heures, minutes
+        $days = floor($diff / (60 * 60 * 24));
+        $diff -= $days * (60 * 60 * 24);
+        
+        $hours = floor($diff / (60 * 60));
+        $diff -= $hours * (60 * 60);
+        
+        $minutes = floor($diff / 60);
+        
+        // Formater le texte selon le temps restant
+        if ($days > 0) {
+            $text = sprintf('%d jour%s', $days, $days > 1 ? 's' : '');
+        } elseif ($hours > 0) {
+            $text = sprintf('%d heure%s', $hours, $hours > 1 ? 's' : '');
+        } else {
+            $text = sprintf('%d minute%s', $minutes, $minutes > 1 ? 's' : '');
+        }
+        
+        return [
+            'status' => 'upcoming',
+            'text' => 'Dans ' . $text
+        ];
+    }
+    
+    /**
+     * Endpoint pour vérifier les notifications imminentes
+     */
+    #[Route('/check-notifications', name: 'app_reminder_check_notifications', methods: ['GET'])]
+    public function checkNotifications(ReminderRepository $reminderRepository): JsonResponse
+    {
+        $now = new \DateTime('now');
+        $fiveMinutesLater = clone $now;
+        $fiveMinutesLater->modify('+5 minutes');
+        
+        // Rechercher tous les rappels dont la notification est imminente
+        $upcomingNotifications = [];
+        $reminders = $reminderRepository->findByDateRange($now, $fiveMinutesLater);
+        
+        foreach ($reminders as $reminder) {
+            $notificationTime = clone $reminder->getDateTime();
+            $minutesBefore = intval($reminder->getNotifyBefore());
+            $notificationTime->modify("-{$minutesBefore} minutes");
+            
+            // Si l'heure de notification est passée mais dans les 5 dernières minutes
+            if ($notificationTime <= $now && $notificationTime >= $now->modify('-5 minutes')) {
+                $upcomingNotifications[] = [
+                    'id' => $reminder->getId(),
+                    'title' => $reminder->getTitle(),
+                    'dateTime' => $reminder->getDateTime()->format('Y-m-d H:i:s'),
+                    'notifyBefore' => $reminder->getNotifyBefore()
+                ];
+            }
+        }
+        
+        return new JsonResponse($upcomingNotifications);
+    }
+
     
     #[Route('/editReminder/{id}', name: 'app_reminder_editReminder', methods: ['GET', 'POST'])]
     public function editReminder(Request $request, Reminder $reminder, ReminderRepository $reminderRepository): Response
@@ -150,7 +234,7 @@ class ReminderController extends AbstractController
             $reminderRepository->save($reminder, true);
             
             // Rediriger vers la page d'index après l'enregistrement
-            return $this->redirectToRoute('app_reminder_index');
+            return $this->redirectToRoute('app_reminder_notifications');
         }
         
         return $this->render('reminder/editReminder.html.twig', [
@@ -168,4 +252,6 @@ class ReminderController extends AbstractController
             return new JsonResponse(['error' => 'Erreur lors de la suppression'], 500);
         }
     }
+    
+    
 }

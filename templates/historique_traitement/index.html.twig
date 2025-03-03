@@ -1,226 +1,775 @@
 {% extends 'baseBack.html.twig' %}
 
-{% block title %}{% endblock %}
+{% block title %}Historique des Traitements{% endblock %}
 
 {% block body %}
 <style>
+    /* Main Container */
+    .page-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+    
     /* Header Styles */
     .medical-header {
-        background: linear-gradient(135deg, rgb(31, 197, 172), #CAE9FF);
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 0 0 25px 25px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(135deg, #1fc5ac, #4a90e2);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     .medical-header h2 {
         color: white;
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         margin: 0;
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .medical-header h2 i {
+        margin-right: 0.8rem;
+        font-size: 1.6rem;
     }
 
-    /* Search Bar Container */
+    /* Search Container */
     .search-container {
-        display: flex;
-        justify-content: center;
-        margin: 2rem 0;
-    }
-
-    /* Search Bar Styling */
-    .search-form {
-        display: flex;
-        align-items: center;
         background: white;
-        border-radius: 30px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        width: 100%;
-        max-width: 500px;
-        transition: box-shadow 0.3s ease;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
     }
-
-    .search-form:hover {
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    
+    .search-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
+        margin-bottom: 1.5rem;
     }
-
-    .search-form input[type="text"] {
-        flex: 1;
-        border: none;
-        padding: 0.8rem 1.2rem;
-        font-size: 1rem;
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-group label {
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #4a5568;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .form-group label i {
+        margin-right: 0.5rem;
+        color: #1fc5ac;
+    }
+    
+    .form-group input {
+        padding: 0.8rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        background: #f8f9fa;
+    }
+    
+    .form-group input:focus {
+        border-color: #1fc5ac;
+        box-shadow: 0 0 0 3px rgba(31, 197, 172, 0.2);
         outline: none;
-        background: transparent;
+        background: white;
     }
-
-    .search-form input[type="text"]::placeholder {
-        color: #999;
+    
+    .form-group input::placeholder {
+        color: #a0aec0;
     }
-
-    .search-form button {
-        background: linear-gradient(135deg, rgb(31, 197, 172), #4a90e2);
-        border: none;
-        color: white;
+    
+    /* Button Styles */
+    .buttons-container {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 0.5rem;
+    }
+    
+    .btn {
         padding: 0.8rem 1.5rem;
-        font-size: 1rem;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        border: none;
         cursor: pointer;
+        transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background 0.3s ease;
+        font-weight: 600;
     }
-
-    .search-form button:hover {
-        background: linear-gradient(135deg, #4a90e2, rgb(31, 197, 172));
-    }
-
-    .search-form button i {
+    
+    .btn i {
         margin-right: 0.5rem;
     }
-
-    /* Table Container */
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #1fc5ac, #4a90e2);
+        color: white;
+        box-shadow: 0 4px 6px rgba(74, 144, 226, 0.25);
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #1ab09a, #4183d7);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3);
+    }
+    
+    .btn-warning {
+        background: #f7b731;
+        color: white;
+        box-shadow: 0 4px 6px rgba(247, 183, 49, 0.25);
+    }
+    
+    .btn-warning:hover {
+        background: #f59f00;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(247, 183, 49, 0.3);
+    }
+    
+    .btn-info {
+        background: #1fc5ac;
+        color: white;
+        box-shadow: 0 2px 5px rgba(31, 197, 172, 0.25);
+    }
+    
+    .btn-info:hover {
+        background: #1ab09a;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(31, 197, 172, 0.3);
+    }
+    
+    .btn-delete {
+        background: #ff416c;
+        color: white;
+    }
+    
+    /* Table Styles */
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+    
     .table {
         width: 100%;
-        margin: 1rem auto;
-        border-collapse: collapse;
-        background: white;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 0;
     }
-
-    /* Table Headers */
+    
     .table th {
-        background: linear-gradient(135deg, rgb(31, 197, 172), #E6F3FF);
-        color: white;
-        padding: 0.6rem;
-        font-size: 0.85rem;
+        background: #f8f9fa;
+        color: #4a5568;
         font-weight: 600;
+        font-size: 0.95rem;
         text-align: left;
+        padding: 1rem 0.8rem;
+        border-bottom: 2px solid #e2e8f0;
+        position: relative;
     }
-
-    /* Table Cells */
+    
     .table td {
-        padding: 0.6rem;
-        font-size: 0.85rem;
-        border-bottom: 1px solid #f0f0f0;
+        padding: 1rem 0.8rem;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #f0f4f8;
+        color: #2d3748;
+        vertical-align: middle;
     }
-
-    /* Action Buttons */
-    .btn {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.8rem;
-        border-radius: 4px;
-        margin: 0.1rem;
-        border: none;
+    
+    .table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .table tr:hover {
+        background-color: #f8fafc;
+    }
+    
+    /* Sortable Headers */
+    .sortable {
         cursor: pointer;
-        display: inline-flex;
+        user-select: none;
+        padding-right: 1.5rem;
+        position: relative;
+    }
+    
+    .sortable:hover {
+        background-color: #f1f5f9;
+    }
+    
+    .sort-icon {
+        position: absolute;
+        right: 0.5rem;
+        font-size: 0.8rem;
+        transition: all 0.2s ease;
+    }
+    
+    /* Results Count */
+    .results-info {
+        display: flex;
         align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        color: #4a5568;
     }
-
-    /* Images in Table */
-    .table td img {
-        max-width: 60px;
-        height: auto;
-        border-radius: 4px;
+    
+    /* Loading Spinner */
+    .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 2rem;
     }
-
+    
+    .loading-spinner i {
+        font-size: 2.5rem;
+        color: #1fc5ac;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
     /* Empty State */
     .empty-state {
-        padding: 1rem;
         text-align: center;
-        color: #666;
+        padding: 3rem 1rem;
+        color: #718096;
     }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .table {
-            display: block;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .table th, .table td {
-            padding: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .btn {
-            padding: 0.3rem 0.5rem;
-            font-size: 0.75rem;
-        }
+    
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #e2e8f0;
     }
-
-    /* Button Colors */
-    .btn-info { background: rgb(31, 197, 172); color: white; }
-    .btn-warning { background: #f2994a; color: white; }
-    .btn-primary { background: #4a90e2; color: white; }
-    .btn-delete { background: #ff416c; color: white; }
-    .btn-success { background: #00b09b; color: white; }
-
-    /* No Bilan Text */
+    
+    .empty-state p {
+        font-size: 1.1rem;
+        margin: 0;
+    }
+    
+    /* Bilan Image */
+    .bilan-thumbnail {
+        max-width: 80px;
+        height: auto;
+        border-radius: 6px;
+        transition: transform 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .bilan-thumbnail:hover {
+        transform: scale(1.1);
+    }
+    
     .no-bilan {
-        color: #999;
+        color: #a0aec0;
         font-style: italic;
+        font-size: 0.9rem;
+    }
+    
+    /* Status Pill */
+    .status-pill {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
         font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .search-form {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .buttons-container {
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .search-form {
+            grid-template-columns: 1fr;
+        }
+        
+        .medical-header h2 {
+            font-size: 1.4rem;
+        }
+        
+        .results-info {
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
     }
 </style>
-<div class="medical-header">
-    <h2>
-        <i class="fas fa-hospital-user medical-icon"></i>
-        Historique des Traitements
-    </h2>
+
+<div class="page-container">
+    <div class="medical-header">
+        <h2>
+            <i class="fas fa-hospital-user"></i>
+            Historique des Traitements
+        </h2>
+    </div>
+    
+    <div class="search-container">
+        <form id="search-form" class="search-form">
+            <div class="form-group">
+                <label for="nom"><i class="fas fa-user-circle"></i> Nom</label>
+                <input type="text" id="nom" name="nom" value="{{ searchCriteria.nom|default('') }}" placeholder="Rechercher par nom...">
+            </div>
+            
+            <div class="form-group">
+                <label for="prenom"><i class="fas fa-user-tag"></i> Prénom</label>
+                <input type="text" id="prenom" name="prenom" value="{{ searchCriteria.prenom|default('') }}" placeholder="Rechercher par prénom...">
+            </div>
+            
+            <div class="form-group">
+                <label for="maladie"><i class="fas fa-virus"></i> Maladie</label>
+                <input type="text" id="maladie" name="maladie" value="{{ searchCriteria.maladie|default('') }}" placeholder="Rechercher par maladie...">
+            </div>
+            
+            <div class="form-group">
+                <label for="typeTraitement"><i class="fas fa-prescription-bottle-medical"></i> Type de Traitement</label>
+                <input type="text" id="typeTraitement" name="typeTraitement" value="{{ searchCriteria.typeTraitement|default('') }}" placeholder="Rechercher par type de traitement...">
+            </div>
+            
+            <input type="hidden" id="sort" name="sort" value="{{ currentSort.field|default('id') }}">
+            <input type="hidden" id="direction" name="direction" value="{{ currentSort.direction|default('DESC') }}">
+        </form>
+        
+        <div class="buttons-container">
+            <button type="button" id="search-button" class="btn btn-primary">
+                <i class="fas fa-search"></i> Rechercher
+            </button>
+            
+            <button type="button" id="reset-button" class="btn btn-warning">
+                <i class="fas fa-undo"></i> Réinitialiser
+            </button>
+        </div>
+    </div>
+    
+    <div class="results-info">
+        <div>
+            <i class="fas fa-clipboard-list"></i> 
+            <span id="count-results">{{ historique_traitements|length }}</span> résultat(s) trouvé(s)
+        </div>
+        
+        <div id="current-filter">
+            {% if searchCriteria|filter((v, k) => v is not empty)|length > 0 %}
+                <i class="fas fa-filter"></i> Filtres actifs
+            {% else %}
+                <i class="fas fa-list"></i> Affichage de tous les traitements
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="loading-spinner" id="loading-spinner">
+        <i class="fas fa-circle-notch"></i>
+    </div>
+    
+    <div class="table-container">
+        <table class="table" id="results-table">
+            <thead>
+                <tr>
+                    <th class="sortable" data-sort="id">
+                        <i class="fas fa-hashtag"></i> Id
+                        <span class="sort-icon">
+                            {% if currentSort.field == 'id' %}
+                                <i class="fas fa-sort-{{ currentSort.direction == 'ASC' ? 'up' : 'down' }}"></i>
+                            {% else %}
+                                <i class="fas fa-sort"></i>
+                            {% endif %}
+                        </span>
+                    </th>
+                    <th class="sortable" data-sort="nom">
+                        <i class="fas fa-user-circle"></i> Nom
+                        <span class="sort-icon">
+                            {% if currentSort.field == 'nom' %}
+                                <i class="fas fa-sort-{{ currentSort.direction == 'ASC' ? 'up' : 'down' }}"></i>
+                            {% else %}
+                                <i class="fas fa-sort"></i>
+                            {% endif %}
+                        </span>
+                    </th>
+                    <th class="sortable" data-sort="prenom">
+                        <i class="fas fa-user-tag"></i> Prénom
+                        <span class="sort-icon">
+                            {% if currentSort.field == 'prenom' %}
+                                <i class="fas fa-sort-{{ currentSort.direction == 'ASC' ? 'up' : 'down' }}"></i>
+                            {% else %}
+                                <i class="fas fa-sort"></i>
+                            {% endif %}
+                        </span>
+                    </th>
+                    <th class="sortable" data-sort="maladie">
+                        <i class="fas fa-virus"></i> Maladie
+                        <span class="sort-icon">
+                            {% if currentSort.field == 'maladie' %}
+                                <i class="fas fa-sort-{{ currentSort.direction == 'ASC' ? 'up' : 'down' }}"></i>
+                            {% else %}
+                                <i class="fas fa-sort"></i>
+                            {% endif %}
+                        </span>
+                    </th>
+                    <th>
+                        <i class="fas fa-comment-medical"></i> Description
+                    </th>
+                    <th class="sortable" data-sort="typeTraitement">
+                        <i class="fas fa-prescription-bottle-medical"></i> Type Traitement
+                        <span class="sort-icon">
+                            {% if currentSort.field == 'typeTraitement' %}
+                                <i class="fas fa-sort-{{ currentSort.direction == 'ASC' ? 'up' : 'down' }}"></i>
+                            {% else %}
+                                <i class="fas fa-sort"></i>
+                            {% endif %}
+                        </span>
+                    </th>
+                    <th>
+                        <i class="fas fa-file-medical-alt"></i> Bilan
+                    </th>
+                    <th>
+                        <i class="fas fa-stethoscope"></i> Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="results-body">
+                {% include 'historique_traitement/_historique_traitement_list.html.twig' with {'historique_traitements': historique_traitements} %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<form method="get" action="{{ path('app_historique_traitement_index') }}" class="search-form">
-    <input type="text" name="search" placeholder="Rechercher par maladie..." value="{{ searchTerm }}">
-    <button type="submit" class="btn btn-primary">
-        <i class="fas fa-search"></i> Rechercher
-    </button>
-</form>
-    <table class="table">
-        <thead>
-            <tr>
-                <th><i class ="id-user"></i>Id</th>
-                <th><i class="fas fa-user-circle"></i> Nom</th>
-                <th><i class="fas fa-user-tag"></i> Prénom</th>
-                <th><i class="fas fa-virus"></i> Maladie</th>
-                <th><i class="fas fa-comment-medical"></i> Description</th>
-                <th><i class="fas fa-prescription-bottle-medical"></i> Type Traitement</th>
-                <th><i class="fas fa-file-medical-alt"></i> Bilan</th>
-                <th><i class="fas fa-stethoscope"></i> Actions</th>
-               
-            </tr>
-        </thead>
-        <tbody>
-        {% for historique_traitement in historique_traitements %}
-            <tr>
-                <td>{{ historique_traitement.id }}</td>
-                <td>{{ historique_traitement.nom }}</td>
-                <td>{{ historique_traitement.prenom }}</td>
-                <td>{{ historique_traitement.maladie }}</td>
-                <td>{{ historique_traitement.description }}</td>
-                <td>{{ historique_traitement.typeTraitement }}</td>
-                 <td>
-                    {% if historique_traitement.bilan %}
-                        <img src="{{ asset('uploads/bilan/' ~ historique_traitement.bilan) }}" alt="Bilan" style="max-width: 100px; height: auto;">
-                    {% else %}
-                      <span class="no-bilan">Aucun bilan disponible</span>
-                     {% endif %}
-                </td>
-                <td>
-                   <a href="{{ path('app_historique_traitement_showB', {'id': historique_traitement.id}) }}" 
-                       class="btn btn-info">
-                        <i class="fas fa-eye"></i> Voir
-                    </a>
-                </td>
-            </tr>
-        {% else %}
-           <td colspan="7" class="empty-state">
-                    <i class="fas fa-folder-open"></i>
-                    Pas de résultats trouvés
-                </td>
-        {% endfor %}
-        </tbody>
-    </table>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.getElementById('search-form');
+    const searchButton = document.getElementById('search-button');
+    const resetButton = document.getElementById('reset-button');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const resultsBody = document.getElementById('results-body');
+    const countResults = document.getElementById('count-results');
+    const currentFilter = document.getElementById('current-filter');
+    const sortableHeaders = document.querySelectorAll('.sortable');
+    const sortInput = document.getElementById('sort');
+    const directionInput = document.getElementById('direction');
+    
+    // Fonction pour mettre à jour les indicateurs de tri
+    function updateSortIndicators() {
+        const currentSort = sortInput.value;
+        const currentDirection = directionInput.value;
+        
+        sortableHeaders.forEach(header => {
+            const sortField = header.dataset.sort;
+            const iconContainer = header.querySelector('.sort-icon');
+            
+            if (sortField === currentSort) {
+                iconContainer.innerHTML = `<i class="fas fa-sort-${currentDirection === 'ASC' ? 'up' : 'down'}"></i>`;
+            } else {
+                iconContainer.innerHTML = `<i class="fas fa-sort"></i>`;
+            }
+        });
+    }
+    
+    // Fonction pour mettre à jour l'indicateur de filtres actifs
+    function updateFilterIndicator() {
+        const formData = new FormData(searchForm);
+        let hasActiveFilters = false;
+        
+        for (const [key, value] of formData.entries()) {
+            if (key !== 'sort' && key !== 'direction' && value.trim() !== '') {
+                hasActiveFilters = true;
+                break;
+            }
+        }
+        
+        if (hasActiveFilters) {
+            currentFilter.innerHTML = '<i class="fas fa-filter"></i> Filtres actifs';
+        } else {
+            currentFilter.innerHTML = '<i class="fas fa-list"></i> Affichage de tous les traitements';
+        }
+    }
+    
+    // Gestionnaire pour le tri
+    sortableHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const sortField = this.dataset.sort;
+            let sortDirection = 'ASC';
+            
+            // Si on clique sur la colonne déjà triée, on inverse la direction
+            if (sortInput.value === sortField) {
+                sortDirection = directionInput.value === 'ASC' ? 'DESC' : 'ASC';
+            }
+            
+            // Mise à jour des inputs cachés
+            sortInput.value = sortField;
+            directionInput.value = sortDirection;
+            
+            // Lancer la recherche avec le tri
+            submitSearch();
+        });
+    });
+    
+    // Fonction pour soumettre la recherche via AJAX
+    function submitSearch() {
+        loadingSpinner.style.display = 'block';
+        document.querySelector('.table-container').style.opacity = '0.6';
+        
+        // Construire l'URL avec tous les paramètres
+        const formData = new FormData(searchForm);
+        const searchParams = new URLSearchParams();
+        
+        for (const [key, value] of formData.entries()) {
+            if (value.trim() !== '') {
+                searchParams.append(key, value);
+            }
+        }
+        
+        // Faire la requête AJAX
+        fetch(`{{ path('app_historique_traitement_index') }}?${searchParams.toString()}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur réseau');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                resultsBody.innerHTML = data.content;
+                countResults.textContent = data.count;
+                
+                // Mettre à jour l'URL pour permettre le partage/bookmark
+                const url = new URL(window.location);
+                for (const [key, value] of formData.entries()) {
+                    if (value.trim() !== '') {
+                        url.searchParams.set(key, value);
+                    } else {
+                        url.searchParams.delete(key);
+                    }
+                }
+                window.history.pushState({}, '', url);
+                
+                // Mettre à jour les indicateurs
+                updateSortIndicators();
+                updateFilterIndicator();
+                
+                // Ajouter une animation pour montrer que le contenu a été mis à jour
+                resultsBody.classList.add('updated');
+                setTimeout(() => {
+                    resultsBody.classList.remove('updated');
+                }, 500);
+            } else {
+                showNotification('Erreur', data.message || 'Une erreur est survenue lors de la recherche.', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la recherche:', error);
+            showNotification('Erreur', 'Une erreur est survenue lors de la recherche.', 'error');
+        })
+        .finally(() => {
+            loadingSpinner.style.display = 'none';
+            document.querySelector('.table-container').style.opacity = '1';
+        });
+    }
+    
+    // Fonction pour afficher une notification
+    function showNotification(title, message, type = 'info') {
+        // Créer l'élément de notification
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-header">
+                <h3>${title}</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="notification-body">
+                ${message}
+            </div>
+        `;
+        
+        // Ajouter au document
+        if (!document.querySelector('.notifications-container')) {
+            const container = document.createElement('div');
+            container.className = 'notifications-container';
+            document.body.appendChild(container);
+        }
+        
+        document.querySelector('.notifications-container').appendChild(notification);
+        
+        // Fermer la notification
+        notification.querySelector('.close-btn').addEventListener('click', function() {
+            notification.remove();
+        });
+        
+        // Auto-fermeture après 5 secondes
+        setTimeout(() => {
+            notification.classList.add('fade-out');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 5000);
+    }
+    
+    // Soumettre le formulaire avec AJAX
+    searchButton.addEventListener('click', function() {
+        submitSearch();
+    });
+    
+    // Permettre la soumission avec Entrée dans les champs
+    searchForm.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            submitSearch();
+        }
+    });
+    
+    // Réinitialiser le formulaire
+    resetButton.addEventListener('click', function() {
+        searchForm.reset();
+        sortInput.value = 'id';
+        directionInput.value = 'DESC';
+        submitSearch();
+    });
+    
+    // Debounce pour la recherche en temps réel
+    const debounce = (fn, delay) => {
+        let timeoutId;
+        return function(...args) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn.apply(this, args), delay);
+        };
+    };
+    
+    // Recherche en temps réel (optionnelle, décommentez pour l'activer)
+    /*
+    const inputs = searchForm.querySelectorAll('input[type="text"]');
+    inputs.forEach(input => {
+        input.addEventListener('input', debounce(() => {
+            submitSearch();
+        }, 500));
+    });
+    */
+    
+    // Ajouter des effets d'animation CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes highlight {
+            0% { background-color: rgba(31, 197, 172, 0.1); }
+            100% { background-color: transparent; }
+        }
+        
+        .updated tr {
+            animation: highlight 1s ease;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+            transition: opacity 0.3s ease;
+        }
+        
+        .notification.fade-out {
+            opacity: 0;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #f0f4f8;
+        }
+        
+        .notification-header h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #718096;
+        }
+        
+        .notification-body {
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .notification-info {
+            border-top: 4px solid #4a90e2;
+        }
+        
+        .notification-success {
+            border-top: 4px solid #1fc5ac;
+        }
+        
+        .notification-error {
+            border-top: 4px solid #ff416c;
+        }
+        
+        .notifications-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Initialiser les indicateurs visuels
+    updateFilterIndicator();
+});
+</script>
 {% endblock %}

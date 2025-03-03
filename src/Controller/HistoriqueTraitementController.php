@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\SuivieMedical;
+use App\Entity\Rating;
 use App\Entity\HistoriqueTraitement;
 use App\Form\HistoriqueTraitementType;
 use App\Repository\HistoriqueTraitementRepository;
@@ -12,49 +14,77 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Service\PdfService;
+
 
 #[Route('/historique/traitement')]
 final class HistoriqueTraitementController extends AbstractController
 {
     #[Route(name: 'app_historique_traitement_index', methods: ['GET'])]
-    public function index(Request $request,HistoriqueTraitementRepository $historiqueTraitementRepository): Response
+    public function index(Request $request, HistoriqueTraitementRepository $historiqueTraitementRepository): Response
     {
-        $searchTerm = $request->query->get('search', '');
-
+        // Récupération des critères de recherche
+        $searchCriteria = [
+            'nom' => $request->query->get('nom', ''),
+            'prenom' => $request->query->get('prenom', ''),
+            'maladie' => $request->query->get('maladie', ''),
+            'typeTraitement' => $request->query->get('typeTraitement', '')
+        ];
+        
+        // Récupération des paramètres de tri
+        $sortField = $request->query->get('sort', 'id');
+        $sortDirection = $request->query->get('direction', 'DESC');
+        
         try {
-            $historiqueTraitements = $searchTerm 
-                ? $historiqueTraitementRepository->searchByMaladie($searchTerm)
+            $hasSearchCriteria = array_filter($searchCriteria) !== [];
+            
+            $historiqueTraitements = $hasSearchCriteria
+                ? $historiqueTraitementRepository->searchMultiCriteria($searchCriteria, $sortField, $sortDirection)
                 : $historiqueTraitementRepository->findAll();
-
+            
             if ($request->isXmlHttpRequest()) {
                 return new JsonResponse([
                     'content' => $this->renderView('historique_traitement/_historique_traitement_list.html.twig', [
-                        'historique_traitements' => $historiqueTraitements
+                        'historique_traitements' => $historiqueTraitements,
+                        'currentSort' => [
+                            'field' => $sortField,
+                            'direction' => $sortDirection
+                        ]
                     ]),
                     'count' => count($historiqueTraitements),
                     'success' => true
                 ]);
             }
-
+            
             return $this->render('historique_traitement/index.html.twig', [
                 'historique_traitements' => $historiqueTraitements,
-                'searchTerm' => $searchTerm,
+                'searchCriteria' => $searchCriteria,
+                'currentSort' => [
+                    'field' => $sortField,
+                    'direction' => $sortDirection
+                ]
             ]);
         } catch (\Exception $e) {
             if ($request->isXmlHttpRequest()) {
                 return new JsonResponse([
                     'success' => false,
-                    'message' => 'An error occurred during search.',
+                    'message' => 'Une erreur est survenue lors de la recherche.',
                     'error' => $e->getMessage()
                 ], 500);
             }
-
-            $this->addFlash('error', 'An error occurred during search.');
+            
+            $this->addFlash('error', 'Une erreur est survenue lors de la recherche: ' . $e->getMessage());
             return $this->render('historique_traitement/index.html.twig', [
                 'historique_traitements' => [],
+                'searchCriteria' => $searchCriteria,
+                'currentSort' => [
+                    'field' => $sortField,
+                    'direction' => $sortDirection
+                ]
             ]);
         }
     }
+
     #[Route('/indexFront', name: 'app_historique_traitement_indexFront', methods: ['GET'])]
     public function indexFront(HistoriqueTraitementRepository $historiqueTraitementRepository): Response
     {
@@ -100,14 +130,20 @@ final class HistoriqueTraitementController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_historique_traitement_show', methods: ['GET'])]
-    public function show(HistoriqueTraitement $historiqueTraitement, SuivieMedicalRepository $suivieMedicalRepository): Response
-    {
-        // Get all related suivie medical records
-        $suivieMedicals = $suivieMedicalRepository->findBy(['id_historique' => $historiqueTraitement]);
-    
+    public function show(
+        HistoriqueTraitement $historiqueTraitement,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $suivieMedicals = $entityManager->getRepository(SuivieMedical::class)
+        ->findBy(['id_historique' => $historiqueTraitement]);
+        // Récupérer la note moyenne
+        $averageRating = $entityManager->getRepository(Rating::class)
+            ->getAverageRatingForTraitement($historiqueTraitement->getId());
+        
         return $this->render('historique_traitement/show.html.twig', [
             'historique_traitement' => $historiqueTraitement,
             'suivie_medicals' => $suivieMedicals,
+            'average_rating' => $averageRating ?: 0,
         ]);
     }
 
@@ -212,5 +248,23 @@ final class HistoriqueTraitementController extends AbstractController
                 'backgroundColor' => $backgroundColor,
             ]);
         }
+        #[Route('/{id}/pdf', name: 'app_historique_traitement_pdf', methods: ['GET'])]
+public function exportPdf(HistoriqueTraitement $historiqueTraitement, SuivieMedicalRepository $suivieMedicalRepository, PdfService $pdfService): Response
+{
+    // Récupérer les suivis médicaux associés
+    $suivieMedicals = $suivieMedicalRepository->findBy(['id_historique' => $historiqueTraitement]);
+    
+    // Générer le HTML du bilan
+    $html = $this->renderView('historique_traitement/pdf_template.html.twig', [
+        'historique_traitement' => $historiqueTraitement,
+        'suivie_medicals' => $suivieMedicals,
+    ]);
+    
+    // Nom de fichier personnalisé
+    $filename = 'bilan_' . $historiqueTraitement->getNom() . '_' . $historiqueTraitement->getPrenom() . '.pdf';
+    
+    // Générer et envoyer le PDF
+    return $pdfService->generatePdf($html, $filename);
+}
     }
 

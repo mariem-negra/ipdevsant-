@@ -1,10 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Éléments du DOM
+    // Éléments du DOM existants
     const notificationsButton = document.getElementById('notificationsButton');
     const notificationsModal = document.getElementById('notificationsModal');
     const closeModal = document.querySelector('.close-modal');
     const notificationsList = document.getElementById('notificationsList');
     const notificationCount = document.getElementById('notificationCount');
+
+    // Stockage pour les notifications à afficher
+    let activeNotifications = [];
+    let pendingNotifications = [];
+    let notificationTimers = {};
 
     // Fonction pour formater la date
     const formatDate = (dateString) => {
@@ -28,8 +33,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fonction pour mettre à jour le compteur de notifications
     function updateNotificationCount(count) {
-        notificationCount.textContent = count;
-        notificationCount.style.display = count > 0 ? 'inline' : 'none';
+        if (notificationCount) {
+            notificationCount.textContent = count;
+            notificationCount.style.display = count > 0 ? 'inline' : 'none';
+        }
     }
 
     // Fonction pour créer un élément de notification
@@ -65,6 +72,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fonction pour mettre à jour la liste des notifications
     function updateNotificationsList(notifications) {
+        if (!notificationsList) return;
+        
         notificationsList.innerHTML = '';
         
         if (!notifications || notifications.length === 0) {
@@ -121,9 +130,109 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             updateNotificationsList(data);
             updateNotificationCount(data.length);
+            
+            // Mettre à jour les notifications en attente
+            updatePendingNotifications(data);
         } catch (error) {
             console.error('Erreur lors du chargement des notifications:', error);
-            notificationsList.innerHTML = '<p class="error">Erreur lors du chargement des notifications</p>';
+            if (notificationsList) {
+                notificationsList.innerHTML = '<p class="error">Erreur lors du chargement des notifications</p>';
+            }
+        }
+    }
+
+    // Fonction pour mettre à jour les notifications en attente
+    function updatePendingNotifications(reminders) {
+        // Effacer les timers existants
+        Object.keys(notificationTimers).forEach(id => {
+            clearTimeout(notificationTimers[id]);
+            delete notificationTimers[id];
+        });
+        
+        pendingNotifications = [];
+        
+        reminders.forEach(reminder => {
+            const eventTime = new Date(reminder.dateTime).getTime();
+            const now = new Date().getTime();
+            const notifyBefore = parseInt(reminder.notifyBefore) * 60 * 1000; // Convertir en millisecondes
+            
+            // Calculer le moment où la notification doit être affichée
+            const notifyTime = eventTime - notifyBefore;
+            
+            // Si le temps de notification est dans le futur, planifier la notification
+            if (notifyTime > now) {
+                const timeUntilNotification = notifyTime - now;
+                
+                // Ajouter à la liste des notifications en attente
+                pendingNotifications.push({
+                    id: reminder.id,
+                    title: reminder.title,
+                    dateTime: reminder.dateTime,
+                    notifyAt: notifyTime
+                });
+                
+                // Planifier la notification
+                notificationTimers[reminder.id] = setTimeout(() => {
+                    showBrowserNotification(reminder);
+                }, timeUntilNotification);
+            }
+        });
+    }
+    
+    // Fonction pour afficher une notification du navigateur
+    function showBrowserNotification(reminder) {
+        // Vérifier si les notifications sont supportées et autorisées
+        if (!("Notification" in window)) {
+            console.warn("Ce navigateur ne prend pas en charge les notifications de bureau");
+            return;
+        }
+        
+        // Demander la permission si nécessaire
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+        
+        // Créer et afficher la notification
+        if (Notification.permission === "granted") {
+            const eventTime = new Date(reminder.dateTime);
+            const options = {
+                body: `Rappel pour: ${reminder.title} à ${eventTime.toLocaleTimeString('fr-FR', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}`,
+                icon: '/assets/img/siren-on.png', // Remplacer par le chemin de votre icône
+                tag: `reminder-${reminder.id}`
+            };
+            
+            const notification = new Notification("Rappel de médicament", options);
+            
+            // Ajouter à la liste des notifications actives
+            activeNotifications.push(reminder.id);
+            
+            // Mettre à jour le compteur de notifications actives
+            updateActiveNotificationCount();
+            
+            // Clic sur la notification ouvre la modal
+            notification.onclick = function() {
+                window.focus();
+                notificationsModal.style.display = 'block';
+                
+                // Marquer comme vue
+                removeActiveNotification(reminder.id);
+            };
+        }
+    }
+    
+    // Fonctions pour gérer les notifications actives
+    function updateActiveNotificationCount() {
+        updateNotificationCount(activeNotifications.length);
+    }
+    
+    function removeActiveNotification(id) {
+        const index = activeNotifications.indexOf(id);
+        if (index > -1) {
+            activeNotifications.splice(index, 1);
+            updateActiveNotificationCount();
         }
     }
 
@@ -141,8 +250,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 credentials: 'same-origin'
             });
 
-            // Si la réponse est OK, on recharge sans afficher d'erreur
             if (response.ok) {
+                // Supprimer le timer si existant
+                if (notificationTimers[id]) {
+                    clearTimeout(notificationTimers[id]);
+                    delete notificationTimers[id];
+                }
+                
+                // Supprimer des notifications actives si présent
+                removeActiveNotification(id);
+                
+                // Recharger les notifications
                 await loadNotifications();
                 return;
             }
@@ -164,15 +282,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Event listeners
-    notificationsButton.addEventListener('click', () => {
-        loadNotifications();
-        notificationsModal.style.display = 'block';
-    });
+    // Demander l'autorisation pour les notifications dès le chargement
+    function requestNotificationPermission() {
+        if ("Notification" in window && Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+    }
 
-    closeModal.addEventListener('click', () => {
-        notificationsModal.style.display = 'none';
-    });
+    // Event listeners
+    if (notificationsButton) {
+        notificationsButton.addEventListener('click', () => {
+            loadNotifications();
+            notificationsModal.style.display = 'block';
+        });
+    }
+
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            notificationsModal.style.display = 'none';
+        });
+    }
 
     window.addEventListener('click', (event) => {
         if (event.target === notificationsModal) {
@@ -180,7 +309,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Chargement initial et rafraîchissement périodique
+    // Fonction pour vérifier les rappels imminents
+    function checkUpcomingReminders() {
+        const now = new Date();
+        
+        // Parcourir les notifications en attente
+        pendingNotifications.forEach(notification => {
+            const notifyTime = new Date(notification.notifyAt);
+            
+            // Si c'est l'heure de notifier
+            if (now >= notifyTime) {
+                // Trouver le rappel complet correspondant
+                loadNotifications().then(data => {
+                    const reminder = data.find(r => r.id === notification.id);
+                    if (reminder) {
+                        showBrowserNotification(reminder);
+                    }
+                });
+            }
+        });
+    }
+
+    // Initialisation
+    requestNotificationPermission();
     loadNotifications();
-    setInterval(loadNotifications, 60000); // Rafraîchit toutes les minutes
+    
+    // Vérifier les rappels toutes les minutes
+    setInterval(checkUpcomingReminders, 60000);
+    
+    // Exposer la fonction deleteNotification au scope global pour les boutons
+    window.deleteNotification = deleteNotification;
 });

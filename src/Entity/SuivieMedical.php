@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SuivieMedicalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;  
@@ -34,6 +36,17 @@ class SuivieMedical
 
     #[ORM\ManyToOne(inversedBy: 'id_historique')]
     private ?HistoriqueTraitement $id_historique = null;
+
+    /**
+     * @var Collection<int, Rating>
+     */
+    #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'ratings')]
+    private Collection $ratings;
+
+    public function __construct()
+    {
+        $this->ratings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -72,6 +85,36 @@ class SuivieMedical
     public function setIdHistorique(?HistoriqueTraitement $id_historique): self
     {
         $this->id_historique = $id_historique;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setRatings($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getRatings() === $this) {
+                $rating->setRatings(null);
+            }
+        }
 
         return $this;
     }

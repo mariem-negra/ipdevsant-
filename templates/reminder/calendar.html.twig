@@ -2,7 +2,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
+<style>
         .calendar-container {
             max-width: 800px;
             margin: 20px auto;
@@ -114,7 +114,7 @@
             border-radius: 4px;
             cursor: pointer;
         }
-    </style>
+</style>
 {% endblock %}
 
 {% block section %}
@@ -145,24 +145,33 @@
                     <label for="time">Heure</label>
                     <input type="time" id="time" name="time" required>
                 </div>
-                <div class="form-group">
-                    <label for="notifyBefore">Rappel avant</label>
-                    <select id="notifyBefore" name="notifyBefore">
-                        <option value="10">10 minutes avant</option>
-                        <option value="30">30 minutes avant</option>
-                        <option value="60">1 heure avant</option>
-                        <option value="1440">1 jour avant</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="repeatType">Répétition</label>
-                    <select id="repeatType" name="repeatType">
-                        <option value="none">Pas de répétition</option>
-                        <option value="daily">Chaque jour</option>
-                        <option value="weekly">Chaque semaine</option>
-                        <option value="monthly">Chaque mois</option>
-                    </select>
-                </div>
+                <div class="form-group form-inline">
+    <div class="form-group">
+        <label>Rappel avant</label>
+        {{ form_widget(form.notifyBefore, {
+            'attr': {
+                'class': 'form-control'
+            }
+        }) }}
+    </div>
+    <div class="form-group">
+        <label>Répétition</label>
+        {{ form_widget(form.repeatType, {
+            'attr': {
+                'class': 'form-control'
+            }
+        }) }}
+    </div>
+    <div class="form-group">
+        <label>Heure</label>
+        {{ form_widget(form.dateTime, {
+            'attr': {
+                'class': 'form-control',
+                'type': 'time'
+            }
+        }) }}
+    </div>
+</div>
                 <button type="submit">Enregistrer</button>
             </form>
         </div>
@@ -171,7 +180,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
+<script>
         document.addEventListener('DOMContentLoaded', function() {
             const monthTitle = document.getElementById('monthTitle');
             const calendarGrid = document.getElementById('calendarGrid');

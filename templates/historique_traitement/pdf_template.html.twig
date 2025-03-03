@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Bilan {{ historique_traitement.nom }} {{ historique_traitement.prenom }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+        .patient-info {
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bilan Médical</h1>
+    
+    <div class="patient-info">
+        <h2>Informations du patient</h2>
+        <p><strong>Nom:</strong> {{ historique_traitement.nom }}</p>
+        <p><strong>Prénom:</strong> {{ historique_traitement.prenom }}</p>
+        <p><strong>Maladie:</strong> {{ historique_traitement.maladie }}</p>
+        <p><strong>Type de traitement:</strong> {{ historique_traitement.typeTraitement }}</p>
+    </div>
+    
+    <div class="section">
+        <h2>Détails du traitement</h2>
+        <p><strong>Description:</strong> {{ historique_traitement.description }}</p>
+    </div>
+    
+    {% if suivie_medicals|length > 0 %}
+    <div class="section">
+        <h2>Suivi Médical</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Commentaire</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for suivi in suivie_medicals %}
+                <tr>
+                    <td>{{ suivi.date|date('d/m/Y') }}</td>
+                    <td>{{ suivi.commentaire }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    
+    {% if historique_traitement.observation is defined %}
+    <div class="section">
+        <h2>Observations</h2>
+        <p>{{ historique_traitement.observation|default('Aucune observation')|nl2br }}</p>
+    </div>
+    {% endif %}
+    
+    <div style="text-align: right; margin-top: 50px; font-style: italic;">
+        <p>Document généré le {{ "now"|date('d/m/Y') }}</p>
+    </div>
+</body>
+</html>

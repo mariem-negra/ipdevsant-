@@ -16,6 +16,8 @@
         --surface: #ffffff;
         --text: #2D3748;
         --text-light: #718096;
+        --button-color-1: #34495E; /* Couleur de début du dégradé du bouton */
+        --button-color-2: #5D6D7E; /* Couleur de fin du dégradé du bouton */
     }
 
     body {
@@ -136,6 +138,7 @@
         position: relative;
         overflow: hidden;
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(45deg, var(--button-color-1), var(--button-color-2));
     }
 
     .btn::before {
@@ -154,21 +157,18 @@
         transform: translateY(0);
     }
 
-    .btn-back {
-        background: linear-gradient(45deg, #8796A5, #A5B4C2);
-    }
-
-    .btn-edit {
-        background: linear-gradient(45deg, var(--primary), var(--primary-light));
-    }
-
-    .btn-delete {
-        background: linear-gradient(45deg, var(--danger), var(--danger-light));
+    /* Style uniforme pour tous les boutons */
+    .btn-back,
+    .btn-edit,
+    .btn-delete,
+    button[type="submit"] {
+        background: linear-gradient(45deg, var(--button-color-1), var(--button-color-2));
+        color: white;
     }
 
     .btn:hover {
         transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 8px 25px rgba(52, 73, 94, 0.3);
     }
 
     .btn:active {

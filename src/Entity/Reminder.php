@@ -26,6 +26,18 @@ class Reminder
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $repeatType = 'none';
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $soundEnabled = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $viewed = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $category = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $notes = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
  
 
@@ -98,5 +110,53 @@ class Reminder
         }
         return $this;
     
+    }
+
+    public function isSoundEnabled(): ?bool
+    {
+        return $this->soundEnabled;
+    }
+
+    public function setSoundEnabled(?bool $soundEnabled): static
+    {
+        $this->soundEnabled = $soundEnabled;
+
+        return $this;
+    }
+
+    public function isViewed(): ?bool
+    {
+        return $this->viewed;
+    }
+
+    public function setViewed(?bool $viewed): static
+    {
+        $this->viewed = $viewed;
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?string $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): static
+    {
+        $this->notes = $notes;
+
+        return $this;
     }
 }

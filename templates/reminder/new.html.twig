@@ -1,169 +1,352 @@
 {# templates/reminder/new.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .reminder-page {
-            max-width: 400px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+        /* Base styles */
+        body {
+            font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
         }
-
-        .page-header {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-
-        .page-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .page-subtitle {
-            font-size: 14px;
-            color: #777;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
-            color: #555;
-            font-weight: 500;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            box-sizing: border-box;
-            transition: border-color 0.2s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-
-        .button-group {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .btn-cancel {
-            background-color: #eee;
-            color: #555;
-            margin-right: 10px;
-        }
-
-        .btn-save {
-            background-color:rgb(255, 0, 0);
-            color: white;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        /* Styles for horizontal layout */
-        .form-inline {
+        
+        /* Main container with glass effect */
+        .reminder-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(44, 62, 80, 0.7);
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            animation: modalFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        .form-inline .form-group {
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .modal-content {
+            background: linear-gradient(145deg, #fff, #f9fafc);
+            padding: 36px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.15),
+                        0 12px 24px rgba(0,0,0,0.1),
+                        inset 0 1px 0 rgba(255,255,255,0.7);
+            border: 1px solid rgba(255,255,255,0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+        
+        /* Header styles */
+        .modal-header {
+            margin-bottom: 28px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .header-left {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .modal-title::before {
+            content: '💊';
+            margin-right: 12px;
+            font-size: 0.9em;
+        }
+        
+        .modal-date {
+            display: flex;
+            align-items: center;
+            color: #7f8c8d;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        .modal-date::before {
+            content: '📅';
+            margin-right: 8px;
+            font-size: 1em;
+        }
+        
+        /* Form group styles */
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #34495e;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(0,0,0,0.05);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.7);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            box-sizing: border-box;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1),
+                        inset 0 2px 4px rgba(0,0,0,0.01);
+        }
+        
+        /* Form layout for horizontally grouped inputs */
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .form-row .form-group {
             flex: 1;
             margin-bottom: 0;
         }
-
-        .form-inline .form-control {
-            width: auto; /* Adjusted this */
-        }
-
-        /* Specific styling for select */
+        
+        /* Custom select styling */
         select.form-control {
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233498db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right .75rem center;
-            background-size: 8px 10px;
-            padding-right: 2rem;
+            background-position: right 14px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
+        /* Time input styling */
+        input[type="time"] {
+            font-family: inherit;
+        }
+        
+        /* Button styles */
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-top: 32px;
+        }
+        
+        .btn {
+            padding: 14px 24px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-cancel {
+            background: #f8f9fa;
+            color: #7f8c8d;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05),
+                        inset 0 1px 0 rgba(255,255,255,0.8);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .btn-cancel::before {
+            content: '✕';
+            margin-right: 8px;
+            font-size: 0.9em;
+        }
+        
+        .btn-save {
+            background: linear-gradient(145deg, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3),
+                        0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn-save::before {
+            content: '💾';
+            margin-right: 8px;
+            font-size: 0.9em;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .btn-cancel:hover {
+            background: #fff;
+            color: #34495e;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08),
+                        inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+        
+        .btn-save:hover {
+            background: linear-gradient(145deg, #2980b9, #2573a7);
+            box-shadow: 0 8px 15px rgba(52, 152, 219, 0.4),
+                        0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 500px) {
+            .modal-content {
+                padding: 24px;
+                border-radius: 16px;
+                margin: 16px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .modal-title {
+                font-size: 24px;
+            }
+            
+            .modal-buttons {
+                flex-direction: column-reverse;
+                gap: 12px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
         }
     </style>
-{% endblock %}
-
-{% block section %}
-    <div class="reminder-page">
-        <div class="page-header">
-            <h1 class="page-title">Nouveau rappel</h1>
-            <p class="page-subtitle">dimanche 23 février 2025</p>
+</head>
+<body>
+    <div class="reminder-modal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title-container">
+        <div class="modal-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
         </div>
-
-        {{ form_start(form, {'attr': {'class': 'reminder-form'}}) }}
-            <div class="form-group">
-                <label>Médicament</label>
-                {{ form_widget(form.title, {
-                    'attr': {
-                        'class': 'form-control',
-                        'placeholder': 'Nom du médicament'
-                    }
-                }) }}
-            </div>
-
-            <div class="form-group form-inline">
-                <div class="form-group">
-                    <label>Rappel avant</label>
-                    {{ form_widget(form.notifyBefore, {
-                        'attr': {
-                            'class': 'form-control'
-                        },
-                        'choices': {
-                            '10 min': '10',
-                            '30 min': '30',
-                            '1 heure': '60'
-                        }
-                    }) }}
-                </div>
-                <div class="form-group">
-                    <label>Heure</label>
-                      {{ form_widget(form.dateTime, {
-                          'attr': {
-                              'class': 'form-control',
-                              'type': 'time' // Specify input type as time
-                          }
-                      }) }}
-                </div>
-            </div>
-
-            <div class="button-group">
-                <a href="{{ path('calendar') }}" class="btn btn-cancel">Annuler</a>
-                <button type="submit" class="btn btn-save">Enregistrer</button>
-            </div>
-        {{ form_end(form) }}
+        <div class="modal-title">Nouveau rappel</div>
+      </div>
+      <div class="modal-date">
+        <span class="date-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </span>
+        mercredi 26 février 2025
+      </div>
     </div>
+    
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="medication" class="form-label">Médicament</label>
+        <input type="text" id="medication" class="form-control" placeholder="Saisissez le nom du médicament">
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="time" class="form-label">Heure</label>
+          <div class="time-input">
+            <input type="time" id="time" class="form-control">
+            <span class="time-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </span>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="reminder" class="form-label">Rappel avant</label>
+          <select id="reminder" class="form-control form-select">
+            <option value="1">1 minute</option>
+            <option value="5">5 minutes</option>
+            <option value="10">10 minutes</option>
+            <option value="15">15 minutes</option>
+            <option value="30">30 minutes</option>
+            <option value="60">1 heure</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="repeat" class="form-label">Répétition</label>
+        <select id="repeat" class="form-control form-select">
+          <option value="none">Pas de répétition</option>
+          <option value="daily">Quotidien</option>
+          <option value="weekly">Hebdomadaire</option>
+          <option value="monthly">Mensuel</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-cancel">Annuler</button>
+      <button type="submit" class="btn btn-primary">Enregistrer</button>
+    </div>
+    <!-- À ajouter dans le formulaire de création de rappel, juste avant le bouton "Enregistrer" -->
+<div class="form-group" style="margin-top: 10px; display: flex; align-items: center;">
+    <input type="checkbox" id="soundEnabled" name="soundEnabled" checked style="margin-right: 5px;">
+    <label for="soundEnabled">Activer le son</label>
+</div>
+  </div>
+</div>
+</body>
+</html>
 {% endblock %}

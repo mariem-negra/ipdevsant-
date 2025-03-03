@@ -66,10 +66,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="time" id="time" name="time" required>
                     <label>Rappel avant</label>
                     <select id="notifyBefore" name="notifyBefore">
-                        <option value="10">10 min</option>
-                        <option value="30">30 min</option>
-                        <option value="60">1h</option>
+                        <option value="1">1 minute</option>
+                        <option value="5">5 minutes</option>
+                        <option value="15">15 minutes</option>
+                        <option value="30">30 minutes</option>
+                        <option value="60">1 heure</option>
                         <option value="1440">1 jour</option>
+                    </select>
+                    <label>Répétition</label>
+                    <select id="repeatType" name="repeatType">
+                        <option value="none">Pas de répétition</option>
+                        <option value="daily">Chaque jour</option>
+                        <option value="weekly">Chaque semaine</option>
+                        <option value="monthly">Chaque mois</option>
                     </select>
                     <button type="button" class="btn-cancel">Annuler</button>
                     <button type="submit" class="btn-save">Enregistrer</button>
@@ -86,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 date: selectedDate.toISOString().split('T')[0],
                 notifyBefore: formData.get('notifyBefore'),
                 repeatType: 'none'
+                
             };
             
             try {

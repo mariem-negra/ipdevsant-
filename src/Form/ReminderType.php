@@ -23,23 +23,24 @@ class ReminderType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('notifyBefore', ChoiceType::class, [
-                'required' => false,
+                'label' => 'Rappel avant',
                 'choices' => [
+                    '1 minute' => '1',
                     '5 minutes' => '5',
                     '15 minutes' => '15',
                     '30 minutes' => '30',
-                    '1 hour' => '60',
-                    '1 day' => '1440',
-                ],
+                    '1 heure' => '60',
+                    '1 jour' => '1440'
+                ]
             ])
             ->add('repeatType', ChoiceType::class, [
-                'required' => false,
+                'label' => 'Répétition',
                 'choices' => [
-                    'None' => 'none',
-                    'Daily' => 'daily',
-                    'Weekly' => 'weekly',
-                    'Monthly' => 'monthly',
-                ],
+                    'Pas de répétition' => 'Pas de répétition',
+                    'Chaque jour' => 'Chaque jour',
+                    'Chaque semaine' => 'Chaque semaine',
+                    'Chaque mois' => 'Chaque mois'
+                ]
             ]);
     }
 
